@@ -1,0 +1,31 @@
+import javax.media.opengl.*;
+import javax.media.opengl.awt.*;
+import javax.media.opengl.glu.GLU;
+
+import com.jogamp.opengl.util.*;
+import com.jogamp.opengl.util.texture.*;
+
+public class DistortableMesh {
+
+	private double width, height;
+	private int xres, yres;
+	private Texture texture;
+	
+	public DistortableMesh(double width, double height, int xres, int yres, Texture texture) {
+		this.width = width;
+		this.height = height;
+		this.xres = xres;
+		this.yres = yres;
+		this.texture = texture;
+	}
+	
+	public DistortableMesh(double width, int xres, Texture texture) {
+		int twidth = texture.getWidth();
+		int theight = texture.getHeight();
+		
+		double height = (width*theight)/twidth;
+		int yres = (int)Math.ceil((double)(xres*theight))/twidth;
+		
+		DistortableMesh(width, height, xres, yres, texture);
+	}
+}

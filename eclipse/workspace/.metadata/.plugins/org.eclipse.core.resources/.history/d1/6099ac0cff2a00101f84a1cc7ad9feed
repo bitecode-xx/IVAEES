@@ -1,0 +1,128 @@
+import javax.media.opengl.*;
+import com.jogamp.opengl.util.texture.*;
+
+public class DistortableMesh {
+
+	private double width, height;
+	private int xres, yres;
+	private Vec2D[][] points;
+	private Vec2D[][] texcoords;
+	private Texture texture;
+	private Transform2D transform = null;
+	
+	public DistortableMesh(double width, double height, int xres, int yres, Texture texture) {
+		this.width = width;
+		this.height = height;
+		this.xres = xres;
+		this.yres = yres;
+		this.texture = texture;
+		points = new Vec2D[yres+1][xres+1];
+		texcoords = new Vec2D[yres+1][xres+1];
+		generateCoords();
+	}
+	
+	public DistortableMesh(double width, int xres, Texture texture) {
+		int twidth = texture.getWidth();
+		int theight = texture.getHeight();
+		
+		double height = (width*theight)/twidth;
+		int yres = (int)Math.ceil((double)(xres*theight))/twidth;
+		
+		this.width = width;
+		this.height = height;
+		this.xres = xres;
+		this.yres = yres;
+		this.texture = texture;
+		points = new Vec2D[yres+1][xres+1];
+		texcoords = new Vec2D[yres+1][xres+1];
+		generateCoords();
+	}
+	
+	private void generateCoords() {
+		for(int row = 0; row <= yres; row++) {
+			double t = (double)row/yres;
+			for(int column = 0; column <= xres; column++) {
+				double s = (double)column/xres;
+				texcoords[row][column] = new Vec2D(s, t);
+			}
+		}
+	}
+	
+	public void setTransform(Transform2D transform) {
+		this.transform = transform;
+	}
+
+	public void render(GL2 gl) {
+		double cellwidth = width/xres;
+		double cellheight = height/yres;
+		double celltexwidth = 1.0/xres;
+		double celltexheight = 1.0/yres;
+		
+		for(int row = 0; row <= yres; row++) {
+			double y = (height/2) - row*cellheight;
+			for(int column = 0; column <= xres; column++) {
+				double x = -(width/2) + column*cellwidth;
+				
+				if(transform != null) {
+					Vec2D transformed = transform.transform(new Vec2D(x, y));
+					points[row][column] = transformed;
+				}
+				else {
+					points[row][column] = new Vec2D(x, y);
+				}
+		}
+		
+		texture.bind();
+		
+		gl.glBegin(GL2.GL_QUADS);
+		gl.glColor3d(1.0, 1.0, 1.0);
+		
+		for(int row = 0; row < yres; row++) {
+			double y = (height/2) - row*cellheight;
+			double t = (double)row/yres;
+			for(int column = 0; column < xres; column++) {
+				double x = -(width/2) + column*cellwidth;
+				double s = (double)column/xres;
+				
+				gl.glTexCoord2d(s, t);
+				if(transform != null) {
+					Vec2D transformed = transform.transform(new Vec2D(x, y));
+					gl.glVertex2d(transformed.x, transformed.y);
+				}
+				else {
+					gl.glVertex2d(x, y);
+				}
+				
+				gl.glTexCoord2d(s, t+celltexheight);
+				if(transform != null) {
+					Vec2D transformed = transform.transform(new Vec2D(x, y-cellheight));
+					gl.glVertex2d(transformed.x, transformed.y);
+				}
+				else {
+					gl.glVertex2d(x, y-cellheight);
+				}
+				
+				gl.glTexCoord2d(s+celltexwidth, t+celltexheight);
+				if(transform != null) {
+					Vec2D transformed = transform.transform(new Vec2D(x+cellwidth, y-cellheight));
+					gl.glVertex2d(transformed.x, transformed.y);
+				}
+				else {
+					gl.glVertex2d(x+cellwidth, y-cellheight);
+				}
+				
+				
+				gl.glTexCoord2d(s+celltexwidth, t);
+				if(transform != null) {
+					Vec2D transformed = transform.transform(new Vec2D(x+cellwidth, y));
+					gl.glVertex2d(transformed.x, transformed.y);
+				}
+				else {
+					gl.glVertex2d(x+cellwidth, y);
+				}
+			}
+		}
+		
+		gl.glEnd();
+	}
+}

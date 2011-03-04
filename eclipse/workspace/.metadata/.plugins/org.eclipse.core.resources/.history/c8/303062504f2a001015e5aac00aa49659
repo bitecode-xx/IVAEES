@@ -1,0 +1,65 @@
+import javax.swing.*;
+import java.awt.event.*;
+import javax.media.opengl.*;
+import javax.media.opengl.awt.*;
+
+public class Hello implements GLEventListener {
+	public static void main(String[] args) {
+		GLProfile.initSingleton(true);
+		GLProfile glp = GLProfile.getDefault();
+        GLCapabilities caps = new GLCapabilities(glp);
+        GLCanvas canvas = new GLCanvas(caps);
+        
+        JFrame frame = new JFrame("Hello");
+        frame.setSize(300, 300);
+        frame.add(canvas);
+        frame.setVisible(true);
+        
+        frame.addWindowListener(new WindowAdapter() {
+            public void windowClosing(WindowEvent e) {
+                System.exit(0);
+            }
+        });
+        
+        canvas.addGLEventListener(new Hello());
+	}
+
+	private void update() {
+		//nothing
+	}
+	
+	private void render(GLAutoDrawable drawable) {
+		GL2 gl = drawable.getGL().getGL2();
+		
+		gl.glClear(GL.GL_COLOR_BUFFER_BIT);
+		
+	    // draw a triangle filling the window
+	    gl.glBegin(GL.GL_TRIANGLES);
+	    gl.glColor3f(1, 0, 0);
+	    gl.glVertex2f(-1, -1);
+	    gl.glColor3f(0, 1, 0);
+	    gl.glVertex2f(0, 1);
+	    gl.glColor3f(0, 0, 1);
+	    gl.glVertex2f(1, -1);
+	    gl.glEnd();
+	}
+	
+	public void display(GLAutoDrawable drawable) {
+		update();
+		render(drawable);
+	}
+
+	public void dispose(GLAutoDrawable drawable) {
+		
+	}
+
+	public void init(GLAutoDrawable drawable) {
+		
+	}
+
+	public void reshape(GLAutoDrawable drawable, int x, int y, int width,
+			int height) {
+		
+	}
+
+}

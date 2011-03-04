@@ -1,0 +1,4 @@
+I have included a .gitignore file which should ignore everything not in 
+the eclipse directory. You should be able to paste stuff in here from 
+dropbox without git bugging you about it (I can't just add the stuff to 
+the repository because github has a 0.3GB limit).
