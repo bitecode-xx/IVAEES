@@ -11,7 +11,7 @@ public class PhysicsMesh implements ForceGenerator {
 	private PhysPoint[][] points;
 	private Vec2D[][] texcoords;
 	private BreakableSoftStickConstraint[][][] constraints;
-	private ArrayList<Constraint> allConstraints;
+	private ArrayList<BreakableSoftStickConstraint> allConstraints;
 	private Texture texture;
 	
 	private double restLength;
@@ -26,7 +26,7 @@ public class PhysicsMesh implements ForceGenerator {
 		points = new PhysPoint[yres+1][xres+1];
 		texcoords = new Vec2D[yres+1][xres+1];
 		constraints = new BreakableSoftStickConstraint[yres][xres][4];
-		allConstraints = new ArrayList<Constraint>();
+		allConstraints = new ArrayList<BreakableSoftStickConstraint>();
 		generateCoords();
 		generatePoints();
 		
@@ -54,7 +54,7 @@ public class PhysicsMesh implements ForceGenerator {
 		points = new PhysPoint[yres+1][xres+1];
 		texcoords = new Vec2D[yres+1][xres+1];
 		constraints = new BreakableSoftStickConstraint[yres][xres][4];
-		allConstraints = new ArrayList<Constraint>();
+		allConstraints = new ArrayList<BreakableSoftStickConstraint>();
 		generateCoords();
 		generatePoints();
 		
@@ -82,6 +82,7 @@ public class PhysicsMesh implements ForceGenerator {
 					constraints[row-1][column][2] = c;
 				}
 				s.addConstraint(c);
+				allConstraints.add(c);
 				c = new BreakableSoftStickConstraint(points[row][column], points[row+1][column], 0.5, 2.0);
 				constraints[row][column][1] = c;
 				if(column > 0) {
@@ -125,7 +126,7 @@ public class PhysicsMesh implements ForceGenerator {
 						}
 						double dist = Math.sqrt((row-row2)*(row-row2) + (column-column2)*(column-column2));
 						if(dist <= 3) {
-							Constraint c = new BreakableSoftStickConstraint(points[row][column], points[row2][column2], 0.05, 2.0);
+							BreakableSoftStickConstraint c = new BreakableSoftStickConstraint(points[row][column], points[row2][column2], 0.05, 2.0);
 							s.addConstraint(c);
 							allConstraints.add(c);
 						}
@@ -147,6 +148,16 @@ public class PhysicsMesh implements ForceGenerator {
 			c.delete();
 		}
 		allConstraints.clear();
+	}
+	
+	public double computeBrokenPercent() {
+		int brokenNum = 0;
+		for(BreakableSoftStickConstraint c : allConstraints) {
+			if(c.isBroken()) {
+				brokenNum++;
+			}
+		}
+		return (double)brokenNum/(double)allConstraints.size();
 	}
 	
 	private void generateCoords() {

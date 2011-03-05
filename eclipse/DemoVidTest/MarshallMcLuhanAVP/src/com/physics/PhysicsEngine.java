@@ -4,9 +4,12 @@ import java.util.*;
 import java.util.List;
 
 import javax.swing.*;
+import javax.swing.Timer;
+
 import java.awt.*;
 import java.awt.event.*;
 
+import javax.jws.Oneway;
 import javax.media.opengl.*;
 import javax.media.opengl.awt.*;
 import javax.media.opengl.glu.GLU;
@@ -56,6 +59,8 @@ public class PhysicsEngine implements GLEventListener, KeyListener, MouseListene
 	
 	private File[] imageFiles;
 	
+	private Timer quepush = null;
+	
 	public PhysicsEngine(String source){
 		this.source = source;
 		initQue();
@@ -63,6 +68,10 @@ public class PhysicsEngine implements GLEventListener, KeyListener, MouseListene
 
 	public PhysicsEngine(){
 		source = "lolwut.jpg";
+	}
+	
+	public void setTimer(Timer q) {
+		this.quepush = q;
 	}
 	
 	
@@ -179,6 +188,15 @@ public class PhysicsEngine implements GLEventListener, KeyListener, MouseListene
 			newpos3 = new Vec2D(mx, my);
 			constraint3.setPos(newpos3);
 		}
+
+		if(pmeshactive.computeBrokenPercent() >= 0.20) {
+			
+			callTimer();
+			if(quepush != null) {
+				quepush.restart();
+			}
+		}
+		
 		physics.timestep();
 	}
 	

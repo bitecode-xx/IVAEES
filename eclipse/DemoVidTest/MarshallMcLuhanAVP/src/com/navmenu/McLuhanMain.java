@@ -327,7 +327,7 @@ public class McLuhanMain extends JFrame{
 				canvas.display();
 			}
 		};
-		quepush = new Timer(8000,timeout);
+		quepush = new Timer(30000,timeout);
 		quepush.setRepeats(true);
 		quepush.start();
 	}
