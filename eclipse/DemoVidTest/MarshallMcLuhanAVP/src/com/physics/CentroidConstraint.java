@@ -2,7 +2,7 @@ package com.physics;
 import javax.media.opengl.GL2;
 import java.util.*;
 
-public class CentroidConstraint implements PositionableConstraint {
+public class CentroidConstraint extends PositionableConstraint {
 	private ArrayList<PhysPoint> points;
 	private double radius;
 	public Vec2D pos;

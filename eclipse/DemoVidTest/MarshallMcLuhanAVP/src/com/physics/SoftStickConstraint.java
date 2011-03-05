@@ -1,7 +1,7 @@
 package com.physics;
 import javax.media.opengl.GL2;
 
-public class SoftStickConstraint implements Constraint {
+public class SoftStickConstraint extends Constraint {
 	protected PhysPoint a, b;
 	public double length;
 	public double softness;

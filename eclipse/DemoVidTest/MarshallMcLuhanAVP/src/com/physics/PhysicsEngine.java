@@ -380,6 +380,7 @@ public class PhysicsEngine implements GLEventListener, KeyListener, MouseListene
 		else
 			mesh = new DistortableMesh(1.4,1.4,1,1, textureque[quecount+1]);
 		textureactive = textureque[quecount];
+		pmeshactive.delete();
 		pmeshactive = new PhysicsMesh(1.2, 24, textureactive);
 		pmeshactive.setK(10);
 		pmeshactive.addToSystem(physics);
@@ -460,7 +461,7 @@ public class PhysicsEngine implements GLEventListener, KeyListener, MouseListene
 		convertMouseCoordinates();
 		if(arg0.getButton() == MouseEvent.BUTTON1) {
 			if(constraint1 != null) {
-				physics.removeConstraint(constraint1);
+				constraint1.delete();
 			}
 			ArrayList<PhysPoint> points = getPointsInCircle(new Vec2D(mx, my), 0.15);
 			if(points.size() == 0) {
@@ -475,7 +476,7 @@ public class PhysicsEngine implements GLEventListener, KeyListener, MouseListene
 		}
 		else if(arg0.getButton() == MouseEvent.BUTTON2) {
 			if(constraint2 != null) {
-				physics.removeConstraint(constraint2);
+				constraint2.delete();
 			}
 			ArrayList<PhysPoint> points = getPointsInCircle(new Vec2D(mx, my), 0.15);
 			if(points.size() == 0) {
@@ -490,7 +491,7 @@ public class PhysicsEngine implements GLEventListener, KeyListener, MouseListene
 		}
 		else {
 			if(constraint3 != null) {
-				physics.removeConstraint(constraint3);
+				constraint3.delete();
 			}
 			ArrayList<PhysPoint> points = getPointsInCircle(new Vec2D(mx, my), 0.15);
 			if(points.size() == 0) {

@@ -1,3 +1,6 @@
 /*
 !.gitignore
 !eclipse/
+.metadata
+.class
+bin/

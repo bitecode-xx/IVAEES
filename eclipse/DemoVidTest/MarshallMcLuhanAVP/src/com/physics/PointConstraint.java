@@ -2,7 +2,7 @@ package com.physics;
 import javax.media.opengl.GL2;
 
 
-public class PointConstraint implements Constraint {
+public class PointConstraint extends Constraint {
 	private PhysPoint a;
 	private Vec2D loc;
 	

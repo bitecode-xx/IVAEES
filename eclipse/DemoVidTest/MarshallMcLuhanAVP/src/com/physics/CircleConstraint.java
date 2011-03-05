@@ -2,7 +2,7 @@ package com.physics;
 import javax.media.opengl.GL2;
 
 
-public class CircleConstraint implements PositionableConstraint {
+public class CircleConstraint extends PositionableConstraint {
 	private ParticleSystem physics;
 	public Vec2D pos;
 	public double radius;

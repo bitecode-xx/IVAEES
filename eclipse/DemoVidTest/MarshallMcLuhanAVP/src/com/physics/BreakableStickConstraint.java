@@ -25,7 +25,7 @@ public class BreakableStickConstraint extends StickConstraint {
 			System.out.println("FOOL");
 		}
 		if(deltalength/length >= breakageFactor) {
-			physics.removeConstraint(this);
+			this.delete();
 			broken = true;
 			return;
 		}
