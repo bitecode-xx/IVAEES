@@ -21,4 +21,13 @@ public class PhysPoint {
 	public void render(GL2 gl) {
 		gl.glVertex2d(pos.x, pos.y);
 	}
+	
+	private boolean toDelete = false;
+	public void delete() {
+		this.toDelete = true;
+	}
+	
+	public boolean toBeDeleted() {
+		return toDelete;
+	}
 }

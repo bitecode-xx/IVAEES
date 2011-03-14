@@ -1,7 +1,7 @@
 package com.physics;
 import javax.media.opengl.GL2;
 
-public class StickConstraint implements Constraint {
+public class StickConstraint extends Constraint {
 	protected PhysPoint a, b;
 	public double length;
 

@@ -5,10 +5,9 @@ import javax.media.opengl.GL;
 import javax.media.opengl.GL2;
 
 public class ParticleSystem {
-	private ArrayList<PhysPoint> particles = new ArrayList<PhysPoint>();
-	private ArrayList<Constraint> constraints = new ArrayList<Constraint>();
-	private ArrayList<ForceGenerator> forces = new ArrayList<ForceGenerator>();
-	private ArrayList<Constraint> constraintsRemoved = new ArrayList<Constraint>();
+	private LinkedList<PhysPoint> particles = new LinkedList<PhysPoint>();
+	private LinkedList<Constraint> constraints = new LinkedList<Constraint>();
+	private LinkedList<ForceGenerator> forces = new LinkedList<ForceGenerator>();
 	
 	private Vec2D gravity;
 	private double timestep;
@@ -26,7 +25,7 @@ public class ParticleSystem {
 		tr = topright;
 	}
 	
-	public ArrayList<PhysPoint> getParticles() {
+	public LinkedList<PhysPoint> getParticles() {
 		return particles;
 	}
 	
@@ -36,10 +35,6 @@ public class ParticleSystem {
 	
 	public void addConstraint(Constraint c) {
 		constraints.add(c);
-	}
-	
-	public void removeConstraint(Constraint c) {
-		constraintsRemoved.add(c);
 	}
 	
 	public void addForce(ForceGenerator f) {
@@ -57,28 +52,39 @@ public class ParticleSystem {
 	}
 	
 	private void verlet() {
-		for(PhysPoint p : particles) {
-			Vec2D temp = new Vec2D(p.pos);
-			//p.pos = p.pos.add(p.pos.sub(p.oldpos).add(p.accel.scale(timestep*timestep)));
-			p.pos = p.pos.add(p.pos.sub(p.oldpos).scale(0.995).add(p.accel.scale(timestep*timestep)));
-			//p.pos = p.pos.scale(2).sub(p.oldpos).add(p.accel.scale(timestep*timestep));
-			p.oldpos = temp;
+		ListIterator<PhysPoint> iter = particles.listIterator();
+		while(iter.hasNext()) {
+			PhysPoint p = iter.next();
+			if(p.toBeDeleted()) {
+				iter.remove();
+			}
+			else {
+				Vec2D temp = new Vec2D(p.pos);
+				//p.pos = p.pos.add(p.pos.sub(p.oldpos).add(p.accel.scale(timestep*timestep)));
+				p.pos = p.pos.add(p.pos.sub(p.oldpos).scale(0.995).add(p.accel.scale(timestep*timestep)));
+				//p.pos = p.pos.scale(2).sub(p.oldpos).add(p.accel.scale(timestep*timestep));
+				p.oldpos = temp;
+			}
 		}
 	}
 	
 	private void satisfyConstraints() {
 		for(int i=0; i<numIters; i++) {
-			for(Constraint c : constraints) {
-				c.satisfy();
+			ListIterator<Constraint> iter = constraints.listIterator();
+			while(iter.hasNext()) {
+				Constraint c = iter.next();
+				if(c.toBeDeleted()) {
+					iter.remove();
+				}
+				else {
+					c.satisfy();
+				}
 			}
 			
 			for(PhysPoint p : particles) {
 				p.pos = p.pos.clamp(bl, tr);
 			}
 		}
-		
-		constraints.removeAll(constraintsRemoved);
-		constraintsRemoved.clear();
 	}
 	
 	private void accumulateForces() {

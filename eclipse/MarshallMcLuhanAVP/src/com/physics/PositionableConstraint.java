@@ -1,6 +1,6 @@
 package com.physics;
 
-public interface PositionableConstraint extends Constraint {
-	public void setPos(Vec2D pos);
-	public Vec2D getPos();
+public abstract class PositionableConstraint extends Constraint {
+	public abstract void setPos(Vec2D pos);
+	public abstract Vec2D getPos();
 }

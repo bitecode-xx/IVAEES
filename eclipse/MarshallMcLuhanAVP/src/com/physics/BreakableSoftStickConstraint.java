@@ -2,13 +2,11 @@ package com.physics;
 
 public class BreakableSoftStickConstraint extends SoftStickConstraint {
 	public double breakageFactor;
-	private ParticleSystem physics;
 	private boolean broken = false;
 	
-	public BreakableSoftStickConstraint(PhysPoint a, PhysPoint b, double softness, ParticleSystem physics, double breakageFactor) {
+	public BreakableSoftStickConstraint(PhysPoint a, PhysPoint b, double softness, double breakageFactor) {
 		super(a, b, softness);
 		this.breakageFactor = breakageFactor;
-		this.physics = physics;
 	}
 	
 	public boolean isBroken() {
@@ -22,7 +20,7 @@ public class BreakableSoftStickConstraint extends SoftStickConstraint {
 		Vec2D delta = a.pos.sub(b.pos);
 		double deltalength = delta.length();
 		if(deltalength/length >= breakageFactor) {
-			physics.removeConstraint(this);
+			this.delete();
 			broken = true;
 			return;
 		}

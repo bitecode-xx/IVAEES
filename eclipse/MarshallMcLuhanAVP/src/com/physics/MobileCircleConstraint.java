@@ -1,7 +1,7 @@
 package com.physics;
 import javax.media.opengl.GL2;
 
-public class MobileCircleConstraint implements Constraint {
+public class MobileCircleConstraint extends Constraint {
 	private ParticleSystem physics;
 	public PhysPoint particle;
 	public double radius;
