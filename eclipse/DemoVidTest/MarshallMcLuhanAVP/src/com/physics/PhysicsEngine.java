@@ -19,21 +19,24 @@ import com.jogamp.opengl.impl.x11.glx.GLX;
 import com.jogamp.opengl.util.*;
 import com.jogamp.opengl.util.gl2.GLUT;
 import com.jogamp.opengl.util.texture.*;
+import com.navmenu.McLuhanMain;
 
 public class PhysicsEngine implements GLEventListener, KeyListener, MouseListener, MouseMotionListener {
 	
 	private double moving = 0;
 	
 	private Texture textureactive;	
-	private Texture[] textureque;
+	private Texture[] imageque, textque, qteque;
+	private TextureData[] imagequeTD, textqueTD, qtequeTD;
 	
 	private DistortableMesh mesh;
 	private PhysicsMesh pmeshactive;
+	private PhysicsMesh[] qts;
 	
 	private ParticleSystem physics;
 	
 	private int framecount = 0;
-	private int quecount = 0;
+	private int quecount = 0, tquecount = 0;
 	private PointGravity pgrav;
 	
 	private static JFrame frame;
@@ -55,11 +58,51 @@ public class PhysicsEngine implements GLEventListener, KeyListener, MouseListene
 	
 	private Vec2D newpos1, newpos2, newpos3;
 	
-	private String source;
+	private String source,texts;
 	
-	private File[] imageFiles;
+	private File[] imageFiles, txtFiles, qteFiles;
 	
 	private Timer quepush = null;
+	
+	private boolean image, txt, video;
+	
+	
+
+	public PhysicsEngine(TextureData[] source, TextureData[] texts, TextureData[] Quotes){
+		quecount = 0;
+		tquecount = 0;
+		imagequeTD = source;
+		imageque = new Texture[imagequeTD.length];
+		qtequeTD = Quotes;
+		qteque = new Texture[qtequeTD.length];
+		qts = new PhysicsMesh[qtequeTD.length];
+		if(texts != null){			
+			textqueTD = texts;
+			textque = new Texture[textqueTD.length];
+		}
+		else{
+			textqueTD = new TextureData[0];
+			textque = new Texture[0];
+		}
+			
+		image = false;
+		txt = true;
+		video = false;
+	}	
+	
+	
+	public PhysicsEngine(String source, String texts){
+		this.source = source;
+		if(texts != null){			
+			this.texts = texts;
+			initTQue();
+		}
+		else
+			initQue();
+		image = false;
+		txt = true;
+		video = false;
+	}
 	
 	public PhysicsEngine(String source){
 		this.source = source;
@@ -74,59 +117,35 @@ public class PhysicsEngine implements GLEventListener, KeyListener, MouseListene
 		this.quepush = q;
 	}
 	
-	
-	/*
-	public static void main(String[] args) {
-		//System.setProperty("sun.java2d.noddraw", "true"); // Necessary for fullscreen
-		
-		GLProfile.initSingleton(true);
-		GLProfile glp = GLProfile.getDefault();
-        GLCapabilities caps = new GLCapabilities(glp);
-        canvas = new GLCanvas(caps);
-        
-        GraphicsDevice screen = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
-        
-        frame = new JFrame("Hello");
-        //frame.setUndecorated(true);
-        
-       // System.out.println(screen.isFullScreenSupported());
-       // screen.setFullScreenWindow(frame);
-        
-        frame.setSize(1024, 768);
-        frame.add(canvas);
-        frame.setVisible(true);
-        
-        frame.addWindowListener(new WindowAdapter() {
-            public void windowClosing(WindowEvent e) {
-                System.exit(0);
-            }
-        });
-        
-        PhysicsEngine app = new PhysicsEngine();
-        canvas.addGLEventListener(app);
-        canvas.addKeyListener(app);
-        canvas.addMouseListener(app);
-        canvas.addMouseMotionListener(app);
-        
-        canvas.requestFocus();
-        
-        
-        FPSAnimator animator = new FPSAnimator(60);
-        animator.add(canvas);
-        animator.start();
-        
-	}
-	*/
 
 	private void initQue() {
 		List<File> filesAsList = FileFinder.findFiles(
-				new File(source), ".*\\.jpg|.*\\.JPG|.*\\.gif|.*\\.png|.*\\.tiff");//|.*\\.flv|.*\\.mov|.*\\.pdf|.*\\.docx||.*\\.rtf");
+				new File(source), ".*\\.jpg|.*\\.JPG|.*\\.gif|.*\\.png|.*\\.bmp");//|.*\\.flv|.*\\.mov|.*\\.pdf|.*\\.docx||.*\\.rtf");
 		imageFiles = filesAsList.toArray(new File[filesAsList.size()]);
-		textureque = new Texture[imageFiles.length];
+		imageque = new Texture[imageFiles.length];
 		//for(int i=0;i<imageFiles.length;i++)
 		//	System.err.println(imageFiles[i].getAbsolutePath());
 		
 		quecount = 0;
+	}
+	
+	private void initTQue() {
+		List<File> filesAsList = FileFinder.findFiles(
+				new File(source), ".*\\.jpg|.*\\.JPG|.*\\.gif|.*\\.png|.*\\.bmp");//|.*\\.flv|.*\\.mov|.*\\.pdf|.*\\.docx||.*\\.rtf");
+		imageFiles = filesAsList.toArray(new File[filesAsList.size()]);
+		
+		List<File> textAsList = FileFinder.findFiles(
+				new File(texts), ".*\\.jpg|.*\\.JPG|.*\\.gif|.*\\.png|.*\\.bmp");//|.*\\.flv|.*\\.mov|.*\\.pdf|.*\\.docx||.*\\.rtf");
+		
+		txtFiles = textAsList.toArray(new File[textAsList.size()]);
+
+		imageque = new Texture[imageFiles.length];
+		textque = new Texture[txtFiles.length];
+		//for(int i=0;i<imageFiles.length;i++)
+		//	System.err.println(imageFiles[i].getAbsolutePath());
+		
+		quecount = 0;
+		tquecount = 0;
 	}
 	
 	private void update() {
@@ -189,7 +208,7 @@ public class PhysicsEngine implements GLEventListener, KeyListener, MouseListene
 			constraint3.setPos(newpos3);
 		}
 
-		if(pmeshactive.computeBrokenPercent() >= 0.20) {
+		if(pmeshactive.computeBrokenPercent() >= 0.95) {
 			
 			callTimer();
 			if(quepush != null) {
@@ -227,7 +246,18 @@ public class PhysicsEngine implements GLEventListener, KeyListener, MouseListene
 	    physics.render(gl);
 	    mesh.render(gl);
 	   
+	    PhysicsMesh pm;
+	    for(int i = 0;i<qts.length;i++){
+	    	pm = qts[i];
+	    	gl.glPushMatrix(); // save transformation matrix (again)
+	    	{
+	    	    gl.glTranslated(i*0.5, i*0.2,0);
+	    	    pm.renderMesh(gl);
+	    	}
+	    	gl.glPopMatrix(); // revert to saved (again)
+        }
 	    pmeshactive.renderMesh(gl);
+	    
 	    
 	    if(constraint1 != null) {
 	    	constraint1.render(gl);
@@ -301,56 +331,78 @@ public class PhysicsEngine implements GLEventListener, KeyListener, MouseListene
 		GL2 gl = drawable.getGL().getGL2();
 		gl.glEnable(GL2.GL_TEXTURE_2D);
 		gl.glTexEnvf(GL2.GL_TEXTURE_ENV, GL2.GL_TEXTURE_ENV_MODE, GL2.GL_MODULATE);
-	
-		for(int i=0;i<imageFiles.length;i++){
-			try {
-				
-				textureactive = TextureIO.newTexture(imageFiles[i], true);
-				
+		gl.glBlendFunc(GL2.GL_SRC_ALPHA, GL2.GL_ONE_MINUS_SRC_ALPHA);
+		gl.glEnable(GL2.GL_BLEND);
+		gl.glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+		//can be used to set specific color trans
+		//gl.glColor4f(255, 255, 255, 100);
+		//for(int i=0;i<imageFiles.length;i++){
+		for(int i=0;i<imagequeTD.length;i++){
+			try{
+				//textureactive = TextureIO.newTexture(imageFiles[i], true);
+				textureactive = TextureIO.newTexture(imagequeTD[i]);
+
 			} catch(Exception e) {
 				e.printStackTrace();
 				System.exit(1);
 			}
-			
+
 			textureactive.setTexParameteri(GL.GL_TEXTURE_WRAP_S, GL.GL_REPEAT);
 			textureactive.setTexParameteri(GL.GL_TEXTURE_WRAP_T, GL.GL_REPEAT);
 			textureactive.setTexParameteri(GL.GL_TEXTURE_MAG_FILTER, GL.GL_LINEAR_MIPMAP_LINEAR);
 			textureactive.setTexParameteri(GL.GL_TEXTURE_MIN_FILTER, GL.GL_LINEAR);
-			
-			textureque[i] = textureactive;
-			
+
+			imageque[i] = textureactive;
 		}
+		//for(int i=0;i<txtFiles.length;i++){
+		for(int i=0;i<textqueTD.length;i++){
+			try {
+
+				//textureactive = TextureIO.newTexture(txtFiles[i], true);
+				textureactive = TextureIO.newTexture(textqueTD[i]);
+
+			} catch(Exception e) {
+				e.printStackTrace();
+				System.exit(1);
+			}
+
+			textureactive.setTexParameteri(GL.GL_TEXTURE_WRAP_S, GL.GL_REPEAT);
+			textureactive.setTexParameteri(GL.GL_TEXTURE_WRAP_T, GL.GL_REPEAT);
+			textureactive.setTexParameteri(GL.GL_TEXTURE_MAG_FILTER, GL.GL_LINEAR_MIPMAP_LINEAR);
+			textureactive.setTexParameteri(GL.GL_TEXTURE_MIN_FILTER, GL.GL_LINEAR);
+
+			textque[i] = textureactive;
+		}
+		for(int i=0;i<qtequeTD.length;i++){
+			try {
+				textureactive = TextureIO.newTexture(qtequeTD[i]);
+
+			} catch(Exception e) {
+				e.printStackTrace();
+				System.exit(1);
+			}
+
+			textureactive.setTexParameteri(GL.GL_TEXTURE_WRAP_S, GL.GL_REPEAT);
+			textureactive.setTexParameteri(GL.GL_TEXTURE_WRAP_T, GL.GL_REPEAT);
+			textureactive.setTexParameteri(GL.GL_TEXTURE_MAG_FILTER, GL.GL_LINEAR_MIPMAP_LINEAR);
+			textureactive.setTexParameteri(GL.GL_TEXTURE_MIN_FILTER, GL.GL_LINEAR);
+
+			qteque[i] = textureactive;
+		}
+		
+
+		textureactive = imageque[quecount];
+
+		if(textque.length>0)
+			mesh = new DistortableMesh(1.6,1.4, 18,18, textque[0]);
+		else if (imageque.length>1)
+			mesh = new DistortableMesh(1.6,1.4, 18,18, imageque[1]);
+		else
+			mesh = new DistortableMesh(1.6,1.4,18,18, textureactive);
+
 		/*
-		//TODO Create QueLoad
-		try {
-			if(imageFiles.length>0)
-				textureactive = TextureIO.newTexture(imageFiles[quecount], true);
-			else
-				textureactive = TextureIO.newTexture(new File("lolwut.jpg"), true);
-
-		} catch(Exception e) {
-			e.printStackTrace();
-			System.exit(1);
-		}
-		
-		//IntBuffer maxAniso = IntBuffer.allocate(1);
-		//gl.glGetIntegerv(GL2.GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, maxAniso);
-		//System.out.println(maxAniso.get(0));
-		//gl.glTexParameteri(GL2.GL_TEXTURE_2D, GL.GL_TEXTURE_MAX_ANISOTROPY_EXT, maxAniso.get(0));
-		
-		textureactive.setTexParameteri(GL.GL_TEXTURE_WRAP_S, GL.GL_REPEAT);
-		textureactive.setTexParameteri(GL.GL_TEXTURE_WRAP_T, GL.GL_REPEAT);
-		textureactive.setTexParameteri(GL.GL_TEXTURE_MAG_FILTER, GL.GL_LINEAR_MIPMAP_LINEAR);
-		textureactive.setTexParameteri(GL.GL_TEXTURE_MIN_FILTER, GL.GL_LINEAR);
-		
-
-		*/
-		//texture.bind();
-		
-		
-		textureactive = textureque[quecount];
-		if(textureque.length>1)
-			mesh = new DistortableMesh(1.4,1.4, 16,16, textureque[1]);
+		if(imageque.length>1)
+			mesh = new DistortableMesh(1.4,1.4, 16,16, imageque[1]);
 		else
 			mesh = new DistortableMesh(1.4,1.4,16,16, textureactive);
 		/*
@@ -366,16 +418,22 @@ public class PhysicsEngine implements GLEventListener, KeyListener, MouseListene
 		});*/
 		
 		
-		physics = new ParticleSystem(new Vec2D(0, -0.4), 0.3333/60.0, new Vec2D(-1.0, -0.95), new Vec2D(1.0, 0.95));
+		physics = new ParticleSystem(new Vec2D(0, -0.4), 0.3333/60.0, new Vec2D(-1.3, -1.0), new Vec2D(1.3, 1.0));
 
-        
 		
-        pmeshactive = new PhysicsMesh(1.2, 24, textureactive);
+		PhysicsMesh pm;
+        for(int i = 0;i<qteque.length;i++){
+        	pm = new PhysicsMesh(0.8, 16, qteque[i]);
+            pm.setK(5);
+            pm.addToSystem(physics);
+            qts[i]=pm;
+        	
+        }
+        
+        pmeshactive = new PhysicsMesh(2.0, 40, textureactive);
         pmeshactive.setK(10);
         pmeshactive.addToSystem(physics);
-
-        
-        
+       
         
         //pgrav = new PointGravity(new Vec2D(-0.5, 0.8), 4.5, 0.09, physics);
         
@@ -390,18 +448,69 @@ public class PhysicsEngine implements GLEventListener, KeyListener, MouseListene
 	 * 
 	 */
 	public void callTimer(){
+		if(imageque.length>0 && textque.length > 0){
+			if(image){
+				image = false;
+				txt = true;
+				quecount+=1;
+				if(quecount == imageque.length)
+					quecount = 0;
+				if(tquecount+1 == textque.length)
+					mesh = new DistortableMesh(1.6,1.4,1,1, textque[0]);
+				else
+					mesh = new DistortableMesh(1.6,1.4,1,1, textque[tquecount+1]);
+				textureactive = imageque[quecount];
+				pmeshactive.delete();
+				pmeshactive = new PhysicsMesh(2.0, 40, textureactive);
+				pmeshactive.setK(10);
+				pmeshactive.addToSystem(physics);
+			}
+			else if(txt){
+				image = true;
+				txt = false;
+				tquecount+=1;
+				if(tquecount == textque.length)
+					tquecount = 0;
+				if(quecount+1 == imageque.length)
+					mesh = new DistortableMesh(1.6,1.4,1,1, imageque[0]);
+				else
+					mesh = new DistortableMesh(1.6,1.4,1,1, imageque[quecount+1]);
+				textureactive = textque[tquecount];
+				pmeshactive.delete();
+				pmeshactive = new PhysicsMesh(2.0, 40, textureactive);
+				pmeshactive.setK(10);
+				pmeshactive.addToSystem(physics);
+			}
+		}
+			else{
+				quecount+=1;
+				if(quecount == imageque.length)
+					quecount = 0;
+				if(quecount+1 == imageque.length)
+					mesh = new DistortableMesh(1.6,1.4,1,1, imageque[0]);
+				else
+					mesh = new DistortableMesh(1.6,1.4,1,1, imageque[quecount+1]);
+				textureactive = imageque[quecount];
+				pmeshactive.delete();
+				pmeshactive = new PhysicsMesh(2.0, 40, textureactive);
+				pmeshactive.setK(10);
+				pmeshactive.addToSystem(physics);
+			}
+
+		/*
 		quecount+=1;
-		if(quecount == textureque.length)
+		if(quecount == imageque.length)
 			quecount = 0;
-		if(quecount+1 == textureque.length)
-			mesh = new DistortableMesh(1.4,1.4,1,1, textureque[0]);
+		if(quecount+1 == imageque.length)
+			mesh = new DistortableMesh(1.4,1.4,1,1, imageque[0]);
 		else
-			mesh = new DistortableMesh(1.4,1.4,1,1, textureque[quecount+1]);
-		textureactive = textureque[quecount];
+			mesh = new DistortableMesh(1.4,1.4,1,1, imageque[quecount+1]);
+		textureactive = imageque[quecount];
 		pmeshactive.delete();
 		pmeshactive = new PhysicsMesh(1.2, 24, textureactive);
 		pmeshactive.setK(10);
 		pmeshactive.addToSystem(physics);
+		*/
 	}
 
 	public void reshape(GLAutoDrawable drawable, int x, int y, int width,

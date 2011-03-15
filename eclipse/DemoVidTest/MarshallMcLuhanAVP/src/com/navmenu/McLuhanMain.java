@@ -10,6 +10,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
@@ -22,26 +24,31 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.Timer;
+import javax.swing.border.Border;
+import javax.swing.border.LineBorder;
 
 import org.pirelenito.movieGL.Main;
 
+import com.helper.MP3;
+import com.helper.TextureMap;
 import com.jogamp.opengl.util.FPSAnimator;
 import com.physics.PhysicsEngine;
 
 
 public class McLuhanMain extends JFrame{
 	
-	private String[] DIRS = {"City as Classroom","Extensions of Man","Global Village",
-			"Homage to Marshall McLuhan","Hot and Cool Media","Laws of Media","McLuhan Pics",
-			"Media Ecology","Privacy and Identity in the Electronic Age","The Medium is the Message"
-			,"The Medium is the Massage"};
+	private String[] DIRS = {"City as Classroom","Extensions of Man","Global Village","The Medium is the Message"};
 
 	private JFrame frame;
 	private GLCanvas canvas,vidc;
 	//TODO convert glnav to class to handle menu grabbing/interaction in gl scene. Might need to be added as an extension to the main gl scene
-	private JPanel menu,mnav,glnav,p1, p2;
+	private JPanel menu,glnav;
 	
-	private JButton page2, page1, pmen, movietest;
+	private BackgroundPanel p1, load;
+	
+	private JButton pmen, movietest;
+	
+	private JButton[] btns;
 	
 	private Dimension size = new Dimension(1024,768);
 	
@@ -51,6 +58,14 @@ public class McLuhanMain extends JFrame{
 	private Main video;
 	
 	private Timer quepush;
+	
+	private boolean roll;
+	
+	private ActionListener gogo, repeat, one, two, three, four;
+	
+	private TextureMap themes;
+	
+	private MP3 soundbite;
 	
 	public McLuhanMain() {
         frame = this;
@@ -62,17 +77,17 @@ public class McLuhanMain extends JFrame{
         CardLayout system = new CardLayout();
         menu.setLayout(system);
         
+        initTData();
         initSelections();
-        initMNav();
+        initLoading();
         initGLNav();
         
       
         menu.add("Main One",p1);
-        menu.add("Main Two",p2);
+        menu.add("Loader",load);
         
         frame.getContentPane().add(BorderLayout.CENTER,menu);
-        frame.getContentPane().add(BorderLayout.EAST,mnav);
-        frame.getContentPane().add(BorderLayout.WEST,glnav);
+       frame.getContentPane().add(BorderLayout.WEST,glnav);
         
         frame.addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent e) {
@@ -80,78 +95,137 @@ public class McLuhanMain extends JFrame{
             }
         });
         
+        roll = true;
+        initFlshSeq();
+		
+        gogo = new ActionListener(){
+			public void actionPerformed(ActionEvent arg0) {
+				Timer flash = new Timer(3000,one);
+				flash.setRepeats(false);
+				flash.start();
+			}
+		};
+		
+		Timer test = new Timer(1000,gogo);
+		test.setRepeats(false);
+		test.start();
 
 	}
 
 
+	private void initTData() {
+		themes = new TextureMap();
+	}
+
+
+	private void initFlshSeq() {
+		one = new ActionListener(){
+			public void actionPerformed(ActionEvent arg0) {
+				btns[0].getModel().setRollover(true);
+				Timer flash = new Timer(3000,two);
+				flash.setRepeats(false);
+				flash.start();
+			}
+		};
+		
+		two = new ActionListener(){
+			public void actionPerformed(ActionEvent arg0) {
+				btns[0].getModel().setRollover(false);
+				if(roll){
+					btns[1].getModel().setRollover(true);
+					Timer flash = new Timer(3000,three);
+					flash.setRepeats(false);
+					flash.start();
+				}
+			}
+		};
+		
+		three = new ActionListener(){
+			public void actionPerformed(ActionEvent arg0) {
+				btns[1].getModel().setRollover(false);
+				if(roll){
+					btns[2].getModel().setRollover(true);
+					Timer flash = new Timer(3000,four);
+					flash.setRepeats(false);
+					flash.start();
+				}
+			}
+		};
+		
+		four = new ActionListener(){
+			public void actionPerformed(ActionEvent arg0) {
+				btns[2].getModel().setRollover(false);
+				if(roll){
+					btns[3].getModel().setRollover(true);
+					Timer flash = new Timer(3000,repeat);
+					flash.setRepeats(false);
+					flash.start();
+				}
+			}
+		};
+		
+		repeat = new ActionListener(){
+			public void actionPerformed(ActionEvent arg0) {
+				btns[3].getModel().setRollover(false);
+				if(roll){
+					Timer flash = new Timer(15000,one);
+					flash.setRepeats(false);
+					flash.start();
+				}
+			}
+		};
+
+		
+	}
+
+
 	private void initSelections() {
+		btns = new JButton[4];
 		JButton temp;
-		FlowLayout flowtop,flowbottom;
-		JPanel flowp1,flowp2,flowp3,flowp4;
-		
-		flowp1 = new JPanel();
-		flowp2 = new JPanel();
-		flowp3 = new JPanel();
-		flowp4 = new JPanel();
-		
-		flowtop = new FlowLayout();
-		flowtop.setHgap(50);
-		flowtop.setVgap(100);
-		
-		flowbottom = new FlowLayout();
-		flowbottom.setHgap(50);
-		flowbottom.setVgap(50);
-		
-		flowp1.setLayout(flowtop);
-		flowp1.setBackground(Color.BLACK);
-		flowp2.setLayout(flowbottom);
-		flowp2.setBackground(Color.BLACK);
-		
-		flowp3.setLayout(flowtop);
-		flowp3.setBackground(Color.BLACK);
-		flowp4.setLayout(flowbottom);
-		flowp4.setBackground(Color.BLACK);
-		
-		p1 = new JPanel();
-		p1.setLayout(new GridLayout(2,1));
+		int os;
+		p1 = new BackgroundPanel("Menus/GlobalVillage.jpg");
+		p1.setLayout(null);
 		p1.setSize(size);
-		p1.setBackground(Color.BLACK);
 		
-		p2 = new JPanel();
-		p2.setLayout(new GridLayout(2,1));
-		p2.setSize(size);
-		p2.setBackground(Color.BLACK);
-		
-		
-        
-		for(int i=0;i<DIRS.length;i++){
-			temp = new JButton("<html>"+DIRS[i]+"</html>");
-			temp.setName(DIRS[i]);
-			temp.setPreferredSize(new Dimension(241,206));
-			
+		for(int i=0;i<4;i++){
+			os = i+1;
+			temp = new JButton(new ImageIcon("Menus/Btn"+os+".jpg"));
+			temp.setRolloverIcon(new ImageIcon("Menus/Btn"+os+"RO.jpg"));
+			//temp.setName(DIRS[i]);
+			temp.setName(i+"");
 			temp.addActionListener(new ActionListener(){
-				public void actionPerformed(ActionEvent ae) {
-					page1.setEnabled(false);
-					page1.setVisible(false);
-					page2.setEnabled(false);
-					page2.setVisible(false);
+				public void actionPerformed(final ActionEvent ae) {
+					roll = false;
+					//((CardLayout)menu.getLayout()).show(menu, "Loader");
+					menu.validate();
+					//initCanvas("McLuhan/"+((JButton)ae.getSource()).getName(),"McLuhan/Texts/"+((JButton)ae.getSource()).getName());
+					initCanvas(Integer.parseInt(((JButton)ae.getSource()).getName()));
+					menu.add("ogl",canvas);
+					
 					pmen.setEnabled(true);
 					pmen.setVisible(true);
-					validate();
-					initCanvas("McLuhan/"+((JButton)ae.getSource()).getName());
-					menu.add("ogl",canvas);
 					menu.validate();
 					activateAnimation();
 					((CardLayout)menu.getLayout()).show(menu, "ogl");
+				     soundbite = new MP3("McLuhan/City as Classroom/mp3.mp3");
+				     soundbite.play();
 				}});
-			if(i < 3)
-				flowp1.add(temp);
-			else if( i < 6 )
-				flowp2.add(temp);
-			else if(i < 9)
-				flowp3.add(temp);
-			else
-				flowp4.add(temp);
+			temp.setBorder(null);
+			btns[i] = temp;
+		}
+		
+		btns[0].setSize(new Dimension(242,154));
+		btns[1].setSize(new Dimension(165,160));
+		btns[2].setSize(new Dimension(143,141));
+		btns[3].setSize(new Dimension(288,122));
+		
+		btns[0].setLocation(284, 165);
+		btns[1].setLocation(820, 318);
+		btns[2].setLocation(82, 11);
+		btns[3].setLocation(401, 605);
+		
+		for(int i=0;i<4;i++){
+			p1.add(btns[i]);
 		}
 		
 		movietest = new JButton("Mcluhan Video-Test");
@@ -159,10 +233,6 @@ public class McLuhanMain extends JFrame{
 		
 		movietest.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent ae) {
-				page1.setEnabled(false);
-				page1.setVisible(false);
-				page2.setEnabled(false);
-				page2.setVisible(false);
 				pmen.setEnabled(true);
 				pmen.setVisible(true);
 				validate();
@@ -171,12 +241,6 @@ public class McLuhanMain extends JFrame{
 				menu.validate();
 				((CardLayout)menu.getLayout()).show(menu, "video");
 			}});
-	
-		flowp4.add(movietest);
-		p1.add(flowp1);
-		p1.add(flowp2);
-		p2.add(flowp3);
-		p2.add(flowp4);
 		
 	}
 	
@@ -184,7 +248,18 @@ public class McLuhanMain extends JFrame{
 		animator = new FPSAnimator(vidc, 30);
         animator.start();
 	}
+	
+	public void activateOGL(){
+		activatecanvas();
+	}
 
+	private void activatecanvas(){
+		pmen.setEnabled(true);
+		pmen.setVisible(true);
+		menu.validate();
+		activateAnimation();
+		((CardLayout)menu.getLayout()).show(menu, "ogl");
+	}
 
 	private void initTestVid(String string) {
 		canvas = null;
@@ -219,10 +294,6 @@ public class McLuhanMain extends JFrame{
 			public void actionPerformed(ActionEvent arg0) {
 				pmen.setEnabled(false);
 				pmen.setVisible(false);
-				page1.setEnabled(false);
-				page1.setVisible(false);
-				page2.setEnabled(true);
-				page2.setVisible(true);
 				((CardLayout)menu.getLayout()).show(menu, "Main One");
 				if(canvas != null){
 					menu.remove(canvas);
@@ -230,6 +301,7 @@ public class McLuhanMain extends JFrame{
 					animator.stop();
 					menu.validate();
 					quepush.stop();
+					soundbite.close();
 				}
 				else{
 					menu.remove(vidc);
@@ -238,6 +310,10 @@ public class McLuhanMain extends JFrame{
 					menu.validate();
 					video.end();
 				}
+				roll = true;
+				Timer test = new Timer(1000,gogo);
+				test.setRepeats(false);
+				test.start();
 				
 			}
 		});
@@ -252,53 +328,7 @@ public class McLuhanMain extends JFrame{
 		
 		glnav.add(pmen);
 	}
-	
-	private void initMNav(){
-		
-		mnav = new JPanel();
-		mnav.setBackground(Color.black);
-		mnav.setLayout(new FlowLayout());
-		((FlowLayout)mnav.getLayout()).setVgap(675);
-		
-		
-		page1 = new JButton(new ImageIcon("First_Button1.jpg"));
-		page1.setPreferredSize(new Dimension(50,50));
-		page1.setOpaque(false);
-		page1.setContentAreaFilled(false);
-		
-		page2 = new JButton(new ImageIcon("Last_Button1.jpg"));
-		page2.setPreferredSize(new Dimension(50,50));
-		page2.setOpaque(false);
-		page2.setContentAreaFilled(false);
-		
-		page1.addActionListener(new ActionListener(){
-			public void actionPerformed(ActionEvent arg0) {
-				page1.setEnabled(false);
-				page1.setVisible(false);
-				page2.setEnabled(true);
-				page2.setVisible(true);
-				((CardLayout)menu.getLayout()).show(menu, "Main One");	
-			}
-		});
-	
-		page2.addActionListener(new ActionListener(){
-			public void actionPerformed(ActionEvent arg0) {
-				page2.setEnabled(false);
-				page2.setVisible(false);
-				page1.setEnabled(true);
-				page1.setVisible(true);
-				((CardLayout)menu.getLayout()).show(menu, "Main Two");	
-			}
-		});
-				
-		page1.setEnabled(false);
-		page1.setVisible(false);
-		page2.setEnabled(true);
-		page2.setVisible(true);
-		
-		mnav.add(page1);
-		mnav.add(page2);
-	}
+
 
 	private void activateAnimation() {
 		animator = new FPSAnimator(60);
@@ -306,14 +336,20 @@ public class McLuhanMain extends JFrame{
         animator.start();
         
 	}
-
-	private void initCanvas(String path) {
+	
+	private void initLoading(){
+		load = new BackgroundPanel("Loading2.gif");
+		load.setLayout(null);
+		load.setSize(size);
+	}
+	/*
+	private void initCanvas(String path, String tpath) {
 		GLProfile.initSingleton(true);
 		GLProfile glp = GLProfile.getDefault();
         GLCapabilities caps = new GLCapabilities(glp);
         canvas = new GLCanvas(caps);
         
-        app = new PhysicsEngine(path);
+        app = new PhysicsEngine(path,tpath);
         canvas.addGLEventListener(app);
         canvas.addKeyListener(app);
         canvas.addMouseListener(app);
@@ -327,8 +363,35 @@ public class McLuhanMain extends JFrame{
 				canvas.display();
 			}
 		};
-		quepush = new Timer(30000,timeout);
+		quepush = new Timer(15000,timeout);
 		quepush.setRepeats(true);
 		quepush.start();
 	}
+	*/
+	
+	private void initCanvas(int opt) {
+		GLProfile.initSingleton(true);
+		GLProfile glp = GLProfile.getDefault();
+        GLCapabilities caps = new GLCapabilities(glp);
+        canvas = new GLCanvas(caps);
+        
+        app = new PhysicsEngine(themes.getMap(opt*3), themes.getMap((opt*3)+1), themes.getMap((opt*3)+2));
+        canvas.addGLEventListener(app);
+        canvas.addKeyListener(app);
+        canvas.addMouseListener(app);
+        canvas.addMouseMotionListener(app);
+        
+        canvas.requestFocus();
+        
+        ActionListener timeout = new ActionListener(){
+			public void actionPerformed(ActionEvent arg0) {
+				app.callTimer();
+				canvas.display();
+			}
+		};
+		quepush = new Timer(45000,timeout);
+		quepush.setRepeats(true);
+		quepush.start();
+	}
+	
 }
