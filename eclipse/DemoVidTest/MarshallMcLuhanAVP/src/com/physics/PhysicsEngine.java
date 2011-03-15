@@ -67,6 +67,7 @@ public class PhysicsEngine implements GLEventListener, KeyListener, MouseListene
 	private boolean image, txt, video;
 	
 	
+	
 
 	public PhysicsEngine(TextureData[] source, TextureData[] texts, TextureData[] Quotes){
 		quecount = 0;
@@ -251,7 +252,7 @@ public class PhysicsEngine implements GLEventListener, KeyListener, MouseListene
 	    	pm = qts[i];
 	    	gl.glPushMatrix(); // save transformation matrix (again)
 	    	{
-	    	    gl.glTranslated(i*0.5, i*0.2,0);
+	    	    gl.glTranslated(i*1.5, i*1.2,0);
 	    	    pm.renderMesh(gl);
 	    	}
 	    	gl.glPopMatrix(); // revert to saved (again)

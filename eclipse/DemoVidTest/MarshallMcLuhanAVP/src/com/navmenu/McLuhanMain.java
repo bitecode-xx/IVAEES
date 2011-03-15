@@ -207,7 +207,7 @@ public class McLuhanMain extends JFrame{
 					menu.validate();
 					activateAnimation();
 					((CardLayout)menu.getLayout()).show(menu, "ogl");
-				     soundbite = new MP3("McLuhan/City as Classroom/mp3.mp3");
+				     soundbite = new MP3("McLuhan/"+DIRS[Integer.parseInt(((JButton)ae.getSource()).getName())]+"/mp3.mp3");
 				     soundbite.play();
 				}});
 			temp.setBorder(null);

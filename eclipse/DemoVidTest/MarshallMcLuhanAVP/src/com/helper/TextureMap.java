@@ -28,9 +28,12 @@ public class TextureMap {
 	private int MMTXT = 10;
 	private int MMQTE = 11;
 	
-	private TextureData[] gvImages,gvTexts,gvQTE,emImages,emTexts,emQTE,mmImages,mmTexts,mmQTE, ccImages, ccTexts,ccQTE;
+	//private TextureData[] gvImages,gvTexts,gvQTE,emImages,emTexts,emQTE,mmImages,mmTexts,mmQTE, ccImages, ccTexts,ccQTE;
+	
+	private TDShell gvImages,gvTexts,gvQTE,emImages,emTexts,emQTE,mmImages,mmTexts,mmQTE, ccImages, ccTexts,ccQTE;
 	
 	public TextureMap(){
+		
 		
 		gvImages = loadTextures("McLuhan/Global Village");
 		gvTexts = loadTextures("McLuhan/Texts/Global Village");
@@ -51,7 +54,8 @@ public class TextureMap {
 		
 	}
 
-	private TextureData[] loadTextures(String path) {
+	private TDShell loadTextures(String path) {
+		TDShell temp = new TDShell(path);
 		File[] files;
 		TextureData[] textures;
 		TextureData tex = null;
@@ -62,11 +66,13 @@ public class TextureMap {
 		List<File> filesAsList = FileFinder.findFiles(new File(path), REGEX);
 		
 		files = filesAsList.toArray(new File[filesAsList.size()]);
-		
+		temp.setFiles(files);
 		textures = new TextureData[files.length];
 		
 		if(files.length==0){
-			return null;
+			temp.setFiles(new File[0]);
+			temp.setTD(new TextureData[0]);
+			return temp;
 		}
 		else
 			for(int i=0;i<files.length;i++){
@@ -80,36 +86,66 @@ public class TextureMap {
 				textures[i] = tex;
 
 			}
+		temp.setTD(textures);
 		
-		return textures; 
+		return temp; 
 	}
 
 
 	public TextureData[] getMap(int opt){
 		if(opt == CCIMG)
-			return ccImages;
+			return ccImages.getTD();
 		else if(opt == CCTXT)
-			return ccTexts;
+			return ccTexts.getTD();
 		else if(opt == CCQTE)
-			return ccQTE;
+			return ccQTE.getTD();
 		else if(opt == EMIMG)
-			return emImages;
+			return emImages.getTD();
 		else if(opt == EMTXT)
-			return emTexts;
+			return emTexts.getTD();
 		else if(opt == EMQTE)
-			return emQTE;
+			return emQTE.getTD();
 		else if(opt == GVIMG)
-			return gvImages;
+			return gvImages.getTD();
 		else if(opt == GVTXT)
-			return gvTexts;
+			return gvTexts.getTD();
 		else if(opt == GVQTE)
-			return gvQTE;
+			return gvQTE.getTD();
 		else if(opt == MMIMG)
-			return mmImages;
+			return mmImages.getTD();
 		else if(opt == MMTXT)
-			return mmTexts;
+			return mmTexts.getTD();
 		else if(opt == MMQTE)
-			return mmQTE;
+			return mmQTE.getTD();
+		else
+			return null;
+	}
+	
+	public File[] getFiles(int opt){
+		if(opt == CCIMG)
+			return ccImages.getFiles();
+		else if(opt == CCTXT)
+			return ccTexts.getFiles();
+		else if(opt == CCQTE)
+			return ccQTE.getFiles();
+		else if(opt == EMIMG)
+			return emImages.getFiles();
+		else if(opt == EMTXT)
+			return emTexts.getFiles();
+		else if(opt == EMQTE)
+			return emQTE.getFiles();
+		else if(opt == GVIMG)
+			return gvImages.getFiles();
+		else if(opt == GVTXT)
+			return gvTexts.getFiles();
+		else if(opt == GVQTE)
+			return gvQTE.getFiles();
+		else if(opt == MMIMG)
+			return mmImages.getFiles();
+		else if(opt == MMTXT)
+			return mmTexts.getFiles();
+		else if(opt == MMQTE)
+			return mmQTE.getFiles();
 		else
 			return null;
 	}
