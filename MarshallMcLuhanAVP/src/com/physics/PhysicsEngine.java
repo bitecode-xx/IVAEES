@@ -65,9 +65,6 @@ public class PhysicsEngine implements GLEventListener, KeyListener, MouseListene
 	private Timer quepush = null;
 	
 	private boolean image, txt, video;
-	
-	
-	
 
 	public PhysicsEngine(TextureData[] source, TextureData[] texts, TextureData[] Quotes){
 		quecount = 0;
@@ -308,6 +305,10 @@ public class PhysicsEngine implements GLEventListener, KeyListener, MouseListene
 	}
 	
 	public void display(GLAutoDrawable drawable) {
+		if (McLuhanMain.isConnected) {
+			recvPhysicsData();
+		}
+		
 		long start = System.nanoTime();
 		long frameInterval = start - this.start;
 		update();
@@ -547,10 +548,6 @@ public class PhysicsEngine implements GLEventListener, KeyListener, MouseListene
 		if(e.getKeyCode() == KeyEvent.VK_ESCAPE) {
 			System.exit(0);
 		}
-		
-		if(e.getKeyCode() == KeyEvent.VK_Z) {
-			test();
-		}
 	}
 
 	public void keyReleased(KeyEvent e) {
@@ -656,40 +653,38 @@ public class PhysicsEngine implements GLEventListener, KeyListener, MouseListene
 		// TODO Auto-generated method stub
 		
 	}
-
-	public void test() {
-		try {
-			Engine_Server test = new Engine_Server();
-			
-			test.recvData();
-			
-		    Date currentDate = new Date();
-		    long msec = currentDate.getTime();
-		    
-		    int button = 0;
-		    
-		    switch(test.getSelection()[0]) {
-		    	case 1:
-		    		button = MouseEvent.BUTTON1_MASK;
-		    		break;
-		    	case 2:
-			    	button = MouseEvent.BUTTON2_MASK;
-			    	break;
-		    	case 3:
-			    	button = MouseEvent.BUTTON3_MASK;
-			    	break;
-		    	default:
-		    		break;
-		    }
-			
-			MouseEvent blah = new MouseEvent(canvas, MouseEvent.MOUSE_PRESSED, msec, button, (int)test.getPosition()[0], (int)test.getPosition()[1], 1, false);
-			
-			mousePressed(blah);
-			
-			test.endServer();
-		} catch (IOException ioe) {
-			System.exit(-1);
+	
+	private void recvPhysicsData() {
+		if (McLuhanMain.isConnected) {
+			try {	
+				McLuhanMain.eserver.recvData();
+				
+				Date currentDate = new Date();
+				long msec = currentDate.getTime();
+			    
+				int button = 0;
+			    
+				switch(McLuhanMain.eserver.getSelection()[0]) {
+			    	case 1:
+			    		button = MouseEvent.BUTTON1_MASK;
+			    		break;
+			    	case 2:
+			    		button = MouseEvent.BUTTON2_MASK;
+			    		break;
+			    	case 3:
+			    		button = MouseEvent.BUTTON3_MASK;
+			    		break;
+			    	default:
+			    		break;
+				}
+				
+				MouseEvent me = new MouseEvent(canvas, MouseEvent.MOUSE_PRESSED, msec, button, 
+												(int)McLuhanMain.eserver.getPosition()[0], (int)McLuhanMain.eserver.getPosition()[1], 1, false);
+				
+				mousePressed(me);
+			} catch (IOException ioe) {
+				System.exit(-1);
+			}
 		}
 	}
-
 }

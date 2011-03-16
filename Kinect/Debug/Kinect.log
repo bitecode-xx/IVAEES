@@ -1,0 +1,111 @@
+﻿Build started 3/15/2011 8:22:50 PM.
+     1>Project "C:\Users\kehl\workspace\Kinect\Kinect.vcxproj" on node 2 (build target(s)).
+     1>InitializeBuildStatus:
+         Creating "Debug\Kinect.unsuccessfulbuild" because "AlwaysCreate" was specified.
+       ClCompile:
+         C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\CL.exe /c /I"C:\Program Files (x86)\OpenNI\Include" /I. /I.\Include /ZI /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _DEBUG /D _CONSOLE /D USE_GLUT /D _MBCS /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc100.pdb" /Gd /TP /analyze- /errorReport:prompt src\Client.cpp src\Kinect_Client.cpp src\main.cpp
+         main.cpp
+     1>c:\users\kehl\workspace\kinect\include\xnvnitedefs.h(27): warning C4275: non dll-interface class 'XnHash' used as base for dll-interface class 'XnVIntHash'
+                 c:\program files (x86)\openni\include\xnhash.h(72) : see declaration of 'XnHash'
+                 c:\users\kehl\workspace\kinect\include\xnvnitedefs.h(27) : see declaration of 'XnVIntHash'
+     1>c:\users\kehl\workspace\kinect\include\xnvnitedefs.h(27): warning C4275: non dll-interface class 'XnHash::ConstIterator' used as base for dll-interface class 'XnVIntHash::ConstIterator'
+                 c:\program files (x86)\openni\include\xnhash.h(78) : see declaration of 'XnHash::ConstIterator'
+                 c:\users\kehl\workspace\kinect\include\xnvnitedefs.h(27) : see declaration of 'XnVIntHash::ConstIterator'
+     1>c:\users\kehl\workspace\kinect\include\xnvnitedefs.h(29): warning C4275: non dll-interface class 'XnList' used as base for dll-interface class 'XnVIntList'
+                 c:\program files (x86)\openni\include\xnlist.h(45) : see declaration of 'XnList'
+                 c:\users\kehl\workspace\kinect\include\xnvnitedefs.h(29) : see declaration of 'XnVIntList'
+     1>c:\users\kehl\workspace\kinect\include\xnvnitedefs.h(29): warning C4275: non dll-interface class 'XnList::ConstIterator' used as base for dll-interface class 'XnVIntList::ConstIterator'
+                 c:\program files (x86)\openni\include\xnlist.h(48) : see declaration of 'XnList::ConstIterator'
+                 c:\users\kehl\workspace\kinect\include\xnvnitedefs.h(29) : see declaration of 'XnVIntList::ConstIterator'
+     1>c:\users\kehl\workspace\kinect\include\xnvmessagelistener.h(168): warning C4275: non dll-interface class 'XnThreadSafeQueue' used as base for dll-interface class 'XnVMessageListener::XnVMessageQueue'
+                 c:\program files (x86)\openni\include\xnthreadsafequeue.h(40) : see declaration of 'XnThreadSafeQueue'
+                 c:\users\kehl\workspace\kinect\include\xnvmessagelistener.h(168) : see declaration of 'XnVMessageListener::XnVMessageQueue'
+     1>c:\users\kehl\workspace\kinect\include\xnvmessagelistener.h(188): warning C4251: 'XnVMessageListener::m_UpdateCBs' : class 'XnVMessageListener::XnVMessageSpecificEvent' needs to have dll-interface to be used by clients of class 'XnVMessageListener'
+                 c:\users\kehl\workspace\kinect\include\xnvmessagelistener.h(169) : see declaration of 'XnVMessageListener::XnVMessageSpecificEvent'
+     1>c:\users\kehl\workspace\kinect\include\xnvmessagelistener.h(189): warning C4251: 'XnVMessageListener::m_ActivateCBs' : class 'XnVEvent' needs to have dll-interface to be used by clients of class 'XnVMessageListener'
+                 c:\users\kehl\workspace\kinect\include\xnvnitedefs.h(31) : see declaration of 'XnVEvent'
+     1>c:\users\kehl\workspace\kinect\include\xnvmessagelistener.h(190): warning C4251: 'XnVMessageListener::m_DeactivateCBs' : class 'XnVEvent' needs to have dll-interface to be used by clients of class 'XnVMessageListener'
+                 c:\users\kehl\workspace\kinect\include\xnvnitedefs.h(31) : see declaration of 'XnVEvent'
+     1>c:\users\kehl\workspace\kinect\include\xnvmessagegenerator.h(77): warning C4275: non dll-interface class 'XnHash' used as base for dll-interface class 'XnVMessageGenerator::XnVIntMessageListenerHash'
+                 c:\program files (x86)\openni\include\xnhash.h(72) : see declaration of 'XnHash'
+                 c:\users\kehl\workspace\kinect\include\xnvmessagegenerator.h(77) : see declaration of 'XnVMessageGenerator::XnVIntMessageListenerHash'
+     1>c:\users\kehl\workspace\kinect\include\xnvmessagegenerator.h(77): warning C4275: non dll-interface class 'XnHash::ConstIterator' used as base for dll-interface class 'XnVMessageGenerator::XnVIntMessageListenerHash::ConstIterator'
+                 c:\program files (x86)\openni\include\xnhash.h(78) : see declaration of 'XnHash::ConstIterator'
+                 c:\users\kehl\workspace\kinect\include\xnvmessagegenerator.h(77) : see declaration of 'XnVMessageGenerator::XnVIntMessageListenerHash::ConstIterator'
+     1>c:\users\kehl\workspace\kinect\include\xnvmessagegenerator.h(83): warning C4251: 'XnVMessageGenerator::m_Properties' : class 'XnStringsHash' needs to have dll-interface to be used by clients of class 'XnVMessageGenerator'
+                 c:\program files (x86)\openni\include\xnstringshash.h(120) : see declaration of 'XnStringsHash'
+     1>c:\users\kehl\workspace\kinect\include\xnvgesture.h(103): warning C4251: 'XnVGesture::m_StartRecognizeCBs' : class 'XnVGesture::XnVGestureStartRecognizeSpecificEvent' needs to have dll-interface to be used by clients of class 'XnVGesture'
+                 c:\users\kehl\workspace\kinect\include\xnvgesture.h(102) : see declaration of 'XnVGesture::XnVGestureStartRecognizeSpecificEvent'
+     1>c:\users\kehl\workspace\kinect\include\xnvgesture.h(104): warning C4251: 'XnVGesture::m_RecognizeCBs' : class 'XnVGesture::XnVGestureRecognizeSpecificEvent' needs to have dll-interface to be used by clients of class 'XnVGesture'
+                 c:\users\kehl\workspace\kinect\include\xnvgesture.h(101) : see declaration of 'XnVGesture::XnVGestureRecognizeSpecificEvent'
+     1>c:\users\kehl\workspace\kinect\include\xnvpointcontrol.h(281): warning C4251: 'XnVPointControl::m_PointCreateCBs' : class 'XnVPointControl::XnVHandPointContextSpecificEvent' needs to have dll-interface to be used by clients of class 'XnVPointControl'
+                 c:\users\kehl\workspace\kinect\include\xnvpointcontrol.h(275) : see declaration of 'XnVPointControl::XnVHandPointContextSpecificEvent'
+     1>c:\users\kehl\workspace\kinect\include\xnvpointcontrol.h(282): warning C4251: 'XnVPointControl::m_PointUpdateCBs' : class 'XnVPointControl::XnVHandPointContextSpecificEvent' needs to have dll-interface to be used by clients of class 'XnVPointControl'
+                 c:\users\kehl\workspace\kinect\include\xnvpointcontrol.h(275) : see declaration of 'XnVPointControl::XnVHandPointContextSpecificEvent'
+     1>c:\users\kehl\workspace\kinect\include\xnvpointcontrol.h(283): warning C4251: 'XnVPointControl::m_PointDestroyCBs' : class 'XnVUintSpecificEvent' needs to have dll-interface to be used by clients of class 'XnVPointControl'
+                 c:\users\kehl\workspace\kinect\include\xnvnitedefs.h(34) : see declaration of 'XnVUintSpecificEvent'
+     1>c:\users\kehl\workspace\kinect\include\xnvpointcontrol.h(285): warning C4251: 'XnVPointControl::m_PrimaryPointCreateCBs' : class 'XnVPointControl::XnVHandPointContextPointSpecificEvent' needs to have dll-interface to be used by clients of class 'XnVPointControl'
+                 c:\users\kehl\workspace\kinect\include\xnvpointcontrol.h(278) : see declaration of 'XnVPointControl::XnVHandPointContextPointSpecificEvent'
+     1>c:\users\kehl\workspace\kinect\include\xnvpointcontrol.h(286): warning C4251: 'XnVPointControl::m_PrimaryPointUpdateCBs' : class 'XnVPointControl::XnVHandPointContextSpecificEvent' needs to have dll-interface to be used by clients of class 'XnVPointControl'
+                 c:\users\kehl\workspace\kinect\include\xnvpointcontrol.h(275) : see declaration of 'XnVPointControl::XnVHandPointContextSpecificEvent'
+     1>c:\users\kehl\workspace\kinect\include\xnvpointcontrol.h(287): warning C4251: 'XnVPointControl::m_PrimaryPointReplaceCBs' : class 'XnVPointControl::XnVUintHandPointContextSpecificEvent' needs to have dll-interface to be used by clients of class 'XnVPointControl'
+                 c:\users\kehl\workspace\kinect\include\xnvpointcontrol.h(279) : see declaration of 'XnVPointControl::XnVUintHandPointContextSpecificEvent'
+     1>c:\users\kehl\workspace\kinect\include\xnvpointcontrol.h(288): warning C4251: 'XnVPointControl::m_PrimaryPointDestroyCBs' : class 'XnVUintSpecificEvent' needs to have dll-interface to be used by clients of class 'XnVPointControl'
+                 c:\users\kehl\workspace\kinect\include\xnvnitedefs.h(34) : see declaration of 'XnVUintSpecificEvent'
+     1>c:\users\kehl\workspace\kinect\include\xnvpointcontrol.h(290): warning C4251: 'XnVPointControl::m_NoPointsCBs' : class 'XnVEvent' needs to have dll-interface to be used by clients of class 'XnVPointControl'
+                 c:\users\kehl\workspace\kinect\include\xnvnitedefs.h(31) : see declaration of 'XnVEvent'
+     1>c:\users\kehl\workspace\kinect\include\xnvpointcontrol.h(292): warning C4251: 'XnVPointControl::m_HandsUpdateCBs' : class 'XnVPointControl::XnVMultipleHandsSpecificEvent' needs to have dll-interface to be used by clients of class 'XnVPointControl'
+                 c:\users\kehl\workspace\kinect\include\xnvpointcontrol.h(276) : see declaration of 'XnVPointControl::XnVMultipleHandsSpecificEvent'
+     1>c:\users\kehl\workspace\kinect\include\xnvcircledetector.h(248): warning C4251: 'XnVCircleDetector::m_CircleCBs' : class 'XnVCircleDetector::XnVCircleSpecificEvent' needs to have dll-interface to be used by clients of class 'XnVCircleDetector'
+                 c:\users\kehl\workspace\kinect\include\xnvcircledetector.h(217) : see declaration of 'XnVCircleDetector::XnVCircleSpecificEvent'
+     1>c:\users\kehl\workspace\kinect\include\xnvcircledetector.h(249): warning C4251: 'XnVCircleDetector::m_NoCircleCBs' : class 'XnVCircleDetector::XnVNoCircleSpecificEvent' needs to have dll-interface to be used by clients of class 'XnVCircleDetector'
+                 c:\users\kehl\workspace\kinect\include\xnvcircledetector.h(216) : see declaration of 'XnVCircleDetector::XnVNoCircleSpecificEvent'
+     1>c:\users\kehl\workspace\kinect\include\xnvpushdetector.h(261): warning C4251: 'XnVPushDetector::m_PushCBs' : class 'XnVFloatFloatSpecificEvent' needs to have dll-interface to be used by clients of class 'XnVPushDetector'
+                 c:\users\kehl\workspace\kinect\include\xnvnitedefs.h(38) : see declaration of 'XnVFloatFloatSpecificEvent'
+     1>c:\users\kehl\workspace\kinect\include\xnvpushdetector.h(262): warning C4251: 'XnVPushDetector::m_StabilizedCBs' : class 'XnVFloatSpecificEvent' needs to have dll-interface to be used by clients of class 'XnVPushDetector'
+                 c:\users\kehl\workspace\kinect\include\xnvnitedefs.h(35) : see declaration of 'XnVFloatSpecificEvent'
+     1>c:\users\kehl\workspace\kinect\include\xnvsteadydetector.h(128): warning C4251: 'XnVSteadyDetector::m_SteadyCBs' : class 'XnVFloatSpecificEvent' needs to have dll-interface to be used by clients of class 'XnVSteadyDetector'
+                 c:\users\kehl\workspace\kinect\include\xnvnitedefs.h(35) : see declaration of 'XnVFloatSpecificEvent'
+     1>c:\users\kehl\workspace\kinect\include\xnvswipedetector.h(223): warning C4251: 'XnVSwipeDetector::m_SwipeDownCBs' : class 'XnVFloatFloatSpecificEvent' needs to have dll-interface to be used by clients of class 'XnVSwipeDetector'
+                 c:\users\kehl\workspace\kinect\include\xnvnitedefs.h(38) : see declaration of 'XnVFloatFloatSpecificEvent'
+     1>c:\users\kehl\workspace\kinect\include\xnvswipedetector.h(223): warning C4251: 'XnVSwipeDetector::m_SwipeUpCBs' : class 'XnVFloatFloatSpecificEvent' needs to have dll-interface to be used by clients of class 'XnVSwipeDetector'
+                 c:\users\kehl\workspace\kinect\include\xnvnitedefs.h(38) : see declaration of 'XnVFloatFloatSpecificEvent'
+     1>c:\users\kehl\workspace\kinect\include\xnvswipedetector.h(223): warning C4251: 'XnVSwipeDetector::m_SwipeLeftCBs' : class 'XnVFloatFloatSpecificEvent' needs to have dll-interface to be used by clients of class 'XnVSwipeDetector'
+                 c:\users\kehl\workspace\kinect\include\xnvnitedefs.h(38) : see declaration of 'XnVFloatFloatSpecificEvent'
+     1>c:\users\kehl\workspace\kinect\include\xnvswipedetector.h(223): warning C4251: 'XnVSwipeDetector::m_SwipeRightCBs' : class 'XnVFloatFloatSpecificEvent' needs to have dll-interface to be used by clients of class 'XnVSwipeDetector'
+                 c:\users\kehl\workspace\kinect\include\xnvnitedefs.h(38) : see declaration of 'XnVFloatFloatSpecificEvent'
+     1>c:\users\kehl\workspace\kinect\include\xnvswipedetector.h(225): warning C4251: 'XnVSwipeDetector::m_SwipeCBs' : class 'XnVSwipeDetector::XnVGeneralSwipeSpecificEvent' needs to have dll-interface to be used by clients of class 'XnVSwipeDetector'
+                 c:\users\kehl\workspace\kinect\include\xnvswipedetector.h(198) : see declaration of 'XnVSwipeDetector::XnVGeneralSwipeSpecificEvent'
+     1>c:\users\kehl\workspace\kinect\include\xnvwavedetector.h(93): warning C4251: 'XnVWaveDetector::m_WaveCBs' : class 'XnVEvent' needs to have dll-interface to be used by clients of class 'XnVWaveDetector'
+                 c:\users\kehl\workspace\kinect\include\xnvnitedefs.h(31) : see declaration of 'XnVEvent'
+         Kinect_Client.cpp
+         Client.cpp
+         Generating Code...
+       ResourceCompile:
+         C:\Program Files (x86)\Microsoft SDKs\Windows\v7.0A\bin\rc.exe /l"0x0409" /nologo /fo"Debug\NITE.res" Res\NITE.rc 
+       ManifestResourceCompile:
+         C:\Program Files (x86)\Microsoft SDKs\Windows\v7.0A\bin\rc.exe /nologo /fo"Debug\Debug-Kinect.exe.embed.manifest.res" Debug\Debug-Kinect_manifest.rc 
+       Link:
+         C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\kehl\workspace\Kinect\bin\Debug-Kinect.exe" /INCREMENTAL /NOLOGO /LIBPATH:"C:\Program Files (x86)\OpenNI\Lib" /LIBPATH:.\Lib ws2_32.lib OpenNI.lib XnVNite.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /ManifestFile:"Debug\Debug-Kinect.exe.intermediate.manifest" /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /DEBUG /PDB:"C:\Users\kehl\workspace\Kinect\bin\Debug-Kinect.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Users\kehl\workspace\Kinect\bin\Debug-Kinect.lib" /MACHINE:X86 Debug\NITE.res
+         "Debug\Debug-Kinect.exe.embed.manifest.res"
+         Debug\Client.obj
+         Debug\Kinect_Client.obj
+         Debug\main.obj
+       Manifest:
+         C:\Program Files (x86)\Microsoft SDKs\Windows\v7.0A\bin\mt.exe /nologo /verbose /out:"Debug\Debug-Kinect.exe.embed.manifest" /manifest "Debug\Debug-Kinect.exe.intermediate.manifest"
+         C:\Program Files (x86)\Microsoft SDKs\Windows\v7.0A\bin\rc.exe /nologo /fo"Debug\Debug-Kinect.exe.embed.manifest.res" Debug\Debug-Kinect_manifest.rc 
+       LinkEmbedManifest:
+         C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\kehl\workspace\Kinect\bin\Debug-Kinect.exe" /INCREMENTAL /NOLOGO /LIBPATH:"C:\Program Files (x86)\OpenNI\Lib" /LIBPATH:.\Lib ws2_32.lib OpenNI.lib XnVNite.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /ManifestFile:"Debug\Debug-Kinect.exe.intermediate.manifest" /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /DEBUG /PDB:"C:\Users\kehl\workspace\Kinect\bin\Debug-Kinect.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Users\kehl\workspace\Kinect\bin\Debug-Kinect.lib" /MACHINE:X86 Debug\NITE.res
+         "Debug\Debug-Kinect.exe.embed.manifest.res"
+         Debug\Client.obj
+         Debug\Kinect_Client.obj
+         Debug\main.obj
+         Kinect.vcxproj -> C:\Users\kehl\workspace\Kinect\bin\Debug-Kinect.exe
+       FinalizeBuildStatus:
+         Deleting file "Debug\Kinect.unsuccessfulbuild".
+         Touching "Debug\Kinect.lastbuildstate".
+     1>Done Building Project "C:\Users\kehl\workspace\Kinect\Kinect.vcxproj" (build target(s)).
+
+Build succeeded.
+
+Time Elapsed 00:00:03.00
