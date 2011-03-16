@@ -29,6 +29,8 @@ import javax.swing.border.LineBorder;
 
 import org.pirelenito.movieGL.Main;
 
+import com.helper.MP3;
+import com.helper.TextureMap;
 import com.jogamp.opengl.util.FPSAnimator;
 import com.physics.PhysicsEngine;
 
@@ -61,6 +63,10 @@ public class McLuhanMain extends JFrame{
 	
 	private ActionListener gogo, repeat, one, two, three, four;
 	
+	private TextureMap themes;
+	
+	private MP3 soundbite;
+	
 	public McLuhanMain() {
         frame = this;
         frame.setName("McLuhan Server");
@@ -71,6 +77,7 @@ public class McLuhanMain extends JFrame{
         CardLayout system = new CardLayout();
         menu.setLayout(system);
         
+        initTData();
         initSelections();
         initLoading();
         initGLNav();
@@ -103,6 +110,11 @@ public class McLuhanMain extends JFrame{
 		test.setRepeats(false);
 		test.start();
 
+	}
+
+
+	private void initTData() {
+		themes = new TextureMap();
 	}
 
 
@@ -179,13 +191,15 @@ public class McLuhanMain extends JFrame{
 			os = i+1;
 			temp = new JButton(new ImageIcon("Menus/Btn"+os+".jpg"));
 			temp.setRolloverIcon(new ImageIcon("Menus/Btn"+os+"RO.jpg"));
-			temp.setName(DIRS[i]);
+			//temp.setName(DIRS[i]);
+			temp.setName(i+"");
 			temp.addActionListener(new ActionListener(){
 				public void actionPerformed(final ActionEvent ae) {
 					roll = false;
 					//((CardLayout)menu.getLayout()).show(menu, "Loader");
 					menu.validate();
-					initCanvas("McLuhan/"+((JButton)ae.getSource()).getName(),"McLuhan/Texts/"+((JButton)ae.getSource()).getName());
+					//initCanvas("McLuhan/"+((JButton)ae.getSource()).getName(),"McLuhan/Texts/"+((JButton)ae.getSource()).getName());
+					initCanvas(Integer.parseInt(((JButton)ae.getSource()).getName()));
 					menu.add("ogl",canvas);
 					
 					pmen.setEnabled(true);
@@ -193,6 +207,8 @@ public class McLuhanMain extends JFrame{
 					menu.validate();
 					activateAnimation();
 					((CardLayout)menu.getLayout()).show(menu, "ogl");
+				     soundbite = new MP3("McLuhan/"+DIRS[Integer.parseInt(((JButton)ae.getSource()).getName())]+"/mp3.mp3");
+				     soundbite.play();
 				}});
 			temp.setBorder(null);
 			btns[i] = temp;
@@ -285,6 +301,7 @@ public class McLuhanMain extends JFrame{
 					animator.stop();
 					menu.validate();
 					quepush.stop();
+					soundbite.close();
 				}
 				else{
 					menu.remove(vidc);
@@ -325,14 +342,14 @@ public class McLuhanMain extends JFrame{
 		load.setLayout(null);
 		load.setSize(size);
 	}
-
+	/*
 	private void initCanvas(String path, String tpath) {
 		GLProfile.initSingleton(true);
 		GLProfile glp = GLProfile.getDefault();
         GLCapabilities caps = new GLCapabilities(glp);
         canvas = new GLCanvas(caps);
         
-        app = new PhysicsEngine(path,tpath, this);
+        app = new PhysicsEngine(path,tpath);
         canvas.addGLEventListener(app);
         canvas.addKeyListener(app);
         canvas.addMouseListener(app);
@@ -350,4 +367,31 @@ public class McLuhanMain extends JFrame{
 		quepush.setRepeats(true);
 		quepush.start();
 	}
+	*/
+	
+	private void initCanvas(int opt) {
+		GLProfile.initSingleton(true);
+		GLProfile glp = GLProfile.getDefault();
+        GLCapabilities caps = new GLCapabilities(glp);
+        canvas = new GLCanvas(caps);
+        
+        app = new PhysicsEngine(themes.getMap(opt*3), themes.getMap((opt*3)+1), themes.getMap((opt*3)+2));
+        canvas.addGLEventListener(app);
+        canvas.addKeyListener(app);
+        canvas.addMouseListener(app);
+        canvas.addMouseMotionListener(app);
+        
+        canvas.requestFocus();
+        
+        ActionListener timeout = new ActionListener(){
+			public void actionPerformed(ActionEvent arg0) {
+				app.callTimer();
+				canvas.display();
+			}
+		};
+		quepush = new Timer(45000,timeout);
+		quepush.setRepeats(true);
+		quepush.start();
+	}
+	
 }
