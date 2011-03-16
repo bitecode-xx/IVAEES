@@ -8,7 +8,7 @@ import java.io.*;
 public class Engine_Server {
     static int POS = 3;		/* number of items per position packet */
     static int SEL = 1;		/* number of items per selection packet */
-    static int COM = 10;	/* number of items per command packet */
+    static int COM = 20;	/* number of items per command packet */
     
 	private double position[];
 	private int selection[];
@@ -39,22 +39,6 @@ public class Engine_Server {
 
 		System.out.println("Server, receiving string");
 		command = mylink.RecvString('\n');
-		
-		System.out.println("pos x: " + getPosition()[0]);
-		System.out.println("pos y: " + getPosition()[1]);
-		System.out.println("pos d: " + getPosition()[2]);
-		System.out.println("pos c: " + getSelection()[0]);
-		System.out.println("pos a: " + command);
-		
-		
-
-		for (int i = 0; i < POS; i++) {
-			getPosition()[i] = 0;
-		}
-
-		getSelection()[0] = 0;
-
-		command = "";
     }
 
     public void endServer() throws IOException {

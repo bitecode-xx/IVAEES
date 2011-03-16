@@ -1,19 +1,24 @@
 package com.navmenu;
 
+import java.awt.AWTException;
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
+import java.awt.Robot;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.IOException;
+import java.util.Date;
 
 import javax.media.opengl.GLCapabilities;
 import javax.media.opengl.GLProfile;
@@ -29,13 +34,14 @@ import javax.swing.border.LineBorder;
 
 import org.pirelenito.movieGL.Main;
 
+import com.communication.Engine_Server;
 import com.helper.MP3;
 import com.helper.TextureMap;
 import com.jogamp.opengl.util.FPSAnimator;
 import com.physics.PhysicsEngine;
 
 
-public class McLuhanMain extends JFrame{
+public class McLuhanMain extends JFrame {
 	
 	private String[] DIRS = {"City as Classroom","Extensions of Man","Global Village","The Medium is the Message"};
 
@@ -67,6 +73,10 @@ public class McLuhanMain extends JFrame{
 	
 	private MP3 soundbite;
 	
+	public static Engine_Server eserver;
+	public static boolean isConnected = false;
+	private static Robot mouseRobot;
+	
 	public McLuhanMain() {
         frame = this;
         frame.setName("McLuhan Server");
@@ -87,7 +97,7 @@ public class McLuhanMain extends JFrame{
         menu.add("Loader",load);
         
         frame.getContentPane().add(BorderLayout.CENTER,menu);
-       frame.getContentPane().add(BorderLayout.WEST,glnav);
+        frame.getContentPane().add(BorderLayout.WEST,glnav);
         
         frame.addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent e) {
@@ -109,7 +119,18 @@ public class McLuhanMain extends JFrame{
 		Timer test = new Timer(1000,gogo);
 		test.setRepeats(false);
 		test.start();
-
+		
+		
+		// Create a new mouse robot
+		try {
+			mouseRobot = new Robot();
+		} catch (AWTException awte) {
+			// TODO Auto-generated catch block
+			awte.printStackTrace();
+		}
+		
+		// Start up the socket server
+		openConnection();
 	}
 
 
@@ -394,4 +415,38 @@ public class McLuhanMain extends JFrame{
 		quepush.start();
 	}
 	
+	/*
+	 * 
+	*/
+	private void openConnection() {
+		if (isConnected) {
+			try {
+				eserver = new Engine_Server();
+			} catch (IOException ioe) {
+				System.exit(-1);
+			}
+		}
+	}
+	
+	private void closeConnection() {
+		if (isConnected) {
+			try {
+				eserver.endServer();
+			} catch (IOException ioe) {
+				System.exit(-1);
+			}
+		}
+	}
+
+	private void recvThemeData() {
+		if (isConnected) {
+			try {	
+				eserver.recvData();
+			
+				mouseRobot.mouseMove((int)eserver.getPosition()[0], (int)eserver.getPosition()[1]);
+			} catch (IOException ioe) {
+				System.exit(-1);
+			}
+		}
+	}
 }
