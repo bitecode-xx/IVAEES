@@ -74,7 +74,7 @@ public class McLuhanMain extends JFrame {
 	private MP3 soundbite;
 	
 	public static Engine_Server eserver;
-	public static boolean isConnected = true;
+	public static boolean isConnected = false;
 	private static Robot mouseRobot;
 	
 	public McLuhanMain() {
