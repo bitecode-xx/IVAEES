@@ -4,7 +4,7 @@ import java.util.*;
 
 import com.jogamp.opengl.util.texture.*;
 
-public class PhysicsMesh implements ForceGenerator {
+public class PhysicsMesh extends ForceGenerator {
 
 	private double width, height;
 	private int xres, yres;
@@ -16,6 +16,7 @@ public class PhysicsMesh implements ForceGenerator {
 	
 	private double restLength;
 	private double k = 1.0;
+	public static double breakage = 3.0;
 	
 	public PhysicsMesh(double width, double height, int xres, int yres, Texture texture) {
 		this.width = width;
@@ -76,14 +77,14 @@ public class PhysicsMesh implements ForceGenerator {
 		
 		for(int row = 0; row < yres; row++) {
 			for(int column = 0; column < xres; column++) {
-				BreakableSoftStickConstraint c = new BreakableSoftStickConstraint(points[row][column], points[row][column+1], 0.5, 2.0);
+				BreakableSoftStickConstraint c = new BreakableSoftStickConstraint(points[row][column], points[row][column+1], 0.5, breakage);
 				constraints[row][column][0] = c;
 				if(row > 0) {
 					constraints[row-1][column][2] = c;
 				}
 				s.addConstraint(c);
 				allConstraints.add(c);
-				c = new BreakableSoftStickConstraint(points[row][column], points[row+1][column], 0.5, 2.0);
+				c = new BreakableSoftStickConstraint(points[row][column], points[row+1][column], 0.5, breakage);
 				constraints[row][column][1] = c;
 				if(column > 0) {
 					constraints[row][column-1][3] = c;
@@ -94,14 +95,14 @@ public class PhysicsMesh implements ForceGenerator {
 		}
 		
 		for(int row = 0; row < yres; row++) {
-			BreakableSoftStickConstraint c = new BreakableSoftStickConstraint(points[row][xres], points[row+1][xres], 0.05, 2.0);
+			BreakableSoftStickConstraint c = new BreakableSoftStickConstraint(points[row][xres], points[row+1][xres], 0.05, breakage);
 			constraints[row][xres-1][3] = c;
 			s.addConstraint(c);
 			allConstraints.add(c);
 		}
 		
 		for(int column = 0; column < xres; column++) {
-			BreakableSoftStickConstraint c = new BreakableSoftStickConstraint(points[yres][column], points[yres][column+1], 0.05, 2.0);
+			BreakableSoftStickConstraint c = new BreakableSoftStickConstraint(points[yres][column], points[yres][column+1], 0.05, breakage);
 			constraints[yres-1][column][2] = c;
 			s.addConstraint(c);
 			allConstraints.add(c);
@@ -126,7 +127,7 @@ public class PhysicsMesh implements ForceGenerator {
 						}
 						double dist = Math.sqrt((row-row2)*(row-row2) + (column-column2)*(column-column2));
 						if(dist <= 3) {
-							BreakableSoftStickConstraint c = new BreakableSoftStickConstraint(points[row][column], points[row2][column2], 0.05, 2.0);
+							BreakableSoftStickConstraint c = new BreakableSoftStickConstraint(points[row][column], points[row2][column2], 0.05, breakage/dist);
 							s.addConstraint(c);
 							allConstraints.add(c);
 						}

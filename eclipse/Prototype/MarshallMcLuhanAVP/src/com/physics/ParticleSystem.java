@@ -91,8 +91,15 @@ public class ParticleSystem {
 		for(PhysPoint p : particles) {
 			p.accel = gravity;
 		}
-		for(ForceGenerator f : forces) {
-			f.accumulate();
+		ListIterator<ForceGenerator> iter = forces.listIterator();
+		while(iter.hasNext()) {
+			ForceGenerator f = iter.next();
+			if(f.toBeDeleted()) {
+				iter.remove();
+			}
+			else {
+				f.accumulate();
+			}
 		}
 	}
 	

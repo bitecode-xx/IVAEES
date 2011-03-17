@@ -24,7 +24,10 @@ public class StickConstraint extends Constraint {
 		Vec2D delta = a.pos.sub(b.pos);
 		double deltalength = delta.length();
 		if(deltalength == 0) {
-			System.out.println("FOOL");
+			//Avoid division by zero
+			b.pos = b.pos.add(new Vec2D((Math.random()-0.5)/1000000, (Math.random()-0.5)/1000000));
+			satisfy();
+			return;
 		}
 		double diff = (deltalength - length)/(deltalength*(invmass1+invmass2));
 		

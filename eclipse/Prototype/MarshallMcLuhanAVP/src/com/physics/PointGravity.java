@@ -2,7 +2,7 @@ package com.physics;
 import javax.media.opengl.GL2;
 
 
-public class PointGravity implements ForceGenerator {
+public class PointGravity extends ForceGenerator {
 	public double magnitude;
 	public double minradius;
 	public Vec2D pos;

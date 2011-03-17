@@ -1,6 +1,7 @@
 /*
 !.gitignore
 !eclipse/
+!Kinect
 .metadata
 .class
 bin/
