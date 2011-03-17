@@ -18,9 +18,15 @@
 
 // Client
 #include "Kinect_Client.h"
+#include "main.h"
+
+#include <ctime>
+#include <iostream>
+#include <fstream>
 
 // xml to initialize OpenNI
 #define SAMPLE_XML_FILE "../Data/Sample-Tracking.xml"
+#define GESTURE_LOG "../Logs/Gestures.log"
 
 char *action = "none\n";
 
@@ -28,6 +34,8 @@ bool isGesture = false;
 bool circlePP = false;
 
 Kinect_Client *kc;
+
+std::ofstream *output;
 
 xn::DepthGenerator depthGenerator;
 
@@ -51,6 +59,8 @@ void XN_CALLBACK_TYPE OnCircleCB(XnFloat times, XnBool confident, const XnVCircl
 	action = "circle\n";
 	isGesture = true;
 
+	logGestures();
+
 	printf("Circle\n");
 }
 
@@ -60,6 +70,8 @@ void XN_CALLBACK_TYPE OnNoCircleCB(XnFloat lastValue, XnVCircleDetector::XnVNoCi
 	isGesture = true;
 	circlePP = false;
 
+	logGestures();
+
 	printf("No Circle\n");
 }
 
@@ -67,6 +79,8 @@ void XN_CALLBACK_TYPE OnNoCircleCB(XnFloat lastValue, XnVCircleDetector::XnVNoCi
 void XN_CALLBACK_TYPE OnGrabCB(void* cxt) {
 	action = "grab\n";
 	isGesture = true;
+
+	logGestures();
 
 	printf("Grab\n");
 }
@@ -76,6 +90,8 @@ void XN_CALLBACK_TYPE OnReleaseCB(void* cxt) {
 	action = "release\n";
 	isGesture = true;
 
+	logGestures();
+
 	printf("Release\n");
 }
 
@@ -83,6 +99,8 @@ void XN_CALLBACK_TYPE OnReleaseCB(void* cxt) {
 void XN_CALLBACK_TYPE OnPushCB(XnFloat velocity, XnFloat angle, void* cxt) {
 	action = "push\n";
 	isGesture = true;
+
+	logGestures();
 
 	printf("Push\n");
 }
@@ -92,6 +110,8 @@ void XN_CALLBACK_TYPE OnStabilizedCB(XnFloat velocity, void* cxt) {
 	action = "stabilized\n";
 	isGesture = true;
 
+	logGestures();
+
 	printf("Stablized\n");
 }
 
@@ -99,6 +119,8 @@ void XN_CALLBACK_TYPE OnStabilizedCB(XnFloat velocity, void* cxt) {
 void XN_CALLBACK_TYPE OnSteadyCB(XnFloat velocity, void* cxt) {
 	action = "steady\n";
 	isGesture = true;
+
+	logGestures();
 
 	printf("Steady\n");
 }
@@ -108,6 +130,8 @@ void XN_CALLBACK_TYPE OnSwipeUpCB(XnFloat velocity, XnFloat angle, void* cxt) {
 	action = "swipeup\n";
 	isGesture = true;
 
+	logGestures();
+
 	printf("Swipe Up\n");
 }
 
@@ -115,6 +139,8 @@ void XN_CALLBACK_TYPE OnSwipeUpCB(XnFloat velocity, XnFloat angle, void* cxt) {
 void XN_CALLBACK_TYPE OnSwipeDownCB(XnFloat velocity, XnFloat angle, void* cxt) {
 	action = "swipedown\n";
 	isGesture = true;
+
+	logGestures();
 
 	printf("Swipe Down\n");
 }
@@ -124,6 +150,8 @@ void XN_CALLBACK_TYPE OnSwipeLeftCB(XnFloat velocity, XnFloat angle, void* cxt) 
 	action = "swipeleft\n";
 	isGesture = true;
 
+	logGestures();
+
 	printf("Swipe Left\n");
 }
 
@@ -132,6 +160,8 @@ void XN_CALLBACK_TYPE OnSwipeRightCB(XnFloat velocity, XnFloat angle, void* cxt)
 	action = "swiperight\n";
 	isGesture = true;
 
+	logGestures();
+
 	printf("Swipe Right\n");
 }
 
@@ -139,6 +169,8 @@ void XN_CALLBACK_TYPE OnSwipeRightCB(XnFloat velocity, XnFloat angle, void* cxt)
 void XN_CALLBACK_TYPE OnWaveCB(void* cxt) {
 	action = "wave\n";
 	isGesture = true;
+
+	logGestures();
 
 	printf("Wave\n");
 }
@@ -254,6 +286,9 @@ int main(int argc, char** argv) {
 	// Start up client
 	kc = new Kinect_Client();
 
+	// Start up file writer
+	output = new std::ofstream(GESTURE_LOG);
+
 	while (1) {
 		context.WaitAndUpdateAll();
 		sessionManager->Update(&context);
@@ -261,10 +296,28 @@ int main(int argc, char** argv) {
 
 	// Shut down client
 	kc->endClient();
+
+	output->close();
+
+	delete output;
 	
 	delete sessionManager;
 
 	context.Shutdown();
 
 	return 0;
+}
+
+void logGestures() {
+	time_t seconds;
+	struct tm *timeinfo;
+
+	time(&seconds);
+
+	timeinfo = localtime(&seconds);
+
+	// Fix
+	*output << asctime(timeinfo) << *action << std::endl;
+
+	return;
 }

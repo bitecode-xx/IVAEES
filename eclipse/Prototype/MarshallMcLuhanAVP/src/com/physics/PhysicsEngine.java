@@ -302,7 +302,6 @@ public class PhysicsEngine implements GLEventListener, KeyListener, MouseListene
 	}
 
 	private void convertMouseCoordinates() {
-		//TODO: replace with gluUnProject or something
 		this.mx = 2*(double)mousex/width*(double)width/(double)height - (double)width/(double)height;
 		this.my = 2*(double)(height-mousey)/height - 1.0;
 	}
@@ -547,10 +546,6 @@ public class PhysicsEngine implements GLEventListener, KeyListener, MouseListene
 		if(e.getKeyCode() == KeyEvent.VK_ESCAPE) {
 			System.exit(0);
 		}
-
-		if(e.getKeyCode() == KeyEvent.VK_Z) {
-			test();
-		}
 	}
 
 	public void keyReleased(KeyEvent e) {
@@ -636,7 +631,6 @@ public class PhysicsEngine implements GLEventListener, KeyListener, MouseListene
 
 	@Override
 	public void mouseReleased(MouseEvent arg0) {
-		// TODO Auto-generated method stub
 		this.mousex = arg0.getX();
 		this.mousey = arg0.getY();
 		this.dragging = false;
@@ -645,7 +639,6 @@ public class PhysicsEngine implements GLEventListener, KeyListener, MouseListene
 
 	@Override
 	public void mouseDragged(MouseEvent arg0) {
-		// TODO Auto-generated method stub
 		this.mousex = arg0.getX();
 		this.mousey = arg0.getY();
 		convertMouseCoordinates();
@@ -653,43 +646,6 @@ public class PhysicsEngine implements GLEventListener, KeyListener, MouseListene
 
 	@Override
 	public void mouseMoved(MouseEvent arg0) {
-		// TODO Auto-generated method stub
-
-	}
-
-	public void test() {
-		try {
-			Engine_Server test = new Engine_Server();
-
-			test.recvData();
-
-			Date currentDate = new Date();
-			long msec = currentDate.getTime();
-
-			int button = 0;
-
-			switch(test.getSelection()[0]) {
-			case 1:
-				button = MouseEvent.BUTTON1_MASK;
-				break;
-			case 2:
-				button = MouseEvent.BUTTON2_MASK;
-				break;
-			case 3:
-				button = MouseEvent.BUTTON3_MASK;
-				break;
-			default:
-				break;
-			}
-
-			MouseEvent blah = new MouseEvent(canvas, MouseEvent.MOUSE_PRESSED, msec, button, (int)test.getPosition()[0], (int)test.getPosition()[1], 1, false);
-
-			mousePressed(blah);
-
-			test.endServer();
-		} catch (IOException ioe) {
-			System.exit(-1);
-		}
 	}
 
 	public void pushTimerImg(int iloc){

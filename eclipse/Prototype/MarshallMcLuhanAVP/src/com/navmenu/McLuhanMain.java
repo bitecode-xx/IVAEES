@@ -1,11 +1,13 @@
 package com.navmenu;
 
+import java.awt.AWTException;
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
+import java.awt.Robot;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -14,6 +16,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.Date;
 
 import javax.media.opengl.GLCapabilities;
 import javax.media.opengl.GLProfile;
@@ -74,6 +77,10 @@ public class McLuhanMain extends JFrame{
 	
 	private TopSlider tslide;
 	
+	private static Robot mouseRobot;
+	
+	public int mode;
+	
 	public McLuhanMain() {
 		frame = this;
 		frame.setName("McLuhan Server");
@@ -124,6 +131,16 @@ public class McLuhanMain extends JFrame{
 		test.setRepeats(false);
 		test.start();
 
+		
+		// Create a new mouse robot
+		try {
+			mouseRobot = new Robot();
+		} catch (AWTException awte) {
+			awte.printStackTrace();
+		}
+		
+		// Init mode
+		mode = 1;
 	}
 
 
@@ -241,7 +258,7 @@ public class McLuhanMain extends JFrame{
 					paintSlide(opt);
 					initCanvas(opt);
 					menu.add("ogl",canvas);
-					 soundbite = new MP3("McLuhan/"+DIRS[Integer.parseInt(((JButton)ae.getSource()).getName())]+"/mp3.mp3");
+					soundbite = new MP3("McLuhan/"+DIRS[Integer.parseInt(((JButton)ae.getSource()).getName())]+"/mp3.mp3");
 					pmen.setEnabled(true);
 					pmen.setVisible(true);
 					aud.setEnabled(true);
@@ -267,18 +284,20 @@ public class McLuhanMain extends JFrame{
 					menu.validate();
 					activateAnimation();
 					((CardLayout)menu.getLayout()).show(menu, "Loader");
-					 ActionListener time = new ActionListener(){
-							public void actionPerformed(ActionEvent arg0) {
-								glnav.setVisible(true);
-								tslide.setVisible(true);
-								((CardLayout)menu.getLayout()).show(menu, "ogl");
-							     soundbite.play();
-							}
-						};
-						Timer t = new Timer(3000,time);
-						t.setRepeats(false);
-						t.start();
-					
+					ActionListener time = new ActionListener(){
+						public void actionPerformed(ActionEvent arg0) {
+							glnav.setVisible(true);
+							tslide.setVisible(true);
+							((CardLayout)menu.getLayout()).show(menu, "ogl");
+							    soundbite.play();
+						}
+					};
+					Timer t = new Timer(3000,time);
+					t.setRepeats(false);
+					t.start();
+					   
+					// Change mode
+					mode = 2;
 				}});
 			temp.setBorder(null);
 			btns[i] = temp;
@@ -414,6 +433,8 @@ public class McLuhanMain extends JFrame{
 				test.setRepeats(false);
 				test.start();
 				
+				// Change mode
+				mode = 1;
 			}
 		});
 		
@@ -499,6 +520,45 @@ public class McLuhanMain extends JFrame{
 		quepush = new Timer(45000,timeout);
 		quepush.setRepeats(true);
 		quepush.start();
+	}
+	
+	public void recvThemeData(float x, float y, float depth, int select, String action) {
+		double ratioX = size.getWidth() / 640;
+		double ratioY = size.getHeight() / 480;
+		int newX = (int) (x * ratioX);
+		int newY = (int) (y * ratioY);
+		
+		mouseRobot.mouseMove(newX, newY);
+		
+		if (action.compareTo("push") == 0) {
+			mouseRobot.mousePress(MouseEvent.BUTTON1_MASK);
+			mouseRobot.mouseRelease(MouseEvent.BUTTON1_MASK);
+		}
+	}
+	
+	public void recvPhysicsData(float x, float y, float depth, int select, String action) {	
+		Date currentDate = new Date();
+		long msec = currentDate.getTime();
+			    
+		int button = 0;
+			    
+		switch(select) {
+	    	case 1:
+	    		button = MouseEvent.BUTTON1_MASK;
+	    		break;
+	    	case 2:
+	    		button = MouseEvent.BUTTON2_MASK;
+	    		break;
+	    	case 3:
+	    		button = MouseEvent.BUTTON3_MASK;
+	    		break;
+	    	default:
+	    		break;
+		}
+				
+		MouseEvent me = new MouseEvent(canvas, MouseEvent.MOUSE_PRESSED, msec, button, (int)x, (int)y, 1, false);
+				
+		app.mousePressed(me);
 	}
 	
 }

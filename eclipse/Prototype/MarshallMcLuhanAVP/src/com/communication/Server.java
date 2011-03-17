@@ -8,7 +8,7 @@ import java.net.*;
 
 public class Server {
 
-   boolean VERBOSE = true;		   // turn on/off debugging output
+   boolean VERBOSE = false;		   // turn on/off debugging output
    static int BUFFSIZE = 128000;   // how many bytes our incoming buffer can hold
 
    static int INT_SIZE = 4;
@@ -80,14 +80,16 @@ public class Server {
 
 	input.read(rev);
 	
-	if (VERBOSE) 
-		if (rev[0]==1) 
-		{
-			reverse = true;
+	if (rev[0]==1) 
+	{
+		reverse = true;
+		if (VERBOSE)
 			System.out.println("Server: requested reversed bytes");
-		}
-		else
+	}
+	else
+		if (VERBOSE)
 			System.out.println("Server: requested normal byte order");
+	
    }
 
    // send a string down the socket

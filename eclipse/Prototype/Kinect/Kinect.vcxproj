@@ -84,6 +84,7 @@
     <ClInclude Include="Res\Resource-NITE.h" />
     <ClInclude Include="src\Client.h" />
     <ClInclude Include="src\Kinect_Client.h" />
+    <ClInclude Include="src\main.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Client.cpp" />

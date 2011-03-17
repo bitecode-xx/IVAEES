@@ -6,13 +6,15 @@ package com.communication;
 import java.io.*;
 
 public class Engine_Server {
+	boolean VERBOSE = false;
+	
     static int POS = 3;		/* number of items per position packet */
     static int SEL = 1;		/* number of items per selection packet */
-    static int COM = 10;	/* number of items per command packet */
+    static int COM = 20;	/* number of items per command packet */
     
-	private double position[];
+	private float position[];
 	private int selection[];
-	String command;
+	private String command;
 
 	Server mylink;
 
@@ -23,38 +25,28 @@ public class Engine_Server {
     	System.out.println("Server, listening on port " + port + ", datagram port " + dataport);
     	mylink = new Server(port, dataport);
 
-    	setPosition(new double[POS]);
-    	setSelection(new int[SEL]);
+    	position = new float[POS];
+    	selection = new int[SEL];
 
     	System.out.println("Server, waiting for connection...");
     	mylink.Connect();
     }
 
     public void recvData() throws IOException {
-    	System.out.println("Server, receiving doubles");
-		mylink.RecvDoubles(getPosition(), POS);
+    	if (VERBOSE) {
+    		System.out.println("Server, receiving floats\n");
+    	}
+		mylink.RecvFloats(getPosition(), POS);
 
-		System.out.println("Server, receiving ints");
+		if (VERBOSE) {
+			System.out.println("Server, receiving ints\n");
+		}
 		mylink.RecvInts(getSelection(), SEL);
 
-		System.out.println("Server, receiving string");
-		command = mylink.RecvString('\n');
-		
-		System.out.println("pos x: " + getPosition()[0]);
-		System.out.println("pos y: " + getPosition()[1]);
-		System.out.println("pos d: " + getPosition()[2]);
-		System.out.println("pos c: " + getSelection()[0]);
-		System.out.println("pos a: " + command);
-		
-		
-
-		for (int i = 0; i < POS; i++) {
-			getPosition()[i] = 0;
+		if (VERBOSE) {
+			System.out.println("Server, receiving string\n");
 		}
-
-		getSelection()[0] = 0;
-
-		command = "";
+		command = mylink.RecvString('\n');
     }
 
     public void endServer() throws IOException {
@@ -64,19 +56,15 @@ public class Engine_Server {
 		System.out.println("Server, done...");
     }
 
-	public void setPosition(double position[]) {
-		this.position = position;
-	}
-
-	public double[] getPosition() {
+	public float[] getPosition() {
 		return position;
-	}
-
-	public void setSelection(int selection[]) {
-		this.selection = selection;
 	}
 
 	public int[] getSelection() {
 		return selection;
+	}
+	
+	public String getCommand() {
+		return command;
 	}
 }
