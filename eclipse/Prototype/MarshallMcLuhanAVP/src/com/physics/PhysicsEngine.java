@@ -66,8 +66,6 @@ public class PhysicsEngine implements GLEventListener, KeyListener, MouseListene
 	private boolean image, txt, video;
 
 
-
-
 	public PhysicsEngine(TextureData[] source, TextureData[] texts, TextureData[] Quotes){
 		quecount = 0;
 		tquecount = 0;
@@ -336,6 +334,7 @@ public class PhysicsEngine implements GLEventListener, KeyListener, MouseListene
 		gl.glClearColor(0.8f, 0.8f, 0.8f, 1.0f);
 		//can be used to set specific color trans
 		//gl.glColor4f(255, 255, 255, 100);
+
 		//for(int i=0;i<imageFiles.length;i++){
 		for(int i=0;i<imagequeTD.length;i++){
 			try{
@@ -390,7 +389,6 @@ public class PhysicsEngine implements GLEventListener, KeyListener, MouseListene
 			qteque[i] = textureactive;
 		}
 
-
 		textureactive = imageque[quecount];
 
 		if(textque.length>0)
@@ -417,9 +415,7 @@ public class PhysicsEngine implements GLEventListener, KeyListener, MouseListene
 
 		});*/
 
-
 		physics = new ParticleSystem(new Vec2D(0, -0.4), 0.3333/60.0, new Vec2D(-1.6, -1.0), new Vec2D(1.6, 1.0));
-
 
 		PhysicsMesh pm;
 		for(int i = 0;i<qteque.length;i++){
@@ -434,13 +430,11 @@ public class PhysicsEngine implements GLEventListener, KeyListener, MouseListene
 		pmeshactive.setK(10);
 		pmeshactive.addToSystem(physics);
 
-
 		//pgrav = new PointGravity(new Vec2D(-0.5, 0.8), 4.5, 0.09, physics);
 
 		// physics.addConstraint(new PointConstraint(pmesh.getPoints()[0][0]));
 
 		//  physics.addForce(pgrav);
-
 	}
 
 	/*
@@ -549,35 +543,21 @@ public class PhysicsEngine implements GLEventListener, KeyListener, MouseListene
 	}
 
 	public void keyReleased(KeyEvent e) {
-		// TODO Auto-generated method stub
-
 	}
 
 	public void keyTyped(KeyEvent e) {
-		// TODO Auto-generated method stub
 	}
-
-	@Override
+	
 	public void mouseClicked(MouseEvent arg0) {
-		// TODO Auto-generated method stub
-
 	}
 
-	@Override
 	public void mouseEntered(MouseEvent arg0) {
-		// TODO Auto-generated method stub
-
 	}
 
-	@Override
 	public void mouseExited(MouseEvent arg0) {
-		// TODO Auto-generated method stub
-
 	}
 
-	@Override
 	public void mousePressed(MouseEvent arg0) {
-		// TODO Auto-generated method stub
 		this.mousex = arg0.getX();
 		this.mousey = arg0.getY();
 		this.dragging = true;
@@ -629,7 +609,6 @@ public class PhysicsEngine implements GLEventListener, KeyListener, MouseListene
 		}
 	}
 
-	@Override
 	public void mouseReleased(MouseEvent arg0) {
 		this.mousex = arg0.getX();
 		this.mousey = arg0.getY();
@@ -637,14 +616,12 @@ public class PhysicsEngine implements GLEventListener, KeyListener, MouseListene
 		convertMouseCoordinates();
 	}
 
-	@Override
 	public void mouseDragged(MouseEvent arg0) {
 		this.mousex = arg0.getX();
 		this.mousey = arg0.getY();
 		convertMouseCoordinates();
 	}
 
-	@Override
 	public void mouseMoved(MouseEvent arg0) {
 	}
 

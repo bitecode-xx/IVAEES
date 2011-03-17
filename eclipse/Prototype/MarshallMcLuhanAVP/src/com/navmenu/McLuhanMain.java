@@ -523,6 +523,8 @@ public class McLuhanMain extends JFrame{
 	}
 	
 	public void recvThemeData(float x, float y, float depth, int select, String action) {
+		System.out.println("Mode: " + mode);
+		
 		double ratioX = size.getWidth() / 640;
 		double ratioY = size.getHeight() / 480;
 		int newX = (int) (x * ratioX);
@@ -536,29 +538,23 @@ public class McLuhanMain extends JFrame{
 		}
 	}
 	
-	public void recvPhysicsData(float x, float y, float depth, int select, String action) {	
-		Date currentDate = new Date();
-		long msec = currentDate.getTime();
-			    
-		int button = 0;
-			    
-		switch(select) {
-	    	case 1:
-	    		button = MouseEvent.BUTTON1_MASK;
-	    		break;
-	    	case 2:
-	    		button = MouseEvent.BUTTON2_MASK;
-	    		break;
-	    	case 3:
-	    		button = MouseEvent.BUTTON3_MASK;
-	    		break;
-	    	default:
-	    		break;
+	public void recvPhysicsData(float x, float y, float depth, int select, String action) {
+		System.out.println("Mode: " + mode);
+		
+		double ratioX = size.getWidth() / 640;
+		double ratioY = size.getHeight() / 480;
+		int newX = (int) (x * ratioX);
+		int newY = (int) (y * ratioY);
+		
+		mouseRobot.mouseMove(newX, newY);
+		
+		if (action.compareTo("push") == 0) {
+			mouseRobot.mousePress(MouseEvent.BUTTON1_MASK);
 		}
-				
-		MouseEvent me = new MouseEvent(canvas, MouseEvent.MOUSE_PRESSED, msec, button, (int)x, (int)y, 1, false);
-				
-		app.mousePressed(me);
+		
+		if (action.compareTo("circle") == 0) {
+			mouseRobot.mouseRelease(MouseEvent.BUTTON1_MASK);
+		}
 	}
 	
 }
