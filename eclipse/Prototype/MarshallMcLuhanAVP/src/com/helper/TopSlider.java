@@ -136,11 +136,15 @@ public class TopSlider extends JPanel implements ActionListener {
 	private void moveList(boolean dir){
 		JPanel grid = gridPan();
 		if(list.length > 5){
-			if(!dir){
-				index = index - 10;
-				if(index<0){
-					index= list.length + index;
-				}
+			  if(!dir){
+				  if(list.length<10)
+					  index = index - list.length;
+				  else
+			          index = index - 10;
+				  
+				  if(index<0){
+					  index= list.length + index;
+				  }
 			}
 			int count = 0;
 			while(count < 5 ){

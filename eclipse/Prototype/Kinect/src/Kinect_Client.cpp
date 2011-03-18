@@ -6,6 +6,9 @@
 
 #include "Kinect_Client.h"
 
+/*
+  Constructor
+*/
 Kinect_Client::Kinect_Client() {
 	char hostname[8192];
 
@@ -37,10 +40,17 @@ Kinect_Client::Kinect_Client() {
 	memset(command, 0, COM);
 }
 
+/*
+  Destructor
+*/
 Kinect_Client::~Kinect_Client() {
 	delete mylink;
 }
 
+/*
+  Sends the data to the Java end over sockets using UDP
+  Data contains coordinates, depth, selection (hand), and any commands to process
+*/
 void Kinect_Client::sendData(float x, float y, float depth, int select, char *action) {
 	position[0] = x;
 	position[1] = y;
@@ -69,6 +79,9 @@ void Kinect_Client::sendData(float x, float y, float depth, int select, char *ac
 	mylink->SendString(command);
 }
 
+/*
+  Closes the clients socket connection
+*/
 void Kinect_Client::endClient() {
 	printf("Client, closing connection...\n");
 	fflush(NULL);

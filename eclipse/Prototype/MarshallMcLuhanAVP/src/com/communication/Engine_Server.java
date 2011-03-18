@@ -18,6 +18,9 @@ public class Engine_Server {
 
 	Server mylink;
 
+	/*
+	  Constructor
+	*/
     public Engine_Server() throws IOException {
     	int port = 5010;
     	int dataport = -1;
@@ -32,6 +35,10 @@ public class Engine_Server {
     	mylink.Connect();
     }
 
+    /*
+      Receives the data from the C++ end over sockets using UDP
+      Data contains coordinates, depth, selection (hand), and any commands to process
+    */
     public void recvData() throws IOException {
     	if (VERBOSE) {
     		System.out.println("Server, receiving floats\n");
@@ -49,6 +56,9 @@ public class Engine_Server {
 		command = mylink.RecvString('\n');
     }
 
+    /*
+      Closes the connection to the server
+    */
     public void endServer() throws IOException {
 		System.out.println("Server, closing connection...");
 		mylink.Close();	
