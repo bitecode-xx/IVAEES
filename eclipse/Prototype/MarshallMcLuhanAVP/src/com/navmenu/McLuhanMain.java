@@ -533,6 +533,17 @@ public class McLuhanMain extends JFrame{
 		quepush.start();
 	}
 	
+	public void recvGrabberData(float x, float y, float depth, int select, String action) {
+		System.out.println("Mode: " + mode);
+		
+		double ratioX = size.getWidth() / 640;
+		double ratioY = size.getHeight() / 480;
+		int newX = (int) (x * ratioX);
+		int newY = (int) (y * ratioY);
+		
+		return;
+	}
+	
 	public void recvThemeData(float x, float y, float depth, int select, String action) {
 		System.out.println("Mode: " + mode);
 		
@@ -547,6 +558,8 @@ public class McLuhanMain extends JFrame{
 			mouseRobot.mousePress(MouseEvent.BUTTON1_MASK);
 			mouseRobot.mouseRelease(MouseEvent.BUTTON1_MASK);
 		}
+		
+		return;
 	}
 	
 	public void recvPhysicsData(float x, float y, float depth, int select, String action) {
@@ -560,12 +573,20 @@ public class McLuhanMain extends JFrame{
 		mouseRobot.mouseMove(newX, newY);
 		
 		if (action.compareTo("push") == 0) {
-			mouseRobot.mousePress(MouseEvent.BUTTON1_MASK);
+			if (newY > 100) {
+				mouseRobot.mousePress(MouseEvent.BUTTON1_MASK);
+			}
+			else {
+				mouseRobot.mousePress(MouseEvent.BUTTON1_MASK);
+				mouseRobot.mouseRelease(MouseEvent.BUTTON1_MASK);
+			}
 		}
 		
 		if (action.compareTo("circle") == 0) {
 			mouseRobot.mouseRelease(MouseEvent.BUTTON1_MASK);
 		}
+		
+		return;
 	}
 	
 }
