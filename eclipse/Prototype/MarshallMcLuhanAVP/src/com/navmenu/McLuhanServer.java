@@ -22,7 +22,8 @@ public class McLuhanServer {
 					
 					switch(ml.mode) {
 						case 0:
-							// Grabber
+							ml.recvGrabberData(eserver.getPosition()[0], eserver.getPosition()[1], eserver.getPosition()[2],
+									 		   eserver.getSelection()[0], eserver.getCommand());
 							break;
 						case 1:
 							ml.recvThemeData(eserver.getPosition()[0], eserver.getPosition()[1], eserver.getPosition()[2],

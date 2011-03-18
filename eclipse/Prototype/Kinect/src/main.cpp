@@ -28,7 +28,7 @@
 #define SAMPLE_XML_FILE "../Data/Sample-Tracking.xml"
 #define GESTURE_LOG "../Logs/Gestures.log"
 
-char *action = "none\n";
+char *action;
 
 bool isGesture = false;
 bool circlePP = false;
@@ -316,8 +316,7 @@ void logGestures() {
 
 	timeinfo = localtime(&seconds);
 
-	// Fix
-	*output << asctime(timeinfo) << *action << std::endl;
+	*output << asctime(timeinfo) << action << std::endl;
 
 	return;
 }
