@@ -18,6 +18,14 @@ import javax.swing.JPanel;
 
 import com.physics.PhysicsEngine;
 
+/**
+ * 
+ * Custom JPanel class to create a sliding effect selection system that contains
+ * the various McLuhan Media Objects.
+ * 
+ * @author Jozef
+ *
+ */
 public class TopSlider extends JPanel implements ActionListener {
 	
 	private File[] images, text;
@@ -30,15 +38,15 @@ public class TopSlider extends JPanel implements ActionListener {
 	private boolean type;
 	
 	public TopSlider(){
-		//this.setLayout(null);
-		//((FlowLayout)this.getLayout()).setHgap(5);
 		this.setBackground(Color.BLACK);
 		((FlowLayout)this.getLayout()).setAlignment(FlowLayout.LEFT);
 	}
 	
+	/*
+	 * Assigns the required file data for the selected themes images and text media
+	 */
 	public void letsFight(File[] images, File[] text){
 		this.invalidate();
-		//this.setSize(1024,200);
 		this.text = text;
 		this.images = images;
 		index =0;
@@ -48,10 +56,18 @@ public class TopSlider extends JPanel implements ActionListener {
 		this.validate();
 	}
 
+	/*
+	 * Assigns engine to recieve rendering calls
+	 */
 	public void setEngine(PhysicsEngine context){
 		this.eng = context;
 	}
 	
+	/*
+	 * Creates the 5 media 2 nav button objects and assigns their
+	 * motion directions 
+	 * 
+	 */
 	private void setupPanel() {
 		left = new JButton(new ImageIcon("First_Button1.jpg"));
 		left.setPreferredSize(nav);
@@ -74,6 +90,11 @@ public class TopSlider extends JPanel implements ActionListener {
 		
 	}
 
+	/*
+	 * Creates the buttons for all the media files
+	 * and assigns them to the TopSlider panel. 
+	 * 
+	 */
 	private void setupList() {
 		JPanel grid = gridPan();
 		list = new Component[img.length+txt.length];
@@ -105,6 +126,13 @@ public class TopSlider extends JPanel implements ActionListener {
 
 	}
 	
+	/*
+	 * Evaluates the button positions and 
+	 * if true moves the images ahead by 5
+	 * if false move the images back by 5 accounting
+	 * for out of bounds index and wrap around
+	 * 
+	 */
 	private void moveList(boolean dir){
 		JPanel grid = gridPan();
 		if(list.length > 5){
@@ -135,6 +163,11 @@ public class TopSlider extends JPanel implements ActionListener {
 		}
 	}
 
+	/*
+	 * Initialize the button to launch a specified image media object
+	 * in the attached engine. 
+	 * 
+	 */
 	private Component buttonIMG(ImageIcon img,int index) {
 		JButton temp = new JButton(img);
 		temp.setName(index+"");
@@ -150,6 +183,11 @@ public class TopSlider extends JPanel implements ActionListener {
 		return temp;
 	}
 	
+	/*
+	 * Initialize the button to launch the specified text media
+	 * object in the attached engine.
+	 * 
+	 */
 	private Component buttonTXT(ImageIcon img,int index) {
 		JButton temp = new JButton(img);
 		temp.setName(index+"");
@@ -165,7 +203,10 @@ public class TopSlider extends JPanel implements ActionListener {
 		return temp;
 	}
 	
-
+	/*
+	 * creates the scrolling grid panel
+	 * 
+	 */
 	private JPanel gridPan(){
 		JPanel grid = new JPanel();
 		GridLayout scroll = new GridLayout(0,5);
@@ -179,6 +220,9 @@ public class TopSlider extends JPanel implements ActionListener {
 		return grid;
 	}
 
+	/*
+	 * create the image lists for the supplied media file objects
+	 */
 	private void genLists() {
 		img = new ImageIcon[images.length];
 		for(int i=0;i<images.length;i++){
@@ -193,6 +237,9 @@ public class TopSlider extends JPanel implements ActionListener {
 
 	}
 	
+	/*
+	 * resize the image to match the button sizes
+	 */
 	private ImageIcon modImage(File images2){
 		ImageIcon newIcon;
 		newIcon = new ImageIcon(images2.getPath());

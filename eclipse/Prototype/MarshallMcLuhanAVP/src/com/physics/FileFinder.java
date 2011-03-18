@@ -10,6 +10,9 @@ import java.util.regex.Pattern;
  * Code by Sean Patrick Floyd
  * Web: http://bit.ly/fffPcj
  * 
+ * Traverse a specified file path with the specified regex string 
+ * Recursively and return all files found matching the params as a 
+ * list. 
  * 
  */
 public class FileFinder{

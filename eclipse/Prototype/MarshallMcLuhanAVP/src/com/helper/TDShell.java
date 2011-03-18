@@ -4,6 +4,13 @@ import java.io.File;
 
 import com.jogamp.opengl.util.texture.TextureData;
 
+/**
+ * Custom object to hold the texture data and file data associated with one of the McLuhan
+ * media theme sets. 
+ * 
+ * @author Jozef
+ *
+ */
 public class TDShell {
 	
 	private String path;
