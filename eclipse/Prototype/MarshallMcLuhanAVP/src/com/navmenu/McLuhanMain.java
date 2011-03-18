@@ -533,6 +533,9 @@ public class McLuhanMain extends JFrame{
 		quepush.start();
 	}
 	
+	/*
+	  Receive function that handles Kinect data for the attention "grabber" display
+	*/
 	public void recvGrabberData(float x, float y, float depth, int select, String action) {
 		System.out.println("Mode: " + mode);
 		
@@ -544,6 +547,9 @@ public class McLuhanMain extends JFrame{
 		return;
 	}
 	
+	/*
+	  Receive function that handles Kinect data for the theme and menu display
+	*/
 	public void recvThemeData(float x, float y, float depth, int select, String action) {
 		System.out.println("Mode: " + mode);
 		
@@ -562,6 +568,9 @@ public class McLuhanMain extends JFrame{
 		return;
 	}
 	
+	/*
+	  Receive function that handles Kinect data for the physics engine display
+	*/
 	public void recvPhysicsData(float x, float y, float depth, int select, String action) {
 		System.out.println("Mode: " + mode);
 		

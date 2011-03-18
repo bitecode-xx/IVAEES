@@ -20,6 +20,7 @@ public class McLuhanServer {
 		McLuhanMain ml = new McLuhanMain();
 		ml.setVisible(true);
 		
+		// If the server is going to connect via sockets then wait for Kinect data in a loop
 		if (isConnected) {
 			openConnection();
 		
@@ -55,7 +56,7 @@ public class McLuhanServer {
 	}
 	
 	/*
-	 * 
+	  Starts up the server and opens the socket connection
 	*/
 	private static void openConnection() {
 		try {
@@ -65,6 +66,9 @@ public class McLuhanServer {
 		}
 	}
 	
+	/*
+	  Shuts down the server and closes the socket connection
+	*/
 	private static void closeConnection() {
 		try {
 			eserver.endServer();

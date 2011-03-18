@@ -200,7 +200,9 @@ void XN_CALLBACK_TYPE OnPointUpdate(const XnVHandPointContext* pContext, void* c
 	isGesture = false;
 }
 
-
+/*
+  Kinect hand tracking and gesture recognition
+*/
 int main(int argc, char** argv) {
 	xn::Context context;
 
@@ -214,7 +216,7 @@ int main(int argc, char** argv) {
 		return 1;
 	}
 
-	//
+	// Setup for depth generation
 	rc = context.FindExistingNode(XN_NODE_TYPE_DEPTH, depthGenerator);
 
 	if (rc != XN_STATUS_OK) {
@@ -308,6 +310,9 @@ int main(int argc, char** argv) {
 	return 0;
 }
 
+/*
+  Logs each time a gesture is detected using timestamps
+*/
 void logGestures() {
 	time_t seconds;
 	struct tm *timeinfo;
