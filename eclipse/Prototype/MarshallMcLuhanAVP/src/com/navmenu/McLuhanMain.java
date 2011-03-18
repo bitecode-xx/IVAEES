@@ -145,7 +145,6 @@ public class McLuhanMain extends JFrame{
 
 
 	private void initGrabber() {
-		GLProfile.initSingleton(true);
 		GLProfile glp = GLProfile.getDefault();
         GLCapabilities caps = new GLCapabilities(glp);
         grabc = new GLCanvas(caps);
@@ -292,7 +291,7 @@ public class McLuhanMain extends JFrame{
 							    soundbite.play();
 						}
 					};
-					Timer t = new Timer(3000,time);
+					Timer t = new Timer(1000,time);
 					t.setRepeats(false);
 					t.start();
 					   
@@ -365,7 +364,6 @@ public class McLuhanMain extends JFrame{
 
 	private void initTestVid(String string) {
 		canvas = null;
-		GLProfile.initSingleton(true);
 		GLProfile glp = GLProfile.getDefault();
         GLCapabilities caps = new GLCapabilities(glp);
         video = null;
@@ -471,7 +469,6 @@ public class McLuhanMain extends JFrame{
 	}
 	/*
 	private void initCanvas(String path, String tpath) {
-		GLProfile.initSingleton(true);
 		GLProfile glp = GLProfile.getDefault();
         GLCapabilities caps = new GLCapabilities(glp);
         canvas = new GLCanvas(caps);
@@ -497,7 +494,6 @@ public class McLuhanMain extends JFrame{
 	*/
 	
 	private void initCanvas(int opt) {
-		GLProfile.initSingleton(true);
 		GLProfile glp = GLProfile.getDefault();
         GLCapabilities caps = new GLCapabilities(glp);
         canvas = new GLCanvas(caps);

@@ -224,7 +224,7 @@ public class PhysicsGrabber implements GLEventListener, KeyListener, MouseListen
 		//gl.glClearColor(0.8f, 0.8f, 0.8f, 1.0f);
 
 		try{
-			textureactive = TextureIO.newTexture(new File(source), true);
+			textureactive = TextureIO.newTexture(new File(source), false);
 
 		} catch(Exception e) {
 			e.printStackTrace();
@@ -233,7 +233,7 @@ public class PhysicsGrabber implements GLEventListener, KeyListener, MouseListen
 
 		textureactive.setTexParameteri(GL.GL_TEXTURE_WRAP_S, GL.GL_REPEAT);
 		textureactive.setTexParameteri(GL.GL_TEXTURE_WRAP_T, GL.GL_REPEAT);
-		textureactive.setTexParameteri(GL.GL_TEXTURE_MAG_FILTER, GL.GL_LINEAR_MIPMAP_LINEAR);
+		textureactive.setTexParameteri(GL.GL_TEXTURE_MAG_FILTER, GL.GL_LINEAR);
 		textureactive.setTexParameteri(GL.GL_TEXTURE_MIN_FILTER, GL.GL_LINEAR);
 
 

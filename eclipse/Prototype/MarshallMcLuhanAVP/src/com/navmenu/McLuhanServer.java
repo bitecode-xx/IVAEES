@@ -2,6 +2,8 @@ package com.navmenu;
 
 import java.io.IOException;
 
+import javax.media.opengl.GLProfile;
+
 import com.communication.Engine_Server;
 
 
@@ -10,6 +12,8 @@ public class McLuhanServer {
 	private static boolean isConnected = true;
 
 	public static void main(String[] args) {
+		GLProfile.initSingleton(true);
+		
 		McLuhanMain ml = new McLuhanMain();
 		ml.setVisible(true);
 		
