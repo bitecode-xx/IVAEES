@@ -6,7 +6,14 @@ import javax.media.opengl.GLProfile;
 
 import com.communication.Engine_Server;
 
-
+/**
+ * 
+ * Main thread to initialize the McLuhan program and initialize the 
+ * communication to listen for kinect interaction. 
+ * 
+ * @author Jozef, Brandon, Kyle
+ *
+ */
 public class McLuhanServer {
 	private static Engine_Server eserver;
 	private static boolean isConnected = true;

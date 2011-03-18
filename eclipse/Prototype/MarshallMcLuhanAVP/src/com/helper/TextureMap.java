@@ -11,10 +11,21 @@ import com.jogamp.opengl.util.texture.TextureData;
 import com.jogamp.opengl.util.texture.TextureIO;
 import com.physics.FileFinder;
 
+/**
+ * 
+ * Preloading class run during inital execution of the system to preload all of the 
+ * Texture data for faster rendering during canvas creation. 
+ * 
+ * 
+ * @author Jozef
+ *
+ */
 public class TextureMap {
 	
+	//regex string for image search
 	private String REGEX = ".*\\.jpg|.*\\.JPG|.*\\.gif|.*\\.png|.*\\.GIF|.*\\.PNG|.*\\.bmp|.*\\.BMP";//|.*\\.flv|.*\\.mov|.*\\.pdf|.*\\.docx||.*\\.rtf");	
 	
+	//vars for specifying which texture data set to grab
 	private int CCIMG = 0;
 	private int CCTXT = 1;
 	private int CCQTE = 2;
@@ -28,13 +39,12 @@ public class TextureMap {
 	private int MMTXT = 10;
 	private int MMQTE = 11;
 	
-	//private TextureData[] gvImages,gvTexts,gvQTE,emImages,emTexts,emQTE,mmImages,mmTexts,mmQTE, ccImages, ccTexts,ccQTE;
 	
 	private TDShell gvImages,gvTexts,gvQTE,emImages,emTexts,emQTE,mmImages,mmTexts,mmQTE, ccImages, ccTexts,ccQTE;
 	
 	public TextureMap(){
 		
-		
+		//grab all the texture files
 		gvImages = loadTextures("McLuhan/Global Village");
 		gvTexts = loadTextures("McLuhan/Texts/Global Village");
 		gvQTE = loadTextures("McLuhan/Quotes/Global Village");
@@ -54,6 +64,9 @@ public class TextureMap {
 		
 	}
 
+	/*
+	 * For the speicifed path traverse the folders recurrsivly on the path and retrieve all files matching the REGEX string. 
+	 */
 	private TDShell loadTextures(String path) {
 		TDShell temp = new TDShell(path);
 		File[] files;
@@ -68,12 +81,14 @@ public class TextureMap {
 		temp.setFiles(files);
 		textures = new TextureData[files.length];
 		
+		// no files create empty set
 		if(files.length==0){
 			temp.setFiles(new File[0]);
 			temp.setTD(new TextureData[0]);
 			return temp;
 		}
-		else
+		else{
+			//inialize the texture data for each file
 			for(int i=0;i<files.length;i++){
 				try{
 					tex = TextureIO.newTextureData(glp, files[i], false, files[i].getName());//)files[i], true);
@@ -85,12 +100,16 @@ public class TextureMap {
 				textures[i] = tex;
 
 			}
+		}
 		temp.setTD(textures);
 		
 		return temp; 
 	}
 
-
+	/*
+	 * Retrieve the specified texture data set
+	 * 
+	 */
 	public TextureData[] getMap(int opt){
 		if(opt == CCIMG)
 			return ccImages.getTD();
@@ -120,6 +139,10 @@ public class TextureMap {
 			return null;
 	}
 	
+	/*
+	 * Retrieve the specified file list
+	 * 
+	 */
 	public File[] getFiles(int opt){
 		if(opt == CCIMG)
 			return ccImages.getFiles();

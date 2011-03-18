@@ -9,7 +9,12 @@ import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 
 
-
+/**
+ * 
+ * Extended JPanel that paints a supplied image for the given x,y location and
+ * widht/height values as the background. 
+ * 
+ */
 public class BackgroundPanel extends JPanel{
 
 	private Image image;

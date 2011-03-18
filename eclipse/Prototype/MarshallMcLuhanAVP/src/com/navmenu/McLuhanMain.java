@@ -41,9 +41,15 @@ import com.jogamp.opengl.util.FPSAnimator;
 import com.physics.PhysicsEngine;
 import com.physics.PhysicsGrabber;
 
-
+/**
+ * 
+ * The main interface and none physics portion of the MIME system.
+ * Uses a card layout to progress between Grabber, Loading, Theme Selection and Interaction 
+ * system states. 
+ * 
+ */
 public class McLuhanMain extends JFrame{
-	
+	//McLuhan themes list
 	private String[] DIRS = {"City as Classroom","Extensions of Man","Global Village","The Medium is the Message"};
 
 	private JFrame frame;
@@ -116,9 +122,10 @@ public class McLuhanMain extends JFrame{
 			}
 		});
         
+		//creates the flash sequence and theme menu loops
         roll = true;
         initFlshSeq();
-
+        
         gogo = new ActionListener(){
         	public void actionPerformed(ActionEvent arg0) {
         		Timer flash = new Timer(3000,one);
@@ -143,7 +150,9 @@ public class McLuhanMain extends JFrame{
 		mode = 1;
 	}
 
-
+	/*
+	 * Setup the grabber effect scene
+	 */
 	private void initGrabber() {
 		GLProfile glp = GLProfile.getDefault();
         GLCapabilities caps = new GLCapabilities(glp);
@@ -166,12 +175,19 @@ public class McLuhanMain extends JFrame{
 		tslide = new TopSlider();
 	}
 
-
+	/*
+	 * Creates the systems file and texture data
+	 */
 	private void initTData() {
 		themes = new TextureMap();
 	}
 
-
+	/*  
+	 * 	Timers used to loop through the theme menu button flash effect and
+	 * theme menu change loop. Sequence progresses from One - Four and then Repeats
+	 * 
+	 * Flashing is achieved by forcing the button modals rollover effect to occur.
+	 */
 	private void initFlshSeq() {
 		one = new ActionListener(){
 			public void actionPerformed(ActionEvent arg0) {
@@ -232,7 +248,11 @@ public class McLuhanMain extends JFrame{
 		
 	}
 
-
+	/*
+	 * Generates and starts the base theme selection loop, for each theme option 
+	 * sets up its action call for the specified data objects.
+	 * 
+	 */
 	private void initSelections() {
 		btns = new JButton[4];
 		JButton temp;
@@ -247,6 +267,7 @@ public class McLuhanMain extends JFrame{
 			temp.setRolloverIcon(new ImageIcon("Menus/Btn"+os+"RO.jpg"));
 			//temp.setName(DIRS[i]);
 			temp.setName(i+"");
+			//launches the required opengl scene for the intedned theme selections
 			temp.addActionListener(new ActionListener(){
 				public void actionPerformed(final ActionEvent ae) {
 					int opt = Integer.parseInt(((JButton)ae.getSource()).getName());
@@ -332,6 +353,9 @@ public class McLuhanMain extends JFrame{
 		
 	}
 	
+	/*
+	 * Updates the top slider to have the required texture data
+	 */
 	private void paintSlide(int opt) {
 		tslide.letsFight(themes.getFiles(opt*3), themes.getFiles((opt*3)+1));
 		
@@ -361,7 +385,10 @@ public class McLuhanMain extends JFrame{
         animator.start();
 	}
 	
-
+	/*
+	 * testing method to generate video rendering
+	 * current issue with textures
+	 */
 	private void initTestVid(String string) {
 		canvas = null;
 		GLProfile glp = GLProfile.getDefault();
@@ -384,7 +411,11 @@ public class McLuhanMain extends JFrame{
 		
 	}
 
-
+	/*
+	 * The left side navigation window for muting/playing the
+	 * background audio and returning to theme selection.
+	 * 
+	 */
 	private void initGLNav(){
 		JPanel dem = new JPanel();
 		dem.setLayout(new GridLayout(0,1));
@@ -399,6 +430,7 @@ public class McLuhanMain extends JFrame{
 		pmen.setPreferredSize(new Dimension(45,45));
 		pmen.setOpaque(false);
 		pmen.setContentAreaFilled(false);
+		//destroys the open gl context and reverts to the main theme selection
 		pmen.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent arg0) {
 				pmen.setEnabled(false);
@@ -467,32 +499,12 @@ public class McLuhanMain extends JFrame{
 		load.setLayout(null);
 		load.setSize(size);	
 	}
-	/*
-	private void initCanvas(String path, String tpath) {
-		GLProfile glp = GLProfile.getDefault();
-        GLCapabilities caps = new GLCapabilities(glp);
-        canvas = new GLCanvas(caps);
-        
-        app = new PhysicsEngine(path,tpath);
-        canvas.addGLEventListener(app);
-        canvas.addKeyListener(app);
-        canvas.addMouseListener(app);
-        canvas.addMouseMotionListener(app);
-        
-        canvas.requestFocus();
-        
-        ActionListener timeout = new ActionListener(){
-			public void actionPerformed(ActionEvent arg0) {
-				app.callTimer();
-				canvas.display();
-			}
-		};
-		quepush = new Timer(15000,timeout);
-		quepush.setRepeats(true);
-		quepush.start();
-	}
-	*/
 	
+	/*
+	 * Creates the OpenGL context and assigns the physics engine
+	 * for the specified texture data and begins the queuing loop
+	 * for media changes
+	 */
 	private void initCanvas(int opt) {
 		GLProfile glp = GLProfile.getDefault();
         GLCapabilities caps = new GLCapabilities(glp);

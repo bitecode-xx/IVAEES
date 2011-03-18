@@ -20,6 +20,13 @@ import com.jogamp.opengl.util.*;
 import com.jogamp.opengl.util.gl2.GLUT;
 import com.jogamp.opengl.util.texture.*;
 
+/**
+ * 
+ * Secondary physics engine implementation which deals with the grabber effect feature of the
+ * MIME system. 
+ * 
+ * 
+ */
 public class PhysicsGrabber implements GLEventListener, KeyListener, MouseListener, MouseMotionListener {
 
 	private double moving = 0;
