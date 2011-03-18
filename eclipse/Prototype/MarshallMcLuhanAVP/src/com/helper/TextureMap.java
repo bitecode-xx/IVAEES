@@ -73,7 +73,6 @@ public class TextureMap {
 		TextureData[] textures;
 		TextureData tex = null;
 		
-		GLProfile.initSingleton(true);
 		GLProfile glp = GLProfile.getDefault();
 		
 		List<File> filesAsList = FileFinder.findFiles(new File(path), REGEX);
@@ -92,7 +91,7 @@ public class TextureMap {
 			//inialize the texture data for each file
 			for(int i=0;i<files.length;i++){
 				try{
-					tex = TextureIO.newTextureData(glp, files[i], true, files[i].getName());//)files[i], true);
+					tex = TextureIO.newTextureData(glp, files[i], false, files[i].getName());//)files[i], true);
 
 				} catch(Exception e) {
 					e.printStackTrace();

@@ -3,5 +3,10 @@
 !eclipse/
 !Kinect
 .metadata
-.class
+*.class
+*.sdf
+*.opensdf
+*.suo
+eclipse/Prototype/Kinect/ipch
+eclipse/Prototype/Kinect/Release
 bin/
