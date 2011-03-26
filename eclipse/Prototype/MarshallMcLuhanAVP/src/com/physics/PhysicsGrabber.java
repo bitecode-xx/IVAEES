@@ -247,7 +247,7 @@ public class PhysicsGrabber implements GLEventListener, KeyListener, MouseListen
 
 		physics = new ParticleSystem(new Vec2D(0, -0.4), 0.3333/60.0, new Vec2D(-1.6, -1.0), new Vec2D(1.6, 1.0));
 
-		pmeshactive = new PhysicsMesh(1.0, 28, textureactive);
+		pmeshactive = new PhysicsMesh(1.0, 28, textureactive, PhysicsMesh.defaultBreakage);
 		pmeshactive.setK(10);
 		pmeshactive.addToSystem(physics);
 

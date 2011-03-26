@@ -10,15 +10,20 @@ public class PhysicsMesh extends ForceGenerator {
 	private int xres, yres;
 	private PhysPoint[][] points;
 	private Vec2D[][] texcoords;
-	private BreakableSoftStickConstraint[][][] constraints;
-	private ArrayList<BreakableSoftStickConstraint> allConstraints;
+	private SoftStickConstraint[][][] constraints;
+	private ArrayList<SoftStickConstraint> allConstraints;
 	private Texture texture;
 	
 	private double restLength;
 	private double k = 1.0;
-	public static double breakage = 3.0;
+	private double breakage;
+	private boolean breakable;
 	
-	public PhysicsMesh(double width, double height, int xres, int yres, Texture texture) {
+	public static final double defaultBreakage = 3.0;
+	
+	public PhysicsMesh(double width, double height, int xres, int yres, Texture texture, double breakage) {
+		this.breakage = breakage;
+		this.breakable = breakage > 1.0;
 		this.width = width;
 		this.height = height;
 		this.xres = xres;
@@ -26,8 +31,8 @@ public class PhysicsMesh extends ForceGenerator {
 		this.texture = texture;
 		points = new PhysPoint[yres+1][xres+1];
 		texcoords = new Vec2D[yres+1][xres+1];
-		constraints = new BreakableSoftStickConstraint[yres][xres][4];
-		allConstraints = new ArrayList<BreakableSoftStickConstraint>();
+		constraints = new SoftStickConstraint[yres][xres][4];
+		allConstraints = new ArrayList<SoftStickConstraint>();
 		generateCoords();
 		generatePoints();
 		
@@ -40,7 +45,10 @@ public class PhysicsMesh extends ForceGenerator {
 		return points;
 	}
 	
-	public PhysicsMesh(double width, int xres, Texture texture) {
+	public PhysicsMesh(double width, int xres, Texture texture, double breakage) {
+		this.breakage = breakage;
+		this.breakable = breakage > 1.0;
+		
 		int twidth = texture.getWidth();
 		int theight = texture.getHeight();
 		
@@ -54,8 +62,8 @@ public class PhysicsMesh extends ForceGenerator {
 		this.texture = texture;
 		points = new PhysPoint[yres+1][xres+1];
 		texcoords = new Vec2D[yres+1][xres+1];
-		constraints = new BreakableSoftStickConstraint[yres][xres][4];
-		allConstraints = new ArrayList<BreakableSoftStickConstraint>();
+		constraints = new SoftStickConstraint[yres][xres][4];
+		allConstraints = new ArrayList<SoftStickConstraint>();
 		generateCoords();
 		generatePoints();
 		
@@ -68,6 +76,15 @@ public class PhysicsMesh extends ForceGenerator {
 		this.k = k;
 	}
 	
+	public void translate(Vec2D t) {
+		for(PhysPoint[] pa : points) {
+			for(PhysPoint p : pa) {
+				p.pos = p.pos.add(t);
+				p.oldpos = p.oldpos.add(t);
+			}
+		}
+	}
+	
 	public void addToSystem(ParticleSystem s) {
 		for(PhysPoint[] pa : points) {
 			for(PhysPoint p : pa) {
@@ -75,16 +92,27 @@ public class PhysicsMesh extends ForceGenerator {
 			}
 		}
 		
+		SoftStickConstraint c;
 		for(int row = 0; row < yres; row++) {
 			for(int column = 0; column < xres; column++) {
-				BreakableSoftStickConstraint c = new BreakableSoftStickConstraint(points[row][column], points[row][column+1], 0.5, breakage);
+				if(breakable) {
+					c = new BreakableSoftStickConstraint(points[row][column], points[row][column+1], 0.5, breakage);
+				}
+				else {
+					c = new SoftStickConstraint(points[row][column], points[row][column+1], 0.5);
+				}
 				constraints[row][column][0] = c;
 				if(row > 0) {
 					constraints[row-1][column][2] = c;
 				}
 				s.addConstraint(c);
 				allConstraints.add(c);
-				c = new BreakableSoftStickConstraint(points[row][column], points[row+1][column], 0.5, breakage);
+				if(breakable) {
+					c = new BreakableSoftStickConstraint(points[row][column], points[row+1][column], 0.5, breakage);
+				}
+				else {
+					c = new SoftStickConstraint(points[row][column], points[row+1][column], 0.5);
+				}
 				constraints[row][column][1] = c;
 				if(column > 0) {
 					constraints[row][column-1][3] = c;
@@ -95,14 +123,24 @@ public class PhysicsMesh extends ForceGenerator {
 		}
 		
 		for(int row = 0; row < yres; row++) {
-			BreakableSoftStickConstraint c = new BreakableSoftStickConstraint(points[row][xres], points[row+1][xres], 0.05, breakage);
+			if(breakable) {
+				c = new BreakableSoftStickConstraint(points[row][xres], points[row+1][xres], 0.5, breakage);
+			}
+			else {
+				c = new SoftStickConstraint(points[row][xres], points[row+1][xres], 0.5);
+			}
 			constraints[row][xres-1][3] = c;
 			s.addConstraint(c);
 			allConstraints.add(c);
 		}
 		
 		for(int column = 0; column < xres; column++) {
-			BreakableSoftStickConstraint c = new BreakableSoftStickConstraint(points[yres][column], points[yres][column+1], 0.05, breakage);
+			if(breakable) {
+				c = new BreakableSoftStickConstraint(points[yres][column], points[yres][column+1], 0.5, breakage);
+			}
+			else {
+				c = new SoftStickConstraint(points[yres][column], points[yres][column+1], 0.5);
+			}
 			constraints[yres-1][column][2] = c;
 			s.addConstraint(c);
 			allConstraints.add(c);
@@ -127,7 +165,12 @@ public class PhysicsMesh extends ForceGenerator {
 						}
 						double dist = Math.sqrt((row-row2)*(row-row2) + (column-column2)*(column-column2));
 						if(dist <= 3) {
-							BreakableSoftStickConstraint c = new BreakableSoftStickConstraint(points[row][column], points[row2][column2], 0.05, breakage/dist);
+							if(breakable) {
+								c = new BreakableSoftStickConstraint(points[row][column], points[row2][column2], 0.05, breakage/dist);
+							}
+							else {
+								c = new SoftStickConstraint(points[row][column], points[row2][column2], 0.05);
+							}
 							s.addConstraint(c);
 							allConstraints.add(c);
 						}
@@ -152,9 +195,12 @@ public class PhysicsMesh extends ForceGenerator {
 	}
 	
 	public double computeBrokenPercent() {
+		if(!breakable) {
+			return 0;
+		}
 		int brokenNum = 0;
-		for(BreakableSoftStickConstraint c : allConstraints) {
-			if(c.isBroken()) {
+		for(SoftStickConstraint c : allConstraints) {
+			if(((BreakableSoftStickConstraint)c).isBroken()) {
 				brokenNum++;
 			}
 		}
@@ -198,10 +244,12 @@ public class PhysicsMesh extends ForceGenerator {
 			for(int column = 0; column <= xres; column++) {
 				
 				boolean broken0 = false, broken1 = false, broken2 = false, broken3 = false;
-				if(constraints[row][Math.min(column, xres-1)][0].isBroken()) { broken0 = true; }
-				if(constraints[row][Math.min(column, xres-1)][1].isBroken()) { broken1 = true; }
-				if(constraints[row][Math.min(column, xres-1)][2].isBroken()) { broken2 = true; }
-				if(constraints[row][Math.min(column, xres-1)][3].isBroken()) { broken3 = true; }
+				if(breakable) {
+					if(((BreakableSoftStickConstraint)constraints[row][Math.min(column, xres-1)][0]).isBroken()) { broken0 = true; }
+					if(((BreakableSoftStickConstraint)constraints[row][Math.min(column, xres-1)][1]).isBroken()) { broken1 = true; }
+					if(((BreakableSoftStickConstraint)constraints[row][Math.min(column, xres-1)][2]).isBroken()) { broken2 = true; }
+					if(((BreakableSoftStickConstraint)constraints[row][Math.min(column, xres-1)][3]).isBroken()) { broken3 = true; }
+				}
 				
 				Vec2D point = points[row][column].pos;
 				Vec2D texcoord = texcoords[row][column];
