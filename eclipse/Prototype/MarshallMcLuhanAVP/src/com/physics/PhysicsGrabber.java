@@ -163,7 +163,7 @@ public class PhysicsGrabber implements GLEventListener, KeyListener, MouseListen
 		
 		pmeshactive.renderMesh(gl);
 
-
+		/*
 		if(constraint1 != null) {
 			constraint1.render(gl);
 		}
@@ -172,7 +172,7 @@ public class PhysicsGrabber implements GLEventListener, KeyListener, MouseListen
 		}
 		if(constraint3 != null) {
 			constraint3.render(gl);
-		}
+		}*/
 
 		if(frameInterval != 0 ) {
 			int fps = 1000000000/(int)frameInterval;
@@ -353,41 +353,13 @@ public class PhysicsGrabber implements GLEventListener, KeyListener, MouseListen
 			else {
 				constraint1 = new CentroidConstraint(points);
 			}
+			if(pgrav != null)
+				pgrav.delete();
 			physics.addConstraint(constraint1);
 			mouse = 1;
 			newpos1 = new Vec2D(mx, my);
 			pgrav = new PointGravity(new Vec2D(mx, my), 0.5, 0.09, physics);
 			physics.addForce(pgrav);
-		}
-		else if(arg0.getButton() == MouseEvent.BUTTON2) {
-			if(constraint2 != null) {
-				constraint2.delete();
-			}
-			ArrayList<PhysPoint> points = getPointsInCircle(new Vec2D(mx, my), 0.15);
-			if(points.size() == 0) {
-				constraint2 = new CircleConstraint(physics, new Vec2D(mx, my), 0.15);
-			}
-			else {
-				constraint2 = new CentroidConstraint(points);
-			}
-			physics.addConstraint(constraint2);
-			mouse = 2;
-			newpos2 = new Vec2D(mx, my);
-		}
-		else {
-			if(constraint3 != null) {
-				constraint3.delete();
-			}
-			ArrayList<PhysPoint> points = getPointsInCircle(new Vec2D(mx, my), 0.15);
-			if(points.size() == 0) {
-				constraint3 = new CircleConstraint(physics, new Vec2D(mx, my), 0.15);
-			}
-			else {
-				constraint3 = new CentroidConstraint(points);
-			}
-			physics.addConstraint(constraint3);
-			mouse = 3;
-			newpos3 = new Vec2D(mx, my);
 		}
 	}
 
