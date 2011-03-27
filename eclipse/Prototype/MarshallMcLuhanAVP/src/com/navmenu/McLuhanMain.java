@@ -35,6 +35,7 @@ import javax.swing.border.LineBorder;
 import org.pirelenito.movieGL.Main;
 
 import com.helper.MP3;
+import com.helper.MenuBuilder;
 import com.helper.TextureMap;
 import com.helper.TopSlider;
 import com.jogamp.opengl.util.FPSAnimator;
@@ -57,11 +58,11 @@ public class McLuhanMain extends JFrame{
 	//TODO convert glnav to class to handle menu grabbing/interaction in gl scene. Might need to be added as an extension to the main gl scene
 	private JPanel menu,glnav;
 	
-	private BackgroundPanel p1,load;
+	private BackgroundPanel p1,p2,p3,p4,load;
 	
 	private JButton pmen, movietest,aud;
 	
-	private JButton[] btns;
+	private JButton[] btns,btns1,btns2,btns3,btns4;
 	
 	private Dimension size = new Dimension(1024,768);
 	
@@ -71,11 +72,11 @@ public class McLuhanMain extends JFrame{
 	
 	private Main video;
 	
-	private Timer quepush;
+	private Timer quepush, ploop,flash, starter;
 	
 	private boolean roll, audio;
 	
-	private ActionListener gogo, repeat, one, two, three, four;
+	private ActionListener gogo, repeat, one, two, three, four,loop;
 	
 	private TextureMap themes;
 	
@@ -87,26 +88,40 @@ public class McLuhanMain extends JFrame{
 	
 	public int mode;
 	
+	private int bgsel;
+	
+	private MenuBuilder backsnbtns;
+	
 	public McLuhanMain() {
 		frame = this;
 		frame.setName("McLuhan Server");
 		frame.setSize(size);
 		//this.setUndecorated(true);
-
+		bgsel =1;
 		menu = new JPanel();
 
 		CardLayout system = new CardLayout();
 		menu.setLayout(system);
-
+		
+		backsnbtns = new MenuBuilder();
+		
 		//initGrabber();
 		initTSlide();
 		initTData();
 		initSelections();
+		initSelections2();
+		initSelections3();
+		initSelections4();
 		initLoading();
 		initGLNav();
-
+		
+		btns = btns1;
+			
 		//menu.add("Grabber",grabc);
-		menu.add("Main One",p1);
+		menu.add("1",p1);
+		menu.add("2",p2);
+		menu.add("3",p3);
+		menu.add("4",p4);
 		menu.add("Loader",load);
 
 		frame.getContentPane().add(BorderLayout.NORTH,tslide);
@@ -128,15 +143,30 @@ public class McLuhanMain extends JFrame{
         
         gogo = new ActionListener(){
         	public void actionPerformed(ActionEvent arg0) {
-        		Timer flash = new Timer(3000,one);
+        		roll = true;
+        		flash = new Timer(3000,one);
         		flash.setRepeats(false);
         		flash.start();
         	}
         };
+        
+        loop = new ActionListener(){
+        	public void actionPerformed(ActionEvent arg0) {
+        		setPage();
+        		setBtns(bgsel);
+        		flash.stop();
+        		starter.stop();
+        		starter.start();
+        		((CardLayout)menu.getLayout()).show(menu, bgsel+"");
+        	}
+        };
 
-        Timer test = new Timer(1000,gogo);
-		test.setRepeats(false);
-		test.start();
+        starter = new Timer(1000,gogo);
+		starter.setRepeats(false);
+		starter.start();
+		
+		ploop = new Timer(45000,loop);
+		ploop.start();
 
 		
 		// Create a new mouse robot
@@ -169,8 +199,7 @@ public class McLuhanMain extends JFrame{
         activateGrabber();
 		
 	}
-
-
+	
 	private void initTSlide() {
 		tslide = new TopSlider();
 	}
@@ -191,10 +220,13 @@ public class McLuhanMain extends JFrame{
 	private void initFlshSeq() {
 		one = new ActionListener(){
 			public void actionPerformed(ActionEvent arg0) {
+				btns[0].getModel().setRollover(false);
+				if(roll){
 				btns[0].getModel().setRollover(true);
-				Timer flash = new Timer(3000,two);
+				flash = new Timer(3000,two);
 				flash.setRepeats(false);
 				flash.start();
+				}
 			}
 		};
 		
@@ -203,7 +235,7 @@ public class McLuhanMain extends JFrame{
 				btns[0].getModel().setRollover(false);
 				if(roll){
 					btns[1].getModel().setRollover(true);
-					Timer flash = new Timer(3000,three);
+					flash = new Timer(3000,three);
 					flash.setRepeats(false);
 					flash.start();
 				}
@@ -215,7 +247,7 @@ public class McLuhanMain extends JFrame{
 				btns[1].getModel().setRollover(false);
 				if(roll){
 					btns[2].getModel().setRollover(true);
-					Timer flash = new Timer(3000,four);
+					flash = new Timer(3000,four);
 					flash.setRepeats(false);
 					flash.start();
 				}
@@ -227,7 +259,7 @@ public class McLuhanMain extends JFrame{
 				btns[2].getModel().setRollover(false);
 				if(roll){
 					btns[3].getModel().setRollover(true);
-					Timer flash = new Timer(3000,repeat);
+					flash = new Timer(3000,repeat);
 					flash.setRepeats(false);
 					flash.start();
 				}
@@ -238,7 +270,7 @@ public class McLuhanMain extends JFrame{
 			public void actionPerformed(ActionEvent arg0) {
 				btns[3].getModel().setRollover(false);
 				if(roll){
-					Timer flash = new Timer(15000,one);
+					flash = new Timer(15000,one);
 					flash.setRepeats(false);
 					flash.start();
 				}
@@ -254,27 +286,19 @@ public class McLuhanMain extends JFrame{
 	 * 
 	 */
 	private void initSelections() {
-		btns = new JButton[4];
-		JButton temp;
-		int os;
-		p1 = new BackgroundPanel("Menus/GlobalVillage.jpg",0,0,new Dimension(1004,738));
-		p1.setLayout(null);
-		p1.setSize(size);
-		
+		btns1 = backsnbtns.getGroup(1);
+		p1 = backsnbtns.getBack(1);
 		for(int i=0;i<4;i++){
-			os = i+1;
-			temp = new JButton(new ImageIcon("Menus/Btn"+os+".jpg"));
-			temp.setRolloverIcon(new ImageIcon("Menus/Btn"+os+"RO.jpg"));
-			//temp.setName(DIRS[i]);
-			temp.setName(i+"");
+			btns1[i].setName(i+"");
 			//launches the required opengl scene for the intedned theme selections
-			temp.addActionListener(new ActionListener(){
+			btns1[i].addActionListener(new ActionListener(){
 				public void actionPerformed(final ActionEvent ae) {
 					int opt = Integer.parseInt(((JButton)ae.getSource()).getName());
 					roll = false;
-					//((CardLayout)menu.getLayout()).show(menu, "Loader");
+					ploop.stop();
+					flash.stop();
+	        		starter.stop();
 					menu.validate();
-					//initCanvas("McLuhan/"+((JButton)ae.getSource()).getName(),"McLuhan/Texts/"+((JButton)ae.getSource()).getName());
 					paintSlide(opt);
 					initCanvas(opt);
 					menu.add("ogl",canvas);
@@ -319,38 +343,30 @@ public class McLuhanMain extends JFrame{
 					// Change mode
 					mode = 2;
 				}});
-			temp.setBorder(null);
-			btns[i] = temp;
+			
 		}
-		
-		btns[0].setSize(new Dimension(242,154));
-		btns[1].setSize(new Dimension(165,160));
-		btns[2].setSize(new Dimension(143,141));
-		btns[3].setSize(new Dimension(288,122));
-		
-		btns[0].setLocation(284, 165);
-		btns[1].setLocation(820, 288);
-		btns[2].setLocation(82, 11);
-		btns[3].setLocation(401, 585);
-		
 		for(int i=0;i<4;i++){
-			p1.add(btns[i]);
+			p1.add(btns1[i]);
 		}
 		
-		movietest = new JButton("Mcluhan Video-Test");
-		movietest.setPreferredSize(new Dimension(241,206));
-		
-		movietest.addActionListener(new ActionListener(){
-			public void actionPerformed(ActionEvent ae) {
-				pmen.setEnabled(true);
-				pmen.setVisible(true);
-				validate();
-				initTestVid("McLuhan/Youtube.mpg");
-				menu.add("video",vidc);
-				menu.validate();
-				((CardLayout)menu.getLayout()).show(menu, "video");
-			}});
-		
+	}
+	
+	private void setBtns(int i){
+		if(i==1)
+			btns = btns1;
+		else if(i== 2)
+			btns = btns2;
+		else if(i== 3)
+			btns = btns3;
+		else if(i==4)
+			btns = btns4;
+	}
+	
+	private void setPage(){
+		if(bgsel == 4)
+			bgsel =1;
+		else
+			bgsel++;
 	}
 	
 	/*
@@ -439,7 +455,13 @@ public class McLuhanMain extends JFrame{
 				aud.setEnabled(false);
 				aud.setVisible(false);
 				aud.removeActionListener(aud.getActionListeners()[0]);
-				((CardLayout)menu.getLayout()).show(menu, "Main One");
+				setPage();
+        		setBtns(bgsel);
+        		ploop.stop();
+        		flash.stop();
+        		starter.stop();
+        		ploop.start();
+        		((CardLayout)menu.getLayout()).show(menu, bgsel+"");
 				if(canvas != null){
 					menu.remove(canvas);
 					canvas = null;
@@ -593,6 +615,217 @@ public class McLuhanMain extends JFrame{
 		}
 		
 		return;
+	}
+	
+	/*
+	 * Generates and starts the base theme selection loop, for each theme option 
+	 * sets up its action call for the specified data objects.
+	 * 
+	 */
+	private void initSelections2() {
+		btns2 = backsnbtns.getGroup(2);
+		p2 = backsnbtns.getBack(2);
+		for(int i=0;i<4;i++){
+			btns2[i].setName(i+"");
+			//launches the required opengl scene for the intedned theme selections
+			btns2[i].addActionListener(new ActionListener(){
+				public void actionPerformed(final ActionEvent ae) {
+					int opt = Integer.parseInt(((JButton)ae.getSource()).getName());
+					roll = false;
+					ploop.stop();
+					flash.stop();
+	        		starter.stop();
+					menu.validate();
+					paintSlide(opt);
+					initCanvas(opt);
+					menu.add("ogl",canvas);
+					soundbite = new MP3("McLuhan/"+DIRS[Integer.parseInt(((JButton)ae.getSource()).getName())]+"/mp3.mp3");
+					pmen.setEnabled(true);
+					pmen.setVisible(true);
+					aud.setEnabled(true);
+					aud.setVisible(true);
+					audio = true;
+					aud.addActionListener(new ActionListener(){
+						public void actionPerformed(ActionEvent arg0) {
+							if(audio){
+								soundbite.close();
+								audio = false;
+								aud.setIcon(new ImageIcon("mute.jpg"));
+							}
+							else{
+								audio=true;
+								soundbite.play();
+								aud.setIcon(new ImageIcon("play.jpg"));
+							}
+							aud.validate();	
+						}
+						
+					});
+					
+					menu.validate();
+					activateAnimation();
+					((CardLayout)menu.getLayout()).show(menu, "Loader");
+					ActionListener time = new ActionListener(){
+						public void actionPerformed(ActionEvent arg0) {
+							glnav.setVisible(true);
+							tslide.setVisible(true);
+							((CardLayout)menu.getLayout()).show(menu, "ogl");
+							    soundbite.play();
+						}
+					};
+					Timer t = new Timer(1000,time);
+					t.setRepeats(false);
+					t.start();
+					   
+					// Change mode
+					mode = 2;
+				}});
+			
+		}
+		for(int i=0;i<4;i++){
+			p2.add(btns2[i]);
+		}
+		
+	}
+	/*
+	 * Generates and starts the base theme selection loop, for each theme option 
+	 * sets up its action call for the specified data objects.
+	 * 
+	 */
+	private void initSelections3() {
+		btns3 = backsnbtns.getGroup(3);
+		p3 = backsnbtns.getBack(3);
+		for(int i=0;i<4;i++){
+			btns3[i].setName(i+"");
+			//launches the required opengl scene for the intedned theme selections
+			btns3[i].addActionListener(new ActionListener(){
+				public void actionPerformed(final ActionEvent ae) {
+					int opt = Integer.parseInt(((JButton)ae.getSource()).getName());
+					roll = false;
+					ploop.stop();
+					flash.stop();
+	        		starter.stop();
+					menu.validate();
+					paintSlide(opt);
+					initCanvas(opt);
+					menu.add("ogl",canvas);
+					soundbite = new MP3("McLuhan/"+DIRS[Integer.parseInt(((JButton)ae.getSource()).getName())]+"/mp3.mp3");
+					pmen.setEnabled(true);
+					pmen.setVisible(true);
+					aud.setEnabled(true);
+					aud.setVisible(true);
+					audio = true;
+					aud.addActionListener(new ActionListener(){
+						public void actionPerformed(ActionEvent arg0) {
+							if(audio){
+								soundbite.close();
+								audio = false;
+								aud.setIcon(new ImageIcon("mute.jpg"));
+							}
+							else{
+								audio=true;
+								soundbite.play();
+								aud.setIcon(new ImageIcon("play.jpg"));
+							}
+							aud.validate();	
+						}
+						
+					});
+					
+					menu.validate();
+					activateAnimation();
+					((CardLayout)menu.getLayout()).show(menu, "Loader");
+					ActionListener time = new ActionListener(){
+						public void actionPerformed(ActionEvent arg0) {
+							glnav.setVisible(true);
+							tslide.setVisible(true);
+							((CardLayout)menu.getLayout()).show(menu, "ogl");
+							    soundbite.play();
+						}
+					};
+					Timer t = new Timer(1000,time);
+					t.setRepeats(false);
+					t.start();
+					   
+					// Change mode
+					mode = 2;
+				}});
+			
+		}
+		for(int i=0;i<4;i++){
+			p3.add(btns3[i]);
+		}
+		
+	}
+	/*
+	 * Generates and starts the base theme selection loop, for each theme option 
+	 * sets up its action call for the specified data objects.
+	 * 
+	 */
+	private void initSelections4() {
+		btns4 = backsnbtns.getGroup(4);
+		p4 = backsnbtns.getBack(4);
+		for(int i=0;i<4;i++){
+			btns4[i].setName(i+"");
+			//launches the required opengl scene for the intedned theme selections
+			btns4[i].addActionListener(new ActionListener(){
+				public void actionPerformed(final ActionEvent ae) {
+					ploop.stop();
+					flash.stop();
+	        		starter.stop();
+					int opt = Integer.parseInt(((JButton)ae.getSource()).getName());
+					roll = false;
+					menu.validate();
+					paintSlide(opt);
+					initCanvas(opt);
+					menu.add("ogl",canvas);
+					soundbite = new MP3("McLuhan/"+DIRS[Integer.parseInt(((JButton)ae.getSource()).getName())]+"/mp3.mp3");
+					pmen.setEnabled(true);
+					pmen.setVisible(true);
+					aud.setEnabled(true);
+					aud.setVisible(true);
+					audio = true;
+					aud.addActionListener(new ActionListener(){
+						public void actionPerformed(ActionEvent arg0) {
+							if(audio){
+								soundbite.close();
+								audio = false;
+								aud.setIcon(new ImageIcon("mute.jpg"));
+							}
+							else{
+								audio=true;
+								soundbite.play();
+								aud.setIcon(new ImageIcon("play.jpg"));
+							}
+							aud.validate();	
+						}
+						
+					});
+					
+					menu.validate();
+					activateAnimation();
+					((CardLayout)menu.getLayout()).show(menu, "Loader");
+					ActionListener time = new ActionListener(){
+						public void actionPerformed(ActionEvent arg0) {
+							glnav.setVisible(true);
+							tslide.setVisible(true);
+							((CardLayout)menu.getLayout()).show(menu, "ogl");
+							    soundbite.play();
+						}
+					};
+					Timer t = new Timer(1000,time);
+					t.setRepeats(false);
+					t.start();
+					   
+					// Change mode
+					mode = 2;
+				}});
+			
+		}
+		for(int i=0;i<4;i++){
+			p4.add(btns4[i]);
+		}
+		
 	}
 	
 }
