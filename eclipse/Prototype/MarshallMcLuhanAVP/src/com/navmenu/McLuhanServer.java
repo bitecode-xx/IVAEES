@@ -1,5 +1,9 @@
 package com.navmenu;
 
+import java.awt.Cursor;
+import java.awt.Image;
+import java.awt.Point;
+import java.awt.Toolkit;
 import java.io.IOException;
 
 import javax.media.opengl.GLProfile;
@@ -21,8 +25,14 @@ public class McLuhanServer {
 	public static void main(String[] args) {
 		GLProfile.initSingleton(true);
 		
+		Toolkit toolkit = Toolkit.getDefaultToolkit();
+		Image image = toolkit.getImage("rh1.png");
+		Point hotSpot = new Point(14,14);
+		Cursor cursor = toolkit.createCustomCursor(image, hotSpot, "hand");
+		
 		McLuhanMain ml = new McLuhanMain();
 		ml.setVisible(true);
+		ml.setCursor(cursor);
 		
 		// If the server is going to connect via sockets then wait for Kinect data in a loop
 		if (isConnected) {
