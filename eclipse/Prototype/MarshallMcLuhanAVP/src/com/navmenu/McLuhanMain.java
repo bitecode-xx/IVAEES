@@ -154,9 +154,7 @@ public class McLuhanMain extends JFrame{
 			public void actionPerformed(ActionEvent arg0) {
 				setPage();
 				setBtns(bgsel);
-				if(flash != null)
 					flash.stop();
-				if(starter != null)
 					starter.stop();
 				starter.start();
 				((CardLayout)menu.getLayout()).show(menu, bgsel+"");
@@ -165,6 +163,7 @@ public class McLuhanMain extends JFrame{
 
 		starter = new Timer(1000,gogo);
 		starter.setRepeats(false);
+		starter.start();
 
 		ploop = new Timer(45000,loop);
 		ploop.start();
@@ -297,7 +296,7 @@ public class McLuhanMain extends JFrame{
 					int opt = Integer.parseInt(((JButton)ae.getSource()).getName());
 					roll = false;
 					ploop.stop();
-					flash.stop();
+						flash.stop();
 					starter.stop();
 					menu.validate();
 					paintSlide(opt);
@@ -459,7 +458,7 @@ public class McLuhanMain extends JFrame{
 				setPage();
 				setBtns(bgsel);
 				ploop.stop();
-				flash.stop();
+					flash.stop();
 				starter.stop();
 				ploop.start();
 				((CardLayout)menu.getLayout()).show(menu, bgsel+"");
@@ -634,7 +633,7 @@ public class McLuhanMain extends JFrame{
 					int opt = Integer.parseInt(((JButton)ae.getSource()).getName());
 					roll = false;
 					ploop.stop();
-					flash.stop();
+						flash.stop();
 					starter.stop();
 					menu.validate();
 					paintSlide(opt);
@@ -704,7 +703,7 @@ public class McLuhanMain extends JFrame{
 					int opt = Integer.parseInt(((JButton)ae.getSource()).getName());
 					roll = false;
 					ploop.stop();
-					flash.stop();
+						flash.stop();
 					starter.stop();
 					menu.validate();
 					paintSlide(opt);
@@ -772,7 +771,7 @@ public class McLuhanMain extends JFrame{
 			btns4[i].addActionListener(new ActionListener(){
 				public void actionPerformed(final ActionEvent ae) {
 					ploop.stop();
-					flash.stop();
+						flash.stop();
 					starter.stop();
 					int opt = Integer.parseInt(((JButton)ae.getSource()).getName());
 					roll = false;
