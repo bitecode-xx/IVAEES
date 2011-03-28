@@ -70,22 +70,26 @@ public class TextureMap {
 	private TDShell loadTextures(String path) {
 		TDShell temp = new TDShell(path);
 		File[] files;
-		TextureData[] textures;
-		TextureData tex = null;
-		
-		GLProfile glp = GLProfile.getDefault();
 		
 		List<File> filesAsList = FileFinder.findFiles(new File(path), REGEX);
 		
 		files = filesAsList.toArray(new File[filesAsList.size()]);
 		temp.setFiles(files);
-		textures = new TextureData[files.length];
+		//textures = new TextureData[files.length];
 		
+		//temp.setTD(textures);
+		
+		return temp; 
+	}
+	
+	
+	private TextureData[] buildTD(File[] files){
+		TextureData tex = null;
+		TextureData[] textures = new TextureData[files.length];
+		GLProfile glp = GLProfile.getDefault();
 		// no files create empty set
 		if(files.length==0){
-			temp.setFiles(new File[0]);
-			temp.setTD(new TextureData[0]);
-			return temp;
+			return new TextureData[0];
 		}
 		else{
 			//inialize the texture data for each file
@@ -101,40 +105,52 @@ public class TextureMap {
 
 			}
 		}
-		temp.setTD(textures);
-		
-		return temp; 
+		return textures;
 	}
+	
 
 	/*
 	 * Retrieve the specified texture data set
 	 * 
 	 */
 	public TextureData[] getMap(int opt){
-		if(opt == CCIMG)
-			return ccImages.getTD();
-		else if(opt == CCTXT)
-			return ccTexts.getTD();
-		else if(opt == CCQTE)
-			return ccQTE.getTD();
-		else if(opt == EMIMG)
-			return emImages.getTD();
-		else if(opt == EMTXT)
-			return emTexts.getTD();
-		else if(opt == EMQTE)
-			return emQTE.getTD();
-		else if(opt == GVIMG)
-			return gvImages.getTD();
-		else if(opt == GVTXT)
-			return gvTexts.getTD();
-		else if(opt == GVQTE)
-			return gvQTE.getTD();
-		else if(opt == MMIMG)
-			return mmImages.getTD();
-		else if(opt == MMTXT)
-			return mmTexts.getTD();
-		else if(opt == MMQTE)
-			return mmQTE.getTD();
+		if(opt == CCIMG){
+			
+			return buildTD(ccImages.getFiles());//ccImages.getTD();
+		}
+		else if(opt == CCTXT){
+			return buildTD(ccTexts.getFiles());//ccTexts.getTD();
+			}
+		else if(opt == CCQTE){
+			return buildTD(ccQTE.getFiles());//ccQTE.getTD();
+			}
+		else if(opt == EMIMG){
+			return buildTD(emImages.getFiles());//emImages.getTD();
+			}
+		else if(opt == EMTXT){
+			return buildTD(emTexts.getFiles());//emTexts.getTD();
+			}
+		else if(opt == EMQTE){
+			return buildTD(emQTE.getFiles());//emQTE.getTD();
+			}
+		else if(opt == GVIMG){
+			return buildTD(gvImages.getFiles());//gvImages.getTD();
+			}
+		else if(opt == GVTXT){
+			return buildTD(emTexts.getFiles());//gvTexts.getTD();
+			}
+		else if(opt == GVQTE){
+			return buildTD(emQTE.getFiles());//gvQTE.getTD();
+			}
+		else if(opt == MMIMG){
+			return buildTD(mmImages.getFiles());//mmImages.getTD();
+			}
+		else if(opt == MMTXT){
+			return buildTD(mmTexts.getFiles());//mmTexts.getTD();
+			}
+		else if(opt == MMQTE){
+			return buildTD(mmQTE.getFiles());//mmQTE.getTD();
+			}
 		else
 			return null;
 	}
@@ -171,6 +187,8 @@ public class TextureMap {
 		else
 			return null;
 	}
+
+
 
 
 }

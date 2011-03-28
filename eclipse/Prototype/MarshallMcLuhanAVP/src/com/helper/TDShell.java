@@ -43,6 +43,10 @@ public class TDShell {
 		this.files = files;
 	}
 	
+	public void destroyTD(){
+		this.td = null;
+	}
+	
 	
 
 }

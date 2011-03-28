@@ -804,7 +804,7 @@ public class McLuhanMain extends JFrame{
 
 					menu.validate();
 					activateAnimation();
-					((CardLayout)menu.getLayout()).show(menu, "Loader");
+					((CardLayout)menu.getLayout()).show(menu, "Loader"); 
 					ActionListener time = new ActionListener(){
 						public void actionPerformed(ActionEvent arg0) {
 							glnav.setVisible(true);

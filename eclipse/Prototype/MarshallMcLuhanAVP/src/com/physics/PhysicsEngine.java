@@ -206,7 +206,7 @@ public class PhysicsEngine implements GLEventListener, KeyListener, MouseListene
 			constraint3.setPos(newpos3);
 		}
 
-		if(pmeshactive.computeBrokenPercent() >= 0.95) {
+		if(pmeshactive.computeBrokenPercent() >= 0.55) {
 
 			callTimer();
 			if(quepush != null) {
@@ -387,11 +387,11 @@ public class PhysicsEngine implements GLEventListener, KeyListener, MouseListene
 		textureactive = imageque[quecount];
 
 		if(textque.length>0)
-			mesh = new DistortableMesh(1.6,1.4, 18,18, textque[0]);
+			mesh = new DistortableMesh(2.4,2.0, 18,18, textque[0]);
 		else if (imageque.length>1)
-			mesh = new DistortableMesh(1.6,1.4, 18,18, imageque[1]);
+			mesh = new DistortableMesh(2.4,2.0, 18,18, imageque[1]);
 		else
-			mesh = new DistortableMesh(1.6,1.4,18,18, textureactive);
+			mesh = new DistortableMesh(2.4,2.0,18,18, textureactive);
 
 		/*
 		if(imageque.length>1)
@@ -446,9 +446,9 @@ public class PhysicsEngine implements GLEventListener, KeyListener, MouseListene
 				if(quecount == imageque.length)
 					quecount = 0;
 				if(tquecount+1 == textque.length)
-					mesh = new DistortableMesh(1.6,1.4,1,1, textque[0]);
+					mesh = new DistortableMesh(2.4,2.0,1,1, textque[0]);
 				else
-					mesh = new DistortableMesh(1.6,1.4,1,1, textque[tquecount+1]);
+					mesh = new DistortableMesh(2.4,2.0,1,1, textque[tquecount+1]);
 				textureactive = imageque[quecount];
 				pmeshactive.delete();
 				pmeshactive = new PhysicsMesh(2.0, 40, textureactive, PhysicsMesh.defaultBreakage);
@@ -462,9 +462,9 @@ public class PhysicsEngine implements GLEventListener, KeyListener, MouseListene
 				if(tquecount == textque.length)
 					tquecount = 0;
 				if(quecount+1 == imageque.length)
-					mesh = new DistortableMesh(1.6,1.4,1,1, imageque[0]);
+					mesh = new DistortableMesh(2.4,2.0,1,1, imageque[0]);
 				else
-					mesh = new DistortableMesh(1.6,1.4,1,1, imageque[quecount+1]);
+					mesh = new DistortableMesh(2.4,2.0,1,1, imageque[quecount+1]);
 				textureactive = textque[tquecount];
 				pmeshactive.delete();
 				pmeshactive = new PhysicsMesh(2.0, 40, textureactive, PhysicsMesh.defaultBreakage);
@@ -477,9 +477,9 @@ public class PhysicsEngine implements GLEventListener, KeyListener, MouseListene
 			if(quecount == imageque.length)
 				quecount = 0;
 			if(quecount+1 == imageque.length)
-				mesh = new DistortableMesh(1.6,1.4,1,1, imageque[0]);
+				mesh = new DistortableMesh(2.4,2.0,1,1, imageque[0]);
 			else
-				mesh = new DistortableMesh(1.6,1.4,1,1, imageque[quecount+1]);
+				mesh = new DistortableMesh(2.4,2.0,1,1, imageque[quecount+1]);
 			textureactive = imageque[quecount];
 			pmeshactive.delete();
 			pmeshactive = new PhysicsMesh(2.0, 40, textureactive, PhysicsMesh.defaultBreakage);
@@ -629,9 +629,9 @@ public class PhysicsEngine implements GLEventListener, KeyListener, MouseListene
 			if(quecount == imageque.length)
 				quecount = 0;
 			if(tquecount+1 == textque.length)
-				mesh = new DistortableMesh(1.6,1.4,1,1, textque[0]);
+				mesh = new DistortableMesh(2.4,2.0,1,1, textque[0]);
 			else
-				mesh = new DistortableMesh(1.6,1.4,1,1, textque[tquecount+1]);
+				mesh = new DistortableMesh(2.4,2.0,1,1, textque[tquecount+1]);
 			textureactive = imageque[quecount];
 			pmeshactive.delete();
 			pmeshactive = new PhysicsMesh(2.0, 40, textureactive, PhysicsMesh.defaultBreakage);
@@ -643,9 +643,9 @@ public class PhysicsEngine implements GLEventListener, KeyListener, MouseListene
 			if(quecount == imageque.length)
 				quecount = 0;
 			if(quecount+1 == imageque.length)
-				mesh = new DistortableMesh(1.6,1.4,1,1, imageque[0]);
+				mesh = new DistortableMesh(2.4,2.0,1,1, imageque[0]);
 			else
-				mesh = new DistortableMesh(1.6,1.4,1,1, imageque[quecount+1]);
+				mesh = new DistortableMesh(2.4,2.0,1,1, imageque[quecount+1]);
 			textureactive = imageque[quecount];
 			pmeshactive.delete();
 			pmeshactive = new PhysicsMesh(2.0, 40, textureactive, PhysicsMesh.defaultBreakage);
@@ -665,9 +665,9 @@ public class PhysicsEngine implements GLEventListener, KeyListener, MouseListene
 		if(tquecount == textque.length)
 			tquecount = 0;
 		if(quecount+1 == imageque.length)
-			mesh = new DistortableMesh(1.6,1.4,1,1, imageque[0]);
+			mesh = new DistortableMesh(2.4,2.0,1,1, imageque[0]);
 		else
-			mesh = new DistortableMesh(1.6,1.4,1,1, imageque[quecount+1]);
+			mesh = new DistortableMesh(2.4,2.0,1,1, imageque[quecount+1]);
 		textureactive = textque[tquecount];
 		pmeshactive.delete();
 		pmeshactive = new PhysicsMesh(2.0, 40, textureactive, PhysicsMesh.defaultBreakage);
