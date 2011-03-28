@@ -232,6 +232,10 @@ public class PhysicsMesh extends ForceGenerator {
 			}
 		}
 	}
+	
+	public void updateTexture(Texture tex){
+		this.texture = tex;
+	}
 
 	public void renderMesh(GL2 gl) {
 		

@@ -16,9 +16,11 @@ import org.pirelenito.multimedia.jmf.plugin.IGLTextureRenderer;
 
 
 import com.jogamp.opengl.util.gl2.GLUT;
+import com.jogamp.opengl.util.texture.Texture;
 import com.jogamp.opengl.util.FPSAnimator;
 //import com.sun.opengl.util.FPSAnimator;
 //import com.sun.opengl.util.GLUT;
+import com.physics.DistortableMesh;
 
 /**
  * Simple application to open a movie file and render it using JMF + JOGL + FOBS4JMF
@@ -64,6 +66,10 @@ public class Main implements WindowListener, GLEventListener {
 	 * Get error strings!
 	 */
 	private static GLU glu = new GLU();
+	
+	private Texture textureactive ;
+	
+	private DistortableMesh mesh;
 	
 	/**
 	 * @param args takes one argument: file to open and play.
@@ -150,20 +156,24 @@ public class Main implements WindowListener, GLEventListener {
 		gl.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT);
 		
 		// try to render the movie, and if succeed bind the texture
+		if(renderer != null){
 		if (renderer.render(gl))
 			try {
-				renderer.getTexture().bind();
+				textureactive = renderer.getTexture();//.bind();
+				//textureactive.bind();
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-
+			
+		mesh = new DistortableMesh(1.4,1.2,18,18, textureactive);
+		mesh.render(gl);
 		// rotating and rendering the teapot!
-		gl.glRotatef(1, 0, 1, 0);
-		glut.glutSolidTeapot(0.8);
+		//gl.glRotatef(1, 0, 1, 0);
+		//glut.glutSolidTeapot(0.8);
 		
 		
-		gl.glFlush();
-		
+		//gl.glFlush();
+		}
 		int error = gl.glGetError();
 		if (error != GL.GL_NO_ERROR)
 			System.out.println(glu.gluErrorString(error));

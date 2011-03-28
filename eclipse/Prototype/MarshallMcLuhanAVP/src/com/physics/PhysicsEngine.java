@@ -14,6 +14,9 @@ import javax.media.opengl.*;
 import javax.media.opengl.awt.*;
 import javax.media.opengl.glu.GLU;
 
+import org.pirelenito.multimedia.jmf.MoviePlayer;
+import org.pirelenito.multimedia.jmf.plugin.IGLTextureRenderer;
+
 import com.communication.Engine_Server;
 import com.jogamp.opengl.impl.x11.glx.GLX;
 import com.jogamp.opengl.util.*;
@@ -24,18 +27,18 @@ public class PhysicsEngine implements GLEventListener, KeyListener, MouseListene
 
 	private double moving = 0;
 
-	private Texture textureactive;	
+	private Texture textureactive, textvid;	
 	private Texture[] imageque, textque, qteque;
 	private TextureData[] imagequeTD, textqueTD, qtequeTD;
 
 	private DistortableMesh mesh;
-	private PhysicsMesh pmeshactive;
+	private PhysicsMesh pmeshactive, pmhide;
 	private PhysicsMesh[] qts;
 
 	private ParticleSystem physics;
 
 	private int framecount = 0;
-	private int quecount = 0, tquecount = 0;
+	private int quecount = 0, tquecount = 0, vidcount = 0, qtecount=0;
 	private PointGravity pgrav;
 
 	private static JFrame frame;
@@ -59,20 +62,26 @@ public class PhysicsEngine implements GLEventListener, KeyListener, MouseListene
 
 	private String source,texts;
 
-	private File[] imageFiles, txtFiles, qteFiles;
+	private File[] imageFiles, txtFiles, qteFiles, vidFiles;
 
 	private Timer quepush = null;
 
 	private boolean image, txt, video;
+	
+	private MoviePlayer player;
+	
+	private IGLTextureRenderer renderer;
 
 
-	public PhysicsEngine(TextureData[] source, TextureData[] texts, TextureData[] Quotes){
+	public PhysicsEngine(TextureData[] source, TextureData[] texts, TextureData[] Quotes, File[] videos){
 		quecount = 0;
 		tquecount = 0;
+		vidcount= 0;
 		imagequeTD = source;
 		imageque = new Texture[imagequeTD.length];
 		qtequeTD = Quotes;
 		qteque = new Texture[qtequeTD.length];
+		vidFiles = videos;
 		qts = new PhysicsMesh[qtequeTD.length];
 		if(texts != null){			
 			textqueTD = texts;
@@ -82,13 +91,12 @@ public class PhysicsEngine implements GLEventListener, KeyListener, MouseListene
 			textqueTD = new TextureData[0];
 			textque = new Texture[0];
 		}
-
+		
 		image = false;
 		txt = true;
 		video = false;
 	}	
-
-
+	/*
 	public PhysicsEngine(String source, String texts){
 		this.source = source;
 		if(texts != null){			
@@ -100,11 +108,11 @@ public class PhysicsEngine implements GLEventListener, KeyListener, MouseListene
 		image = false;
 		txt = true;
 		video = false;
-	}
+	}*/
 
 	public PhysicsEngine(String source){
 		this.source = source;
-		initQue();
+		//initQue();
 	}
 
 	public PhysicsEngine(){
@@ -115,35 +123,29 @@ public class PhysicsEngine implements GLEventListener, KeyListener, MouseListene
 		this.quepush = q;
 	}
 
-
-	private void initQue() {
-		List<File> filesAsList = FileFinder.findFiles(
-				new File(source), ".*\\.jpg|.*\\.JPG|.*\\.gif|.*\\.png|.*\\.bmp");//|.*\\.flv|.*\\.mov|.*\\.pdf|.*\\.docx||.*\\.rtf");
-		imageFiles = filesAsList.toArray(new File[filesAsList.size()]);
-		imageque = new Texture[imageFiles.length];
-		//for(int i=0;i<imageFiles.length;i++)
-		//	System.err.println(imageFiles[i].getAbsolutePath());
-
-		quecount = 0;
+	
+	public void end(){
+		player.stop();
+		
 	}
-
-	private void initTQue() {
-		List<File> filesAsList = FileFinder.findFiles(
-				new File(source), ".*\\.jpg|.*\\.JPG|.*\\.gif|.*\\.png|.*\\.bmp");//|.*\\.flv|.*\\.mov|.*\\.pdf|.*\\.docx||.*\\.rtf");
-		imageFiles = filesAsList.toArray(new File[filesAsList.size()]);
-
-		List<File> textAsList = FileFinder.findFiles(
-				new File(texts), ".*\\.jpg|.*\\.JPG|.*\\.gif|.*\\.png|.*\\.bmp");//|.*\\.flv|.*\\.mov|.*\\.pdf|.*\\.docx||.*\\.rtf");
-
-		txtFiles = textAsList.toArray(new File[textAsList.size()]);
-
-		imageque = new Texture[imageFiles.length];
-		textque = new Texture[txtFiles.length];
-		//for(int i=0;i<imageFiles.length;i++)
-		//	System.err.println(imageFiles[i].getAbsolutePath());
-
-		quecount = 0;
-		tquecount = 0;
+	
+	private void play(){
+		player.setLoop(false);
+		player.play();
+		renderer = player.getRenderer();
+	}
+	
+	private void setMovie(File vid){
+		try {
+			player = new MoviePlayer (vid.getPath());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		pmhide = new PhysicsMesh(1.5, 20, textvid, 0);
+		pmhide.translate(new Vec2D(0.2,0.2));
+		pmhide.setK(5);
+		pmhide.addToSystem(physics);
+		play();
 	}
 
 	private void update() {
@@ -206,8 +208,10 @@ public class PhysicsEngine implements GLEventListener, KeyListener, MouseListene
 			constraint3.setPos(newpos3);
 		}
 
-		if(pmeshactive.computeBrokenPercent() >= 0.55) {
-
+		if(pmeshactive.computeBrokenPercent() >= 0.95) {
+			if(video){
+				end();
+			}			
 			callTimer();
 			if(quepush != null) {
 				quepush.restart();
@@ -225,7 +229,7 @@ public class PhysicsEngine implements GLEventListener, KeyListener, MouseListene
 
 		gl.glMatrixMode(GL2.GL_MODELVIEW);
 		gl.glLoadIdentity();
-
+		
 		gl.glClear(GL2.GL_COLOR_BUFFER_BIT | GL2.GL_DEPTH_BUFFER_BIT);
 		/*
 	    mesh.renderWireframe(gl);
@@ -243,10 +247,22 @@ public class PhysicsEngine implements GLEventListener, KeyListener, MouseListene
 
 		physics.render(gl);
 		mesh.render(gl);
-
-		PhysicsMesh pm;
-		for(int i = 0;i<qts.length;i++){
-			pm = qts[i];
+		
+		if(video){
+			if(renderer != null){
+				if (renderer.render(gl))
+					try {
+						textvid = renderer.getTexture();
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+					pmhide.updateTexture(textvid);// = new DistortableMesh(1.4,1.2,18,18, textvid);
+					pmhide.renderMesh(gl);
+			}
+		}
+		else if(qts.length>0){
+			PhysicsMesh pm;
+			pm = qts[qtecount];
 			pm.renderMesh(gl);
 		}
 		pmeshactive.renderMesh(gl);
@@ -383,32 +399,18 @@ public class PhysicsEngine implements GLEventListener, KeyListener, MouseListene
 
 			qteque[i] = textureactive;
 		}
+		
+		textvid = imageque[quecount];
 
 		textureactive = imageque[quecount];
 
 		if(textque.length>0)
-			mesh = new DistortableMesh(2.4,2.0, 18,18, textque[0]);
+			mesh = new DistortableMesh(2.6,2.0, 18,18, textque[0]);
 		else if (imageque.length>1)
-			mesh = new DistortableMesh(2.4,2.0, 18,18, imageque[1]);
+			mesh = new DistortableMesh(2.6,2.0, 18,18, imageque[1]);
 		else
-			mesh = new DistortableMesh(2.4,2.0,18,18, textureactive);
+			mesh = new DistortableMesh(2.6,2.0,18,18, textureactive);
 
-		/*
-		if(imageque.length>1)
-			mesh = new DistortableMesh(1.4,1.4, 16,16, imageque[1]);
-		else
-			mesh = new DistortableMesh(1.4,1.4,16,16, textureactive);
-		/*
-		//mesh.setTransform(MatrixTransform2.getRotationMatrix(Math.PI/3));
-		//mesh.setTransform(new MatrixTransform2(0.1, 0.2, 0.3, 0.4));
-		mesh.setTransform(new Transform2D() {
-			public Vec2D transform(Vec2D point) {
-				Vec2D result = point.add(new Vec2D(0.3*Math.sin((point.y+moving)*5),
-						0.3*Math.sin((point.x+moving)*5)));
-				return result;
-			}
-
-		});*/
 
 		physics = new ParticleSystem(new Vec2D(0, -0.4), 0.3333/60.0, new Vec2D(-1.6, -1.0), new Vec2D(1.6, 1.0));
 
@@ -425,6 +427,7 @@ public class PhysicsEngine implements GLEventListener, KeyListener, MouseListene
 		pmeshactive = new PhysicsMesh(2.0, 40, textureactive, PhysicsMesh.defaultBreakage);
 		pmeshactive.setK(10);
 		pmeshactive.addToSystem(physics);
+		
 
 		//pgrav = new PointGravity(new Vec2D(-0.5, 0.8), 4.5, 0.09, physics);
 
@@ -438,6 +441,24 @@ public class PhysicsEngine implements GLEventListener, KeyListener, MouseListene
 	 * 
 	 */
 	public void callTimer(){
+		if(!video){
+			if(vidcount < vidFiles.length){
+				setMovie(vidFiles[vidcount]);
+			}
+			else {
+				vidcount = 0;
+				setMovie(vidFiles[vidcount]);
+			}
+			vidcount++;
+			video = true;
+		}
+		else{
+			end();
+			qtecount++;
+			if(qtecount >= qts.length)
+				qtecount = 0;
+			video = false;
+		}
 		if(imageque.length>0 && textque.length > 0){
 			if(image){
 				image = false;
@@ -446,9 +467,9 @@ public class PhysicsEngine implements GLEventListener, KeyListener, MouseListene
 				if(quecount == imageque.length)
 					quecount = 0;
 				if(tquecount+1 == textque.length)
-					mesh = new DistortableMesh(2.4,2.0,1,1, textque[0]);
+					mesh = new DistortableMesh(2.6,2.0,1,1, textque[0]);
 				else
-					mesh = new DistortableMesh(2.4,2.0,1,1, textque[tquecount+1]);
+					mesh = new DistortableMesh(2.6,2.0,1,1, textque[tquecount+1]);
 				textureactive = imageque[quecount];
 				pmeshactive.delete();
 				pmeshactive = new PhysicsMesh(2.0, 40, textureactive, PhysicsMesh.defaultBreakage);
@@ -462,9 +483,9 @@ public class PhysicsEngine implements GLEventListener, KeyListener, MouseListene
 				if(tquecount == textque.length)
 					tquecount = 0;
 				if(quecount+1 == imageque.length)
-					mesh = new DistortableMesh(2.4,2.0,1,1, imageque[0]);
+					mesh = new DistortableMesh(2.6,2.0,1,1, imageque[0]);
 				else
-					mesh = new DistortableMesh(2.4,2.0,1,1, imageque[quecount+1]);
+					mesh = new DistortableMesh(2.6,2.0,1,1, imageque[quecount+1]);
 				textureactive = textque[tquecount];
 				pmeshactive.delete();
 				pmeshactive = new PhysicsMesh(2.0, 40, textureactive, PhysicsMesh.defaultBreakage);
@@ -477,9 +498,9 @@ public class PhysicsEngine implements GLEventListener, KeyListener, MouseListene
 			if(quecount == imageque.length)
 				quecount = 0;
 			if(quecount+1 == imageque.length)
-				mesh = new DistortableMesh(2.4,2.0,1,1, imageque[0]);
+				mesh = new DistortableMesh(2.6,2.0,1,1, imageque[0]);
 			else
-				mesh = new DistortableMesh(2.4,2.0,1,1, imageque[quecount+1]);
+				mesh = new DistortableMesh(2.6,2.0,1,1, imageque[quecount+1]);
 			textureactive = imageque[quecount];
 			pmeshactive.delete();
 			pmeshactive = new PhysicsMesh(2.0, 40, textureactive, PhysicsMesh.defaultBreakage);
@@ -622,6 +643,24 @@ public class PhysicsEngine implements GLEventListener, KeyListener, MouseListene
 	}
 
 	public void pushTimerImg(int iloc){
+		if(!video){
+			if(vidcount < vidFiles.length){
+				setMovie(vidFiles[vidcount]);
+			}
+			else {
+				vidcount = 0;
+				setMovie(vidFiles[vidcount]);
+			}
+			vidcount++;
+			video = true;
+		}
+		else{
+			end();
+			qtecount++;
+			if(qtecount >= qts.length)
+				qtecount = 0;
+			video = false;
+		}
 		quecount = iloc;
 		if(textque.length > 0){
 			image = false;
@@ -629,9 +668,9 @@ public class PhysicsEngine implements GLEventListener, KeyListener, MouseListene
 			if(quecount == imageque.length)
 				quecount = 0;
 			if(tquecount+1 == textque.length)
-				mesh = new DistortableMesh(2.4,2.0,1,1, textque[0]);
+				mesh = new DistortableMesh(2.6,2.0,1,1, textque[0]);
 			else
-				mesh = new DistortableMesh(2.4,2.0,1,1, textque[tquecount+1]);
+				mesh = new DistortableMesh(2.6,2.0,1,1, textque[tquecount+1]);
 			textureactive = imageque[quecount];
 			pmeshactive.delete();
 			pmeshactive = new PhysicsMesh(2.0, 40, textureactive, PhysicsMesh.defaultBreakage);
@@ -643,9 +682,9 @@ public class PhysicsEngine implements GLEventListener, KeyListener, MouseListene
 			if(quecount == imageque.length)
 				quecount = 0;
 			if(quecount+1 == imageque.length)
-				mesh = new DistortableMesh(2.4,2.0,1,1, imageque[0]);
+				mesh = new DistortableMesh(2.6,2.0,1,1, imageque[0]);
 			else
-				mesh = new DistortableMesh(2.4,2.0,1,1, imageque[quecount+1]);
+				mesh = new DistortableMesh(2.6,2.0,1,1, imageque[quecount+1]);
 			textureactive = imageque[quecount];
 			pmeshactive.delete();
 			pmeshactive = new PhysicsMesh(2.0, 40, textureactive, PhysicsMesh.defaultBreakage);
@@ -659,15 +698,33 @@ public class PhysicsEngine implements GLEventListener, KeyListener, MouseListene
 	}
 
 	public void pushTimerTxt(int tloc){
+		if(!video){
+			if(vidcount < vidFiles.length){
+				setMovie(vidFiles[vidcount]);
+			}
+			else {
+				vidcount = 0;
+				setMovie(vidFiles[vidcount]);
+			}
+			vidcount++;
+			video = true;
+		}
+		else{
+			end();
+			qtecount++;
+			if(qtecount >= qts.length)
+				qtecount = 0;
+			video = false;
+		}
 		tquecount = tloc;
 		image = true;
 		txt = false;
 		if(tquecount == textque.length)
 			tquecount = 0;
 		if(quecount+1 == imageque.length)
-			mesh = new DistortableMesh(2.4,2.0,1,1, imageque[0]);
+			mesh = new DistortableMesh(2.6,2.0,1,1, imageque[0]);
 		else
-			mesh = new DistortableMesh(2.4,2.0,1,1, imageque[quecount+1]);
+			mesh = new DistortableMesh(2.6,2.0,1,1, imageque[quecount+1]);
 		textureactive = textque[tquecount];
 		pmeshactive.delete();
 		pmeshactive = new PhysicsMesh(2.0, 40, textureactive, PhysicsMesh.defaultBreakage);

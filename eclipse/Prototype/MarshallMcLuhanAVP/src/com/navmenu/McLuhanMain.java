@@ -180,6 +180,13 @@ public class McLuhanMain extends JFrame{
 		mode = 1;
 	}
 
+	public void timerstop(){
+		quepush.stop();
+	}
+	public void restart(){
+		quepush.restart();
+	}
+	
 	/*
 	 * Setup the grabber effect scene
 	 */
@@ -197,7 +204,6 @@ public class McLuhanMain extends JFrame{
 		grabc.requestFocus();
 
 		activateGrabber();
-
 	}
 
 	private void initTSlide() {
@@ -417,13 +423,21 @@ public class McLuhanMain extends JFrame{
 			e.printStackTrace();
 		}
 
-		vidc = video.getCanvas();
+		grabc = video.getCanvas();
+		grabc.addGLEventListener(video);
+		
+		grabc.requestFocus();
+		activateVideo();
+		video.runstuff();
+
+		/*vidc = video.getCanvas();
 
 		vidc.addGLEventListener(video);
 
 		vidc.requestFocus();
 		activateVideo();
 		video.runstuff();
+		*/
 
 	}
 
@@ -532,7 +546,7 @@ public class McLuhanMain extends JFrame{
 		GLCapabilities caps = new GLCapabilities(glp);
 		canvas = new GLCanvas(caps);
 
-		app = new PhysicsEngine(themes.getMap(opt*3), themes.getMap((opt*3)+1), themes.getMap((opt*3)+2));
+		app = new PhysicsEngine(themes.getMap(opt*3), themes.getMap((opt*3)+1), themes.getMap((opt*3)+2),themes.getVids(opt));
 		canvas.addGLEventListener(app);
 		canvas.addKeyListener(app);
 		canvas.addMouseListener(app);

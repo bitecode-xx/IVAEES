@@ -53,6 +53,10 @@ public class MoviePlayer implements ControllerListener  {
 		while(player.getTargetState() != Player.Started );
 	}
 	
+	public Time getLen(){
+		return player.getDuration();
+	}
+	
 	public void pause() {
 		player.stop();
 	}

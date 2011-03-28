@@ -23,8 +23,8 @@ import com.physics.FileFinder;
 public class TextureMap {
 	
 	//regex string for image search
-	private String REGEX = ".*\\.jpg|.*\\.JPG|.*\\.gif|.*\\.png|.*\\.GIF|.*\\.PNG|.*\\.bmp|.*\\.BMP";//|.*\\.flv|.*\\.mov|.*\\.pdf|.*\\.docx||.*\\.rtf");	
-	
+	private String REGEX = ".*\\.jpg|.*\\.JPG|.*\\.gif|.*\\.png|.*\\.GIF|.*\\.PNG|.*\\.bmp|.*\\.BMP";	
+	private String VREGEX = ".*\\.MPG|.*\\.mov|.*\\.mpg";
 	//vars for specifying which texture data set to grab
 	private int CCIMG = 0;
 	private int CCTXT = 1;
@@ -40,7 +40,7 @@ public class TextureMap {
 	private int MMQTE = 11;
 	
 	
-	private TDShell gvImages,gvTexts,gvQTE,emImages,emTexts,emQTE,mmImages,mmTexts,mmQTE, ccImages, ccTexts,ccQTE;
+	private TDShell gvImages,gvTexts,gvQTE, gvVid,emImages,emTexts,emQTE,emVid,mmImages,mmTexts,mmQTE,mmVid, ccImages, ccTexts,ccQTE,ccVid;
 	
 	public TextureMap(){
 		
@@ -48,20 +48,36 @@ public class TextureMap {
 		gvImages = loadTextures("McLuhan/Global Village");
 		gvTexts = loadTextures("McLuhan/Texts/Global Village");
 		gvQTE = loadTextures("McLuhan/Quotes/Global Village");
+		gvVid = loadVids("McLuhan/Video/Global Village");
 		
 		mmImages = loadTextures("McLuhan/The Medium is the Message");
 		mmTexts = loadTextures("McLuhan/Texts/The Medium is the Message");
 		mmQTE = loadTextures("McLuhan/Quotes/The Medium is the Message");
+		mmVid = loadVids("McLuhan/Video/The Medium is the Message");
 		
 		emImages = loadTextures("McLuhan/Extensions of Man");
 		emTexts = loadTextures("McLuhan/Texts/Extensions of Man");
 		emQTE = loadTextures("McLuhan/Quotes/Extensions of Man");
+		emVid = loadVids("McLuhan/Video/Extensions of Man");
 		
 		ccImages = loadTextures("McLuhan/City as Classroom");
 		ccTexts = loadTextures("McLuhan/Texts/City as Classroom");
 		ccQTE = loadTextures("McLuhan/Quotes/City as Classroom");
+		ccVid = loadVids("McLuhan/Video/City as Classroom");
 		
 		
+	}
+
+	private TDShell loadVids(String string) {
+		TDShell temp = new TDShell(string);
+		File[] files;
+		
+		List<File> filesAsList = FileFinder.findFiles(new File(string), VREGEX);
+		
+		files = filesAsList.toArray(new File[filesAsList.size()]);
+		temp.setFiles(files);
+		
+		return temp; 
 	}
 
 	/*
@@ -137,10 +153,10 @@ public class TextureMap {
 			return buildTD(gvImages.getFiles());//gvImages.getTD();
 			}
 		else if(opt == GVTXT){
-			return buildTD(emTexts.getFiles());//gvTexts.getTD();
+			return buildTD(gvTexts.getFiles());//gvTexts.getTD();
 			}
 		else if(opt == GVQTE){
-			return buildTD(emQTE.getFiles());//gvQTE.getTD();
+			return buildTD(gvQTE.getFiles());//gvQTE.getTD();
 			}
 		else if(opt == MMIMG){
 			return buildTD(mmImages.getFiles());//mmImages.getTD();
@@ -188,6 +204,18 @@ public class TextureMap {
 			return null;
 	}
 
+	public File[] getVids(int opt){
+		if(opt == 0)
+			return ccVid.getFiles();
+		else if(opt == 1)
+			return emVid.getFiles();
+		else if(opt == 2)
+			return gvVid.getFiles();
+		else if(opt == 3)
+			return mmVid.getFiles();
+		else
+			return null;
+	}
 
 
 
