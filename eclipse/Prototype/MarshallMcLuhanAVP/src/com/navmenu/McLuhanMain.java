@@ -179,13 +179,6 @@ public class McLuhanMain extends JFrame{
 		// Init mode
 		mode = 1;
 	}
-
-	public void timerstop(){
-		quepush.stop();
-	}
-	public void restart(){
-		quepush.restart();
-	}
 	
 	/*
 	 * Setup the grabber effect scene
@@ -317,13 +310,13 @@ public class McLuhanMain extends JFrame{
 					aud.addActionListener(new ActionListener(){
 						public void actionPerformed(ActionEvent arg0) {
 							if(audio){
-								soundbite.close();
+								soundbite.pause();
 								audio = false;
 								aud.setIcon(new ImageIcon("mute.jpg"));
 							}
 							else{
 								audio=true;
-								soundbite.play();
+								soundbite.resume();
 								aud.setIcon(new ImageIcon("play.jpg"));
 							}
 							aud.validate();	
@@ -340,6 +333,7 @@ public class McLuhanMain extends JFrame{
 							tslide.setVisible(true);
 							((CardLayout)menu.getLayout()).show(menu, "ogl");
 							soundbite.play();
+							app.setSound(soundbite);
 						}
 					};
 					Timer t = new Timer(1000,time);
@@ -384,11 +378,6 @@ public class McLuhanMain extends JFrame{
 	}
 
 
-	private void activateVideo() {
-		animator = new FPSAnimator(vidc, 30);
-		animator.start();
-	}
-
 	public void activateOGL(){
 		activatecanvas();
 	}
@@ -407,39 +396,6 @@ public class McLuhanMain extends JFrame{
 		animator.start();
 	}
 
-	/*
-	 * testing method to generate video rendering
-	 * current issue with textures
-	 */
-	private void initTestVid(String string) {
-		canvas = null;
-		GLProfile glp = GLProfile.getDefault();
-		GLCapabilities caps = new GLCapabilities(glp);
-		video = null;
-		try {
-			video = new Main(string);
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-		grabc = video.getCanvas();
-		grabc.addGLEventListener(video);
-		
-		grabc.requestFocus();
-		activateVideo();
-		video.runstuff();
-
-		/*vidc = video.getCanvas();
-
-		vidc.addGLEventListener(video);
-
-		vidc.requestFocus();
-		activateVideo();
-		video.runstuff();
-		*/
-
-	}
 
 	/*
 	 * The left side navigation window for muting/playing the
@@ -561,14 +517,17 @@ public class McLuhanMain extends JFrame{
 				canvas.display();
 			}
 		};
-		quepush = new Timer(45000,timeout);
+		quepush = new Timer(70000,timeout);
 		quepush.setRepeats(true);
 		quepush.start();
+		
+		app.setTimer(quepush);
 	}
 
 	/*
 	  Receive function that handles Kinect data for the attention "grabber" display
 	 */
+	@SuppressWarnings("unused")
 	public void recvGrabberData(float x, float y, float depth, int select, String action) {
 		System.out.println("Mode: " + mode);
 
@@ -685,6 +644,7 @@ public class McLuhanMain extends JFrame{
 							tslide.setVisible(true);
 							((CardLayout)menu.getLayout()).show(menu, "ogl");
 							soundbite.play();
+							app.setSound(soundbite);
 						}
 					};
 					Timer t = new Timer(1000,time);
@@ -755,6 +715,7 @@ public class McLuhanMain extends JFrame{
 							tslide.setVisible(true);
 							((CardLayout)menu.getLayout()).show(menu, "ogl");
 							soundbite.play();
+							app.setSound(soundbite);
 						}
 					};
 					Timer t = new Timer(1000,time);
@@ -825,6 +786,7 @@ public class McLuhanMain extends JFrame{
 							tslide.setVisible(true);
 							((CardLayout)menu.getLayout()).show(menu, "ogl");
 							soundbite.play();
+							app.setSound(soundbite);
 						}
 					};
 					Timer t = new Timer(1000,time);

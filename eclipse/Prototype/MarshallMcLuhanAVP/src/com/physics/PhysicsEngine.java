@@ -18,6 +18,7 @@ import org.pirelenito.multimedia.jmf.MoviePlayer;
 import org.pirelenito.multimedia.jmf.plugin.IGLTextureRenderer;
 
 import com.communication.Engine_Server;
+import com.helper.MP3;
 import com.jogamp.opengl.impl.x11.glx.GLX;
 import com.jogamp.opengl.util.*;
 import com.jogamp.opengl.util.gl2.GLUT;
@@ -69,6 +70,8 @@ public class PhysicsEngine implements GLEventListener, KeyListener, MouseListene
 	private boolean image, txt, video;
 	
 	private MoviePlayer player;
+	
+	private MP3 soundbite;
 	
 	private IGLTextureRenderer renderer;
 
@@ -122,10 +125,15 @@ public class PhysicsEngine implements GLEventListener, KeyListener, MouseListene
 	public void setTimer(Timer q) {
 		this.quepush = q;
 	}
+	
+	public void setSound(MP3 q) {
+		this.soundbite = q;
+	}
 
 	
 	public void end(){
 		player.stop();
+		soundbite.resume();
 		
 	}
 	
@@ -143,8 +151,9 @@ public class PhysicsEngine implements GLEventListener, KeyListener, MouseListene
 		}
 		pmhide = new PhysicsMesh(1.5, 20, textvid, 0);
 		pmhide.translate(new Vec2D(0.2,0.2));
-		pmhide.setK(5);
+		pmhide.setK(1);
 		pmhide.addToSystem(physics);
+		soundbite.pause();
 		play();
 	}
 
@@ -208,7 +217,7 @@ public class PhysicsEngine implements GLEventListener, KeyListener, MouseListene
 			constraint3.setPos(newpos3);
 		}
 
-		if(pmeshactive.computeBrokenPercent() >= 0.95) {
+		if(pmeshactive.computeBrokenPercent() >= 0.80) {
 			if(video){
 				end();
 			}			
