@@ -4,6 +4,9 @@
 #include <XnOpenNI.h>
 // NITE headers
 #include <XnVSessionManager.h>
+#include <XnvPointDenoiser.h>
+#include <XnVPointArea.h>
+#include <XnVSelectableSlider1D.h>
 
 // Detector headers
 #include <XnVCircleDetector.h>
@@ -30,6 +33,9 @@
 
 char *action;
 
+int mode = 0;
+
+bool isConnected = true;
 bool isGesture = false;
 bool circlePP = false;
 
@@ -47,11 +53,60 @@ void XN_CALLBACK_TYPE SessionProgress(const XnChar* strFocus, const XnPoint3D& p
 // callback for session start
 void XN_CALLBACK_TYPE SessionStart(const XnPoint3D& ptFocusPoint, void* UserCxt) {
 	printf("Session started. Please wave (%6.2f,%6.2f,%6.2f)...\n", ptFocusPoint.X, ptFocusPoint.Y, ptFocusPoint.Z);
+
+	action = "sessionstart\n";
+
+	logGestures();
 }
 
 // Callback for session end
 void XN_CALLBACK_TYPE SessionEnd(void* UserCxt) {
 	printf("Session ended. Please perform focus gesture to start session\n");
+
+	action = "sessionend\n";
+
+	logGestures();
+}
+
+//Type for callbacks to be called when a point is silenced
+void XN_CALLBACK_TYPE PointSilencedCB(XnUInt32 nID, void* cxt) {
+	printf("Point Silenced\n");
+}
+
+//Type for callbacks to be called when a previously silenced point is revived
+void XN_CALLBACK_TYPE PointRevivedCB(XnUInt32 nID, void* cxt) {
+	printf("Point Revived\n");
+}
+
+//Type for callbacks to be called when a previously silenced point is really removed
+void XN_CALLBACK_TYPE SilentPointRemovedCB(XnUInt32 nID, void* cxt) {
+	printf("Silent Point Removed\n");
+}
+
+// Type for hover event callback. Receives the index of the hovered item
+void XN_CALLBACK_TYPE ItemHoverCB(XnInt32 nItemIndex, void* pUserCxt) {
+	printf("Item Hover\n");
+}
+
+// Type for select event callback. Receives the index of the selected item and the direction of the selection.
+void XN_CALLBACK_TYPE ItemSelectCB(XnInt32 nItemIndex, XnVDirection nDirection, void* pUserCxt) {
+	printf("Item Select\n");
+}
+
+// Type for scroll event callback. Receives the number between -1 and 1, indicating where in the border the point is
+void XN_CALLBACK_TYPE ScrollCB(XnFloat fScrollValue, void* pUserCxt) {
+	printf("Scroll\n");
+}
+
+// Type for value change event callback.
+// Receives a number between 0 and 1, indicating where in the slider the point is
+void XN_CALLBACK_TYPE ValueChangeCB(XnFloat fValue, void* pUserCxt) {
+	printf("Value Change\n");
+}
+
+//Type for off axis event callback. Receives the direction of the off axis movement
+void XN_CALLBACK_TYPE OffAxisMovementCB(XnVDirection dir, void* pUserCxt) {
+	printf("Off Axis Movement\n");
 }
 
 // Callback for wave detection
@@ -61,7 +116,12 @@ void XN_CALLBACK_TYPE OnCircleCB(XnFloat times, XnBool confident, const XnVCircl
 
 	logGestures();
 
-	printf("Circle\n");
+	if (circlePP) {
+		printf("CirclePP\n");
+	}
+	else {
+		printf("Circle\n");
+	}
 }
 
 // Callback for wave detection
@@ -179,23 +239,31 @@ void XN_CALLBACK_TYPE OnWaveCB(void* cxt) {
 void XN_CALLBACK_TYPE OnPointUpdate(const XnVHandPointContext* pContext, void* cxt) {
 	XnPoint3D ptProjective(pContext->ptPosition);
 
+	XnPoint3D ptReal(pContext->ptPosition);
+
 	depthGenerator.ConvertRealWorldToProjective(1, &ptProjective, &ptProjective);
+
+	//depthGenerator.ConvertProjectiveToRealWorld(1, &ptReal, &ptReal);
 
 	if (!isGesture) {
 	  action = "none\n";
 	}
 
-	/*if (circlePP) {
+	if (circlePP) {
 	  action = "none\n";
-	}*/
+	}
 
-	//printf("Action: %s\n", action);
+	if (isConnected) {
+		kc->sendData(ptProjective.X, ptProjective.Y, ptProjective.Z, 1, action);
+		//kc->sendData(ptReal.X, ptReal.Y, ptReal.Z, 1, action);
+		//kc->sendData(pContext->ptPosition.X, pContext->ptPosition.Y, pContext->ptPosition.Z, 1, action);
+	}
 
-	kc->sendData(ptProjective.X, ptProjective.Y, ptProjective.Z, 1, action);
+	printf("depth: %f\n", ptProjective.Z);
 
-	/*if (strcmp(action, "circle\n") == 0) {
+	if (strcmp(action, "circle\n") == 0) {
 		circlePP = true;
-	}*/
+	}
 
 	isGesture = false;
 }
@@ -207,6 +275,34 @@ int main(int argc, char** argv) {
 	xn::Context context;
 
 	XnVSessionManager* sessionManager;
+
+	/*XnPoint3D lbnSlider;
+	lbnSlider.X = 0.0;
+	lbnSlider.Y = 100.0;
+	lbnSlider.Z = 0.0;
+
+	XnPoint3D rtfSlider;
+	rtfSlider.X = 640.0;
+	rtfSlider.Y = 0.0;
+	rtfSlider.Z = 1000.0;
+
+	XnBoundingBox3D sliderBox;
+	sliderBox.LeftBottomNear = lbnSlider;
+	sliderBox.RightTopFar = rtfSlider;
+
+	XnPoint3D lbnNormal;
+	lbnNormal.X = 0.0;
+	lbnNormal.Y = 480.0;
+	lbnNormal.Z = 0.0;
+
+	XnPoint3D rtfNormal;
+	rtfNormal.X = 640.0;
+	rtfNormal.Y = 100.1;
+	rtfNormal.Z = 1000.0;
+
+	XnBoundingBox3D normalBox;
+	normalBox.LeftBottomNear = lbnNormal;
+	normalBox.RightTopFar = rtfNormal;*/
 
 	// Create context
 	XnStatus rc = context.InitFromXmlFile(SAMPLE_XML_FILE);
@@ -241,12 +337,40 @@ int main(int argc, char** argv) {
 	// Register session callbacks
 	sessionManager->RegisterSession(NULL, &SessionStart, &SessionEnd, &SessionProgress);
 
+	/*
+	XnVPointArea sliderArea(sliderBox, false, "sliderArea");
+	sliderArea.RegisterPointSilenced(NULL, PointSilencedCB);
+	sliderArea.RegisterPointRevived(NULL, PointRevivedCB);
+	sliderArea.RegisterSilentPointRemoved(NULL, SilentPointRemovedCB);
+	sliderArea.RegisterPointUpdate(NULL, OnPointUpdate);
+	*/
+
+	/*
+	XnVPointArea normalArea(normalBox, false, "normalArea");
+	normalArea.RegisterPointSilenced(NULL, PointSilencedCB);
+	normalArea.RegisterPointRevived(NULL, PointRevivedCB);
+	normalArea.RegisterSilentPointRemoved(NULL, SilentPointRemovedCB);
+	normalArea.RegisterPointUpdate(NULL, OnPointUpdate);
+	*/
+
+	/*
+	//SelectableSlider1D
+	XnVSelectableSlider1D slider(10);
+    slider.RegisterItemHover(NULL, ItemHoverCB);
+	slider.RegisterItemSelect(NULL, ItemSelectCB);
+	slider.RegisterScroll(NULL, ScrollCB);
+	slider.RegisterValueChange(NULL, ValueChangeCB);
+	slider.RegisterOffAxisMovement(NULL, OffAxisMovementCB);
+	slider.RegisterPointUpdate(NULL, OnPointUpdate);
+	*/
+
 	// Circle Detector
 	XnVCircleDetector circle;
 	circle.RegisterCircle(NULL, OnCircleCB);
 	circle.RegisterNoCircle(NULL, OnNoCircleCB);
 	circle.RegisterPointUpdate(NULL, OnPointUpdate);
-	sessionManager->AddListener(&circle);
+	//sessionManager->AddListener(&circle);
+	//normalArea.AddListener(&circle);
 
 	/*
 	// Grab Detector
@@ -255,20 +379,22 @@ int main(int argc, char** argv) {
 	grab.RegisterRelease(NULL, OnReleaseCB);
 	grab.RegisterPointUpdate(NULL, OnPointUpdate);
 	sessionManager->AddListener(&grab);
+	normalArea->AddListener(&grab);
 	*/
 
 	// Push Detector
 	XnVPushDetector push;
 	push.RegisterPush(NULL, OnPushCB);
-	push.RegisterStabilized(NULL, OnStabilizedCB);
+	//push.RegisterStabilized(NULL, OnStabilizedCB);
 	push.RegisterPointUpdate(NULL, OnPointUpdate);
-	sessionManager->AddListener(&push);
+	//normalArea.AddListener(&push);
 
 	// Steady Detector
 	XnVSteadyDetector steady;
 	steady.RegisterSteady(NULL, OnSteadyCB);
 	steady.RegisterPointUpdate(NULL, OnPointUpdate);
-	sessionManager->AddListener(&steady);
+	//sessionManager->AddListener(&steady);
+	//normalArea.AddListener(&steady);
 
 	// Swipe Detector
 	XnVSwipeDetector swipe;
@@ -277,16 +403,40 @@ int main(int argc, char** argv) {
 	swipe.RegisterSwipeLeft(NULL, OnSwipeLeftCB);
 	swipe.RegisterSwipeRight(NULL, OnSwipeRightCB);
 	swipe.RegisterPointUpdate(NULL, OnPointUpdate);
-	sessionManager->AddListener(&swipe);
+	//sessionManager->AddListener(&swipe);
+	//normalArea.AddListener(&swipe);
 
 	// Wave Detector
 	XnVWaveDetector wave;
 	wave.RegisterWave(NULL, OnWaveCB);
 	wave.RegisterPointUpdate(NULL, OnPointUpdate);
-	sessionManager->AddListener(&wave);
+	//sessionManager->AddListener(&wave);
+	//normalArea.AddListener(&wave);
+
+
+	XnVPointDenoiser denoiser;
+
+	//sliderArea->AddListener(&slider);
+	//sessionManager->AddListener(sliderArea);
+
+	// this works alone
+	//sessionManager->AddListener(&slider);
+
+	
+	//sessionManager->AddListener(&normalArea);
+	//sessionManager->AddListener(&sliderArea);
+
+
+	denoiser.AddListener(&circle);
+	denoiser.AddListener(&push);
+
+	sessionManager->AddListener(&denoiser);
+
 
 	// Start up client
-	kc = new Kinect_Client();
+	if (isConnected) {
+		kc = new Kinect_Client();
+	}
 
 	// Start up file writer
 	output = new std::ofstream(GESTURE_LOG);
@@ -297,7 +447,9 @@ int main(int argc, char** argv) {
 	}
 
 	// Shut down client
-	kc->endClient();
+	if (isConnected) {
+		kc->endClient();
+	}
 
 	output->close();
 

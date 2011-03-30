@@ -31,7 +31,7 @@ class XNV_NITE_API XnVGrabDetector : public XnVPointControl {
 		void OnPrimaryPointCreate(const XnVHandPointContext* pContext, const XnPoint3D& ptFocus);
 		/**
 		* Called when the primary point is updated.
-		* This will cause the algorithm to look for waves.
+		* This will cause the algorithm to look for grabs.
 		*
 		* @param	[in]	pContext	The hand context of the updated primary point
 		*/

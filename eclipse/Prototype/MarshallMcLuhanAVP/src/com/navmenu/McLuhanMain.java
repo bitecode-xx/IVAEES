@@ -526,29 +526,29 @@ public class McLuhanMain extends JFrame{
 
 	/*
 	  Receive function that handles Kinect data for the attention "grabber" display
-	 */
+	*/
 	@SuppressWarnings("unused")
 	public void recvGrabberData(float x, float y, float depth, int select, String action) {
 		System.out.println("Mode: " + mode);
 
-		double ratioX = size.getWidth() / 640;
-		double ratioY = size.getHeight() / 480;
-		int newX = (int) (x * ratioX);
-		int newY = (int) (y * ratioY);
+		double ratioX = (size.getWidth() + 120) / 640;
+		double ratioY = (size.getHeight() + 80) / 480;
+		int newX = (int) ((x - 40) * ratioX);
+		int newY = (int) ((y - 30) * ratioY);
 
 		return;
 	}
 
 	/*
 	  Receive function that handles Kinect data for the theme and menu display
-	 */
+	*/
 	public void recvThemeData(float x, float y, float depth, int select, String action) {
 		System.out.println("Mode: " + mode);
 
-		double ratioX = size.getWidth() / 640;
-		double ratioY = size.getHeight() / 480;
-		int newX = (int) (x * ratioX);
-		int newY = (int) (y * ratioY);
+		double ratioX = (size.getWidth() + 120) / 640;
+		double ratioY = (size.getHeight() + 80) / 480;
+		int newX = (int) ((x - 40) * ratioX);
+		int newY = (int) ((y - 30) * ratioY);
 
 		mouseRobot.mouseMove(newX, newY);
 
@@ -562,14 +562,14 @@ public class McLuhanMain extends JFrame{
 
 	/*
 	  Receive function that handles Kinect data for the physics engine display
-	 */
+	*/
 	public void recvPhysicsData(float x, float y, float depth, int select, String action) {
 		System.out.println("Mode: " + mode);
 
-		double ratioX = size.getWidth() / 640;
-		double ratioY = size.getHeight() / 480;
-		int newX = (int) (x * ratioX);
-		int newY = (int) (y * ratioY);
+		double ratioX = (size.getWidth() + 120) / 640;
+		double ratioY = (size.getHeight() + 80) / 480;
+		int newX = (int) ((x - 40) * ratioX);
+		int newY = (int) ((y - 30) * ratioY);
 
 		mouseRobot.mouseMove(newX, newY);
 
