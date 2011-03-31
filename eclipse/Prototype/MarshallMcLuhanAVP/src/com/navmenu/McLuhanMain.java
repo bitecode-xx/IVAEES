@@ -17,6 +17,7 @@ import java.awt.event.MouseListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.Date;
+import java.util.TimerTask;
 
 import javax.media.opengl.GLCapabilities;
 import javax.media.opengl.GLProfile;
@@ -39,6 +40,7 @@ import com.helper.MenuBuilder;
 import com.helper.TextureMap;
 import com.helper.TopSlider;
 import com.jogamp.opengl.util.FPSAnimator;
+import com.physics.HandObject;
 import com.physics.PhysicsEngine;
 import com.physics.PhysicsGrabber;
 
@@ -72,11 +74,13 @@ public class McLuhanMain extends JFrame{
 
 	private Main video;
 
-	private Timer quepush, ploop,flash, starter;
+	private Timer quepush, ploop, flash, starter, steadyTimer;
+	
+	private int steady;
 
 	private boolean roll, audio;
 
-	private ActionListener gogo, repeat, one, two, three, four,loop;
+	private ActionListener gogo, repeat, one, two, three, four, loop, steadyAL;
 
 	private TextureMap themes;
 
@@ -87,6 +91,8 @@ public class McLuhanMain extends JFrame{
 	private static Robot mouseRobot;
 
 	public int mode;
+	
+	public HandObject[] handArray;
 
 	private int bgsel;
 
@@ -178,6 +184,22 @@ public class McLuhanMain extends JFrame{
 
 		// Init mode
 		mode = 1;
+		
+		HandObject handOne = new HandObject(0,0,1,0);
+		HandObject handTwo = new HandObject(0,0,2,0);
+		
+		handArray = new HandObject[2];
+		
+		handArray[0] = handOne;
+		handArray[1] = handTwo;
+		
+		steadyAL = new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				steady = 0;
+			}
+		};
+		
+		steadyTimer = new Timer(3000 * 1, steadyAL);
 	}
 	
 	/*
@@ -523,7 +545,7 @@ public class McLuhanMain extends JFrame{
 		
 		app.setTimer(quepush);
 	}
-
+	
 	/*
 	  Receive function that handles Kinect data for the attention "grabber" display
 	*/
@@ -535,7 +557,22 @@ public class McLuhanMain extends JFrame{
 		double ratioY = (size.getHeight() + 80) / 480;
 		int newX = (int) ((x - 40) * ratioX);
 		int newY = (int) ((y - 30) * ratioY);
-
+		
+		handArray[select - 1].setX(newX);
+		handArray[select - 1].setY(newY);
+		if (action.compareTo("circle") == 0) {
+			if (handArray[select - 1].getState() == 0) {
+				handArray[select - 1].setState(1);
+			}
+			else {
+				handArray[select - 1].setState(0);
+			}
+		}
+		
+		if (action.compareTo("sessionstart") == 0) {
+			mode = 1;
+		}
+		
 		return;
 	}
 
@@ -544,47 +581,116 @@ public class McLuhanMain extends JFrame{
 	*/
 	public void recvThemeData(float x, float y, float depth, int select, String action) {
 		System.out.println("Mode: " + mode);
-
+		
 		double ratioX = (size.getWidth() + 120) / 640;
 		double ratioY = (size.getHeight() + 80) / 480;
 		int newX = (int) ((x - 40) * ratioX);
 		int newY = (int) ((y - 30) * ratioY);
+		
+		handArray[select - 1].setX(newX);
+		handArray[select - 1].setY(newY);
+		if (action.compareTo("circle") == 0) {
+			if (handArray[select - 1].getState() == 0) {
+				handArray[select - 1].setState(1);
+			}
+			else {
+				handArray[select - 1].setState(0);
+			}
+		}
 
 		mouseRobot.mouseMove(newX, newY);
 
 		if (action.compareTo("push") == 0) {
-			mouseRobot.mousePress(MouseEvent.BUTTON1_MASK);
-			mouseRobot.mouseRelease(MouseEvent.BUTTON1_MASK);
+			switch (select) {
+				case 1:
+					mouseRobot.mousePress(MouseEvent.BUTTON1_MASK);
+					break;
+				case 2:
+					mouseRobot.mousePress(MouseEvent.BUTTON2_MASK);
+					break;
+				case 3:
+					mouseRobot.mousePress(MouseEvent.BUTTON3_MASK);
+					break;
+			}
 		}
-
+		
 		return;
 	}
-
+	
 	/*
 	  Receive function that handles Kinect data for the physics engine display
 	*/
 	public void recvPhysicsData(float x, float y, float depth, int select, String action) {
 		System.out.println("Mode: " + mode);
-
+		
 		double ratioX = (size.getWidth() + 120) / 640;
 		double ratioY = (size.getHeight() + 80) / 480;
 		int newX = (int) ((x - 40) * ratioX);
 		int newY = (int) ((y - 30) * ratioY);
-
-		mouseRobot.mouseMove(newX, newY);
-
-		if (action.compareTo("push") == 0) {
-			if (newY > 100) {
-				mouseRobot.mousePress(MouseEvent.BUTTON1_MASK);
+		
+		handArray[select - 1].setX(newX);
+		handArray[select - 1].setY(newY);
+		if (action.compareTo("circle") == 0) {
+			if (handArray[select - 1].getState() == 0) {
+				handArray[select - 1].setState(1);
 			}
 			else {
-				mouseRobot.mousePress(MouseEvent.BUTTON1_MASK);
-				mouseRobot.mouseRelease(MouseEvent.BUTTON1_MASK);
+				handArray[select - 1].setState(0);
+			}
+		}
+		
+		mouseRobot.mouseMove(newX, newY);
+
+		if (action.compareTo("steady") == 0) {
+			if (steady == 0) {
+				steady = 1;
+				steadyTimer.start();
+				
+				switch (select) {
+					case 1:
+						mouseRobot.mousePress(MouseEvent.BUTTON1_MASK);
+						mouseRobot.mouseRelease(MouseEvent.BUTTON1_MASK);
+						break;
+					case 2:
+						mouseRobot.mousePress(MouseEvent.BUTTON2_MASK);
+						mouseRobot.mouseRelease(MouseEvent.BUTTON2_MASK);
+						break;
+					case 3:
+						mouseRobot.mousePress(MouseEvent.BUTTON3_MASK);
+						mouseRobot.mouseRelease(MouseEvent.BUTTON3_MASK);
+						break;
+				}
+			}
+		}
+		
+		if (action.compareTo("push") == 0) {
+			if (newY > 100) {
+				switch (select) {
+					case 1:
+						mouseRobot.mousePress(MouseEvent.BUTTON1_MASK);
+						break;
+					case 2:
+						mouseRobot.mousePress(MouseEvent.BUTTON2_MASK);
+						break;
+					case 3:
+						mouseRobot.mousePress(MouseEvent.BUTTON3_MASK);
+						break;
+				}
 			}
 		}
 
 		if (action.compareTo("circle") == 0) {
-			mouseRobot.mouseRelease(MouseEvent.BUTTON1_MASK);
+			switch (select) {
+				case 1:
+					mouseRobot.mouseRelease(MouseEvent.BUTTON1_MASK);
+					break;
+				case 2:
+					mouseRobot.mouseRelease(MouseEvent.BUTTON2_MASK);
+					break;
+				case 3:
+					mouseRobot.mouseRelease(MouseEvent.BUTTON3_MASK);
+					break;
+			}
 		}
 
 		return;

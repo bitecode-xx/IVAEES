@@ -44,6 +44,8 @@ Kinect_Client *kc;
 std::ofstream *output;
 
 xn::DepthGenerator depthGenerator;
+xn::SceneMetaData sceneMD;
+xn::SceneAnalyzer sceneAnalyzer;
 
 // Callback for when the focus is in progress
 void XN_CALLBACK_TYPE SessionProgress(const XnChar* strFocus, const XnPoint3D& ptFocusPoint, XnFloat fProgress, void* UserCxt) {
@@ -243,8 +245,6 @@ void XN_CALLBACK_TYPE OnPointUpdate(const XnVHandPointContext* pContext, void* c
 
 	depthGenerator.ConvertRealWorldToProjective(1, &ptProjective, &ptProjective);
 
-	//depthGenerator.ConvertProjectiveToRealWorld(1, &ptReal, &ptReal);
-
 	if (!isGesture) {
 	  action = "none\n";
 	}
@@ -253,10 +253,10 @@ void XN_CALLBACK_TYPE OnPointUpdate(const XnVHandPointContext* pContext, void* c
 	  action = "none\n";
 	}
 
+	printf("hand id: %u", pContext->nID);
+
 	if (isConnected) {
-		kc->sendData(ptProjective.X, ptProjective.Y, ptProjective.Z, 1, action);
-		//kc->sendData(ptReal.X, ptReal.Y, ptReal.Z, 1, action);
-		//kc->sendData(pContext->ptPosition.X, pContext->ptPosition.Y, pContext->ptPosition.Z, 1, action);
+		kc->sendData(ptProjective.X, ptProjective.Y, ptProjective.Z, (int)pContext->nID, action);
 	}
 
 	printf("depth: %f\n", ptProjective.Z);
@@ -320,6 +320,13 @@ int main(int argc, char** argv) {
 		return 1;
 	}
 
+	/*rc = context.FindExistingNode(XN_NODE_TYPE_SCENE, sceneAnalyzer);
+
+	if (rc != XN_STATUS_OK) {
+		printf("Scene Analyzer couldn't initialize: %s\n", xnGetStatusString(rc));
+		return 1;
+	}*/
+
 	// Create the Session Manager
 	sessionManager = new XnVSessionManager();
 
@@ -378,8 +385,6 @@ int main(int argc, char** argv) {
 	grab.RegisterGrab(NULL, OnGrabCB);
 	grab.RegisterRelease(NULL, OnReleaseCB);
 	grab.RegisterPointUpdate(NULL, OnPointUpdate);
-	sessionManager->AddListener(&grab);
-	normalArea->AddListener(&grab);
 	*/
 
 	// Push Detector
@@ -387,32 +392,24 @@ int main(int argc, char** argv) {
 	push.RegisterPush(NULL, OnPushCB);
 	//push.RegisterStabilized(NULL, OnStabilizedCB);
 	push.RegisterPointUpdate(NULL, OnPointUpdate);
-	//normalArea.AddListener(&push);
 
 	// Steady Detector
 	XnVSteadyDetector steady;
 	steady.RegisterSteady(NULL, OnSteadyCB);
 	steady.RegisterPointUpdate(NULL, OnPointUpdate);
-	//sessionManager->AddListener(&steady);
-	//normalArea.AddListener(&steady);
 
 	// Swipe Detector
-	XnVSwipeDetector swipe;
-	swipe.RegisterSwipeUp(NULL, OnSwipeUpCB);
-	swipe.RegisterSwipeDown(NULL, OnSwipeDownCB);
-	swipe.RegisterSwipeLeft(NULL, OnSwipeLeftCB);
-	swipe.RegisterSwipeRight(NULL, OnSwipeRightCB);
-	swipe.RegisterPointUpdate(NULL, OnPointUpdate);
-	//sessionManager->AddListener(&swipe);
-	//normalArea.AddListener(&swipe);
+	//XnVSwipeDetector swipe;
+	//swipe.RegisterSwipeUp(NULL, OnSwipeUpCB);
+	//swipe.RegisterSwipeDown(NULL, OnSwipeDownCB);
+	//swipe.RegisterSwipeLeft(NULL, OnSwipeLeftCB);
+	//swipe.RegisterSwipeRight(NULL, OnSwipeRightCB);
+	//swipe.RegisterPointUpdate(NULL, OnPointUpdate);
 
 	// Wave Detector
-	XnVWaveDetector wave;
-	wave.RegisterWave(NULL, OnWaveCB);
-	wave.RegisterPointUpdate(NULL, OnPointUpdate);
-	//sessionManager->AddListener(&wave);
-	//normalArea.AddListener(&wave);
-
+	//XnVWaveDetector wave;
+	//wave.RegisterWave(NULL, OnWaveCB);
+	//wave.RegisterPointUpdate(NULL, OnPointUpdate);
 
 	XnVPointDenoiser denoiser;
 
@@ -426,12 +423,12 @@ int main(int argc, char** argv) {
 	//sessionManager->AddListener(&normalArea);
 	//sessionManager->AddListener(&sliderArea);
 
-
 	denoiser.AddListener(&circle);
 	denoiser.AddListener(&push);
+	denoiser.AddListener(&steady);
 
 	sessionManager->AddListener(&denoiser);
-
+	
 
 	// Start up client
 	if (isConnected) {
@@ -442,6 +439,10 @@ int main(int argc, char** argv) {
 	output = new std::ofstream(GESTURE_LOG);
 
 	while (1) {
+		//sceneAnalyzer.GetMetaData(sceneMD);
+		
+
+
 		context.WaitAndUpdateAll();
 		sessionManager->Update(&context);
 	}
