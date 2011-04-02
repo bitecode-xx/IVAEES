@@ -22,11 +22,14 @@ public class GlassPane extends JPanel{
     	handOne = new JLabel(new ImageIcon("rh1.png"));
     	handOne.setSize(40, 48);
     	handOne.setLocation(0, 0);
+    	handOne.setVisible(false);
+    	
     	
     	handTwo = new JLabel(new ImageIcon("lh1.png"));
     	handTwo.setSize(40, 48);
     	handTwo.setLocation(0, 0);
-
+    	handTwo.setVisible(false);
+    	
     	this.add(handOne);
     	this.add(handTwo);
     	this.setSize(new Dimension(1024,768));
@@ -43,6 +46,15 @@ public class GlassPane extends JPanel{
     	setHandOne(new Point(e.getX(),e.getY()));
 
     }
+    
+    public void enableHandOne(){
+    	handOne.setVisible(true);
+    }
+    
+    public void enableHandTwo(){
+    	handTwo.setVisible(true);
+    }
+    
 
 
 }

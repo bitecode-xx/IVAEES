@@ -991,6 +991,9 @@ public class McLuhanMain extends JFrame{
 	
 	private void updateHandOne(Point p){
 		hands.setHandOne(p);
+		if(canvas == null){
+			mouseRobot.mouseMove(p.x, p.y);
+		}
 	}
 	
 	private void updateHandTwo(Point p){
