@@ -158,6 +158,7 @@ public class PhysicsEngine implements GLEventListener, KeyListener, MouseListene
 	private void setMovie(String vid){
 		try {
 			player = new MoviePlayer (vid);
+			player.setRender(this);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -167,6 +168,10 @@ public class PhysicsEngine implements GLEventListener, KeyListener, MouseListene
 		pmhide.addToSystem(physics);
 		soundbite.pause();
 		play();
+	}
+	
+	public void setRender(IGLTextureRenderer renderer){
+		this.renderer = renderer;
 	}
 
 	private void update() {
@@ -229,7 +234,8 @@ public class PhysicsEngine implements GLEventListener, KeyListener, MouseListene
 			constraint3.setPos(newpos3);
 		}
 
-		if(pmeshactive.computeBrokenPercent() >= 0.80) {		
+		if(pmeshactive.computeBrokenPercent() >= 0.80) {
+
 			callTimer();
 			if(quepush != null) {
 				quepush.restart();
@@ -253,6 +259,7 @@ public class PhysicsEngine implements GLEventListener, KeyListener, MouseListene
 		mesh.render(gl);
 		
 		if(video){
+			//System.err.println(renderer);
 			if(renderer != null){
 				if (renderer.render(gl))
 					try {
