@@ -5,12 +5,14 @@ public class HandObject {
 	private int y;
 	private int hand;
 	private int state;
+	private boolean pressed;
 	
-	public HandObject(int x, int y, int hand, int state) {
+	public HandObject(int x, int y, int hand, int state, boolean pressed) {
 		this.x = x;
 		this.y = y;
 		this.hand = hand;
 		this.state = state;
+		this.pressed = pressed;
 	}
 	
 	public int getX() {
@@ -29,6 +31,10 @@ public class HandObject {
 		return this.state;
 	}
 	
+	public boolean getPressed() {
+		return this.pressed;
+	}
+	
 	public void setX(int x) {
 		this.x = x;
 	}
@@ -39,5 +45,9 @@ public class HandObject {
 	
 	public void setState(int state) {
 		this.state = state;
+	}
+	
+	public void setPressed(boolean pressed) {
+		this.pressed = pressed;
 	}
 }

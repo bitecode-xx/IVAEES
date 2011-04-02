@@ -185,8 +185,8 @@ public class McLuhanMain extends JFrame{
 		// Init mode
 		mode = 1;
 		
-		HandObject handOne = new HandObject(0,0,1,0);
-		HandObject handTwo = new HandObject(0,0,2,0);
+		HandObject handOne = new HandObject(0,0,1,0, false);
+		HandObject handTwo = new HandObject(0,0,2,0, false);
 		
 		handArray = new HandObject[2];
 		
@@ -554,19 +554,21 @@ public class McLuhanMain extends JFrame{
 		System.out.println("Mode: " + mode);
 
 		double ratioX = (size.getWidth() + 120) / 640;
-		double ratioY = (size.getHeight() + 80) / 480;
+		double ratioY = (size.getHeight() + 160) / 480;
 		int newX = (int) ((x - 40) * ratioX);
 		int newY = (int) ((y - 30) * ratioY);
 		
-		handArray[select - 1].setX(newX);
-		handArray[select - 1].setY(newY);
-		if (action.compareTo("circle") == 0) {
-			if (handArray[select - 1].getState() == 0) {
-				handArray[select - 1].setState(1);
-			}
-			else {
-				handArray[select - 1].setState(0);
-			}
+		if (newX < 0) {
+			newX = 0;
+		}
+		if (newX > 1024) {
+			newX = 1024;
+		}
+		if (newY < 0) {
+			newY = 0;
+		}
+		if (newY > 768) {
+			newY = 768;
 		}
 		
 		if (action.compareTo("sessionstart") == 0) {
@@ -583,33 +585,44 @@ public class McLuhanMain extends JFrame{
 		System.out.println("Mode: " + mode);
 		
 		double ratioX = (size.getWidth() + 120) / 640;
-		double ratioY = (size.getHeight() + 80) / 480;
+		double ratioY = (size.getHeight() + 160) / 480;
 		int newX = (int) ((x - 40) * ratioX);
 		int newY = (int) ((y - 30) * ratioY);
 		
+		if (newX < 0) {
+			newX = 0;
+		}
+		if (newX > 1024) {
+			newX = 1024;
+		}
+		if (newY < 0) {
+			newY = 0;
+		}
+		if (newY > 768) {
+			newY = 768;
+		}
+		
+		if (handArray[select - 1].getState() == 0) {
+			handArray[select - 1].setState(1);
+		}
 		handArray[select - 1].setX(newX);
 		handArray[select - 1].setY(newY);
-		if (action.compareTo("circle") == 0) {
-			if (handArray[select - 1].getState() == 0) {
-				handArray[select - 1].setState(1);
-			}
-			else {
-				handArray[select - 1].setState(0);
-			}
-		}
 
 		mouseRobot.mouseMove(newX, newY);
 
-		if (action.compareTo("push") == 0) {
+		if (action.compareTo("push") == 0 && handArray[select - 1].getPressed() == false) {
 			switch (select) {
 				case 1:
 					mouseRobot.mousePress(MouseEvent.BUTTON1_MASK);
+					mouseRobot.mouseRelease(MouseEvent.BUTTON1_MASK);
 					break;
 				case 2:
 					mouseRobot.mousePress(MouseEvent.BUTTON2_MASK);
+					mouseRobot.mouseRelease(MouseEvent.BUTTON2_MASK);
 					break;
 				case 3:
 					mouseRobot.mousePress(MouseEvent.BUTTON3_MASK);
+					mouseRobot.mouseRelease(MouseEvent.BUTTON3_MASK);
 					break;
 			}
 		}
@@ -624,25 +637,56 @@ public class McLuhanMain extends JFrame{
 		System.out.println("Mode: " + mode);
 		
 		double ratioX = (size.getWidth() + 120) / 640;
-		double ratioY = (size.getHeight() + 80) / 480;
+		double ratioY = (size.getHeight() + 160) / 480;
 		int newX = (int) ((x - 40) * ratioX);
 		int newY = (int) ((y - 30) * ratioY);
 		
+		if (newX < 0) {
+			newX = 0;
+		}
+		if (newX > 1024) {
+			newX = 1024;
+		}
+		if (newY < 0) {
+			newY = 0;
+		}
+		if (newY > 768) {
+			newY = 768;
+		}
+		
+		if (handArray[select - 1].getState() == 0) {
+			handArray[select - 1].setState(1);
+		}
 		handArray[select - 1].setX(newX);
 		handArray[select - 1].setY(newY);
-		if (action.compareTo("circle") == 0) {
+		
+		/*if (action.compareTo("circle") == 0) {
 			if (handArray[select - 1].getState() == 0) {
 				handArray[select - 1].setState(1);
 			}
 			else {
 				handArray[select - 1].setState(0);
 			}
-		}
+		}*/
+		
+		/*if (action.compareTo("circle") == 0) {
+			switch (select) {
+				case 1:
+					mouseRobot.mouseRelease(MouseEvent.BUTTON1_MASK);
+					break;
+				case 2:
+					mouseRobot.mouseRelease(MouseEvent.BUTTON2_MASK);
+					break;
+				case 3:
+					mouseRobot.mouseRelease(MouseEvent.BUTTON3_MASK);
+					break;
+			}
+		}*/
 		
 		mouseRobot.mouseMove(newX, newY);
 
-		if (action.compareTo("steady") == 0) {
-			if (steady == 0) {
+		if (action.compareTo("steady") == 0 && handArray[select - 1].getPressed() == false) {
+			if (steady == 0 && (newY < 100 || newX < 60)) {
 				steady = 1;
 				steadyTimer.start();
 				
@@ -663,7 +707,7 @@ public class McLuhanMain extends JFrame{
 			}
 		}
 		
-		if (action.compareTo("push") == 0) {
+		if (depth < 1000 && handArray[select - 1].getPressed() == false) {
 			if (newY > 100) {
 				switch (select) {
 					case 1:
@@ -676,20 +720,24 @@ public class McLuhanMain extends JFrame{
 						mouseRobot.mousePress(MouseEvent.BUTTON3_MASK);
 						break;
 				}
+				handArray[select - 1].setPressed(true);
 			}
 		}
-
-		if (action.compareTo("circle") == 0) {
-			switch (select) {
-				case 1:
-					mouseRobot.mouseRelease(MouseEvent.BUTTON1_MASK);
-					break;
-				case 2:
-					mouseRobot.mouseRelease(MouseEvent.BUTTON2_MASK);
-					break;
-				case 3:
-					mouseRobot.mouseRelease(MouseEvent.BUTTON3_MASK);
-					break;
+		
+		if (depth > 1000 && handArray[select - 1].getPressed() == true) {
+			if (newY > 100) {
+				switch (select) {
+					case 1:
+						mouseRobot.mouseRelease(MouseEvent.BUTTON1_MASK);
+						break;
+					case 2:
+						mouseRobot.mouseRelease(MouseEvent.BUTTON2_MASK);
+						break;
+					case 3:
+						mouseRobot.mouseRelease(MouseEvent.BUTTON3_MASK);
+						break;
+				}
+				handArray[select - 1].setPressed(false);
 			}
 		}
 
