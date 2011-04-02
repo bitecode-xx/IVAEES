@@ -410,6 +410,7 @@ public class McLuhanMain extends JFrame{
 		menu.validate();
 		activateAnimation();
 		((CardLayout)menu.getLayout()).show(menu, "ogl");
+		canvas.validate();
 	}
 
 	private void activateGrabber(){
@@ -453,8 +454,8 @@ public class McLuhanMain extends JFrame{
 					flash.stop();
 				starter.stop();
 				ploop.start();
+				app.stopVid();
 				((CardLayout)menu.getLayout()).show(menu, bgsel+"");
-				if(canvas != null){
 					menu.remove(canvas);
 					canvas = null;
 					animator.stop();
@@ -464,14 +465,6 @@ public class McLuhanMain extends JFrame{
 					tslide.removeAll();
 					glnav.setVisible(false);
 					tslide.setVisible(false);
-				}
-				else{
-					menu.remove(vidc);
-					vidc = null;
-					animator.stop();
-					menu.validate();
-					video.end();
-				}
 				roll = true;
 				Timer test = new Timer(1000,gogo);
 				test.setRepeats(false);
@@ -544,6 +537,7 @@ public class McLuhanMain extends JFrame{
 		quepush.start();
 		
 		app.setTimer(quepush);
+		app.setAudio(aud);
 	}
 	
 	/*

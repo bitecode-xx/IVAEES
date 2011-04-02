@@ -1,6 +1,8 @@
 package com.navmenu;
 
 import java.awt.Cursor;
+import java.awt.GraphicsDevice;
+import java.awt.GraphicsEnvironment;
 import java.awt.Image;
 import java.awt.Point;
 import java.awt.Toolkit;
@@ -24,7 +26,9 @@ public class McLuhanServer {
 
 	public static void main(String[] args) {
 		GLProfile.initSingleton(true);
-		
+		GraphicsDevice screen = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
+	    System.out.println(screen.isFullScreenSupported());
+	    
 		Toolkit toolkit = Toolkit.getDefaultToolkit();
 		Image image = toolkit.getImage("rh1.png");
 		Point hotSpot = new Point(14,14);
@@ -33,6 +37,7 @@ public class McLuhanServer {
 		McLuhanMain ml = new McLuhanMain();
 		ml.setVisible(true);
 		ml.setCursor(cursor);
+		//screen.setFullScreenWindow(ml);
 		
 		// If the server is going to connect via sockets then wait for Kinect data in a loop
 		if (isConnected) {

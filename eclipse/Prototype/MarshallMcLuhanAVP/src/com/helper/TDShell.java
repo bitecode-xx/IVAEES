@@ -15,7 +15,7 @@ public class TDShell {
 	
 	private String path;
 	private TextureData[] td;
-	private File[] files;
+	private String[] files;
 	
 	public TDShell(String path){
 		this.path = path;
@@ -31,7 +31,7 @@ public class TDShell {
 		return td;
 	}
 	
-	public File[] getFiles(){
+	public String[] getFiles(){
 		return files;
 	}
 	
@@ -40,7 +40,11 @@ public class TDShell {
 	}
 	
 	public void setFiles(File[] files){
-		this.files = files;
+		this.files = new String[files.length];
+		for(int i = 0; i< files.length;i++){
+			this.files[i] = files[i].getPath();
+		}
+		//this.files = files;
 	}
 	
 	public void destroyTD(){

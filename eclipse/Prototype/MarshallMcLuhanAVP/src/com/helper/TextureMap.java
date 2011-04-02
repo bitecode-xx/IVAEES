@@ -24,7 +24,7 @@ public class TextureMap {
 	
 	//regex string for image search
 	private String REGEX = ".*\\.jpg|.*\\.JPG|.*\\.gif|.*\\.png|.*\\.GIF|.*\\.PNG|.*\\.bmp|.*\\.BMP";	
-	private String VREGEX = ".*\\.MPG|.*\\.mov|.*\\.mpg";
+	private String VREGEX = ".*\\.avi|.*\\.mov|.*\\.mpg";
 	//vars for specifying which texture data set to grab
 	private int CCIMG = 0;
 	private int CCTXT = 1;
@@ -99,7 +99,7 @@ public class TextureMap {
 	}
 	
 	
-	private TextureData[] buildTD(File[] files){
+	private TextureData[] buildTD(String[] files){
 		TextureData tex = null;
 		TextureData[] textures = new TextureData[files.length];
 		GLProfile glp = GLProfile.getDefault();
@@ -111,7 +111,7 @@ public class TextureMap {
 			//inialize the texture data for each file
 			for(int i=0;i<files.length;i++){
 				try{
-					tex = TextureIO.newTextureData(glp, files[i], false, files[i].getName());//)files[i], true);
+					tex = TextureIO.newTextureData(glp, new File(files[i]), false, files[i]);//)files[i], true);
 
 				} catch(Exception e) {
 					e.printStackTrace();
@@ -175,7 +175,7 @@ public class TextureMap {
 	 * Retrieve the specified file list
 	 * 
 	 */
-	public File[] getFiles(int opt){
+	public String[] getFiles(int opt){
 		if(opt == CCIMG)
 			return ccImages.getFiles();
 		else if(opt == CCTXT)
@@ -204,7 +204,7 @@ public class TextureMap {
 			return null;
 	}
 
-	public File[] getVids(int opt){
+	public String[] getVids(int opt){
 		if(opt == 0)
 			return ccVid.getFiles();
 		else if(opt == 1)

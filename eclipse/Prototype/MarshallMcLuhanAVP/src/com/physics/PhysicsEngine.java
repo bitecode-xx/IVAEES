@@ -62,8 +62,10 @@ public class PhysicsEngine implements GLEventListener, KeyListener, MouseListene
 	private Vec2D newpos1, newpos2, newpos3;
 
 	private String source,texts;
+	
+	private String[] vidFiles;
 
-	private File[] imageFiles, txtFiles, qteFiles, vidFiles;
+	private File[] imageFiles, txtFiles, qteFiles;
 
 	private Timer quepush = null;
 
@@ -74,9 +76,11 @@ public class PhysicsEngine implements GLEventListener, KeyListener, MouseListene
 	private MP3 soundbite;
 	
 	private IGLTextureRenderer renderer;
+	
+	private Component audio;
 
 
-	public PhysicsEngine(TextureData[] source, TextureData[] texts, TextureData[] Quotes, File[] videos){
+	public PhysicsEngine(TextureData[] source, TextureData[] texts, TextureData[] Quotes, String[] videos){
 		quecount = 0;
 		tquecount = 0;
 		vidcount= 0;
@@ -99,19 +103,6 @@ public class PhysicsEngine implements GLEventListener, KeyListener, MouseListene
 		txt = true;
 		video = false;
 	}	
-	/*
-	public PhysicsEngine(String source, String texts){
-		this.source = source;
-		if(texts != null){			
-			this.texts = texts;
-			initTQue();
-		}
-		else
-			initQue();
-		image = false;
-		txt = true;
-		video = false;
-	}*/
 
 	public PhysicsEngine(String source){
 		this.source = source;
@@ -133,19 +124,40 @@ public class PhysicsEngine implements GLEventListener, KeyListener, MouseListene
 	
 	public void end(){
 		player.stop();
+		renderer = null;
 		soundbite.resume();
+		onAud();
+	}
+	
+	public void stopVid(){
+		if(player != null)
+			player.stop();
 		
 	}
+	
+	public void setAudio(Component audio){
+		this.audio = audio;
+	}
+	
+	private void disAud(){
+		audio.setEnabled(false);
+	}
+	
+	private void onAud(){
+		audio.setEnabled(true);
+	}
+	
 	
 	private void play(){
 		player.setLoop(false);
 		player.play();
 		renderer = player.getRenderer();
+		disAud();
 	}
 	
-	private void setMovie(File vid){
+	private void setMovie(String vid){
 		try {
-			player = new MoviePlayer (vid.getPath());
+			player = new MoviePlayer (vid);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -217,10 +229,7 @@ public class PhysicsEngine implements GLEventListener, KeyListener, MouseListene
 			constraint3.setPos(newpos3);
 		}
 
-		if(pmeshactive.computeBrokenPercent() >= 0.80) {
-			if(video){
-				end();
-			}			
+		if(pmeshactive.computeBrokenPercent() >= 0.80) {		
 			callTimer();
 			if(quepush != null) {
 				quepush.restart();
@@ -233,26 +242,12 @@ public class PhysicsEngine implements GLEventListener, KeyListener, MouseListene
 	private void render(GLAutoDrawable drawable) {
 		GL2 gl = drawable.getGL().getGL2();
 		GLUT glut = new GLUT();
-		//GLU glu = GLU.createGLU(gl);
 
 
 		gl.glMatrixMode(GL2.GL_MODELVIEW);
 		gl.glLoadIdentity();
 		
 		gl.glClear(GL2.GL_COLOR_BUFFER_BIT | GL2.GL_DEPTH_BUFFER_BIT);
-		/*
-	    mesh.renderWireframe(gl);
-
-	    gl.glPushMatrix();
-	    gl.glTranslated(1.0, 0, 0);
-	    mesh.render(gl);
-	    gl.glPopMatrix();
-
-	    gl.glPushMatrix();
-	    gl.glTranslated(-1.0, 0, 0);
-	    mesh.render(gl);
-	    gl.glPopMatrix();
-		 */
 
 		physics.render(gl);
 		mesh.render(gl);
@@ -265,7 +260,7 @@ public class PhysicsEngine implements GLEventListener, KeyListener, MouseListene
 					} catch (Exception e) {
 						e.printStackTrace();
 					}
-					pmhide.updateTexture(textvid);// = new DistortableMesh(1.4,1.2,18,18, textvid);
+					pmhide.updateTexture(textvid);
 					pmhide.renderMesh(gl);
 			}
 		}
@@ -299,15 +294,6 @@ public class PhysicsEngine implements GLEventListener, KeyListener, MouseListene
 			arendering = 0.1*rendertime + 0.9*arendering;
 			afree = 0.1*freetime + 0.9*afree;
 
-			/*gl.glRasterPos2d(-0.9, 0.9);
-		    glut.glutBitmapString(GLUT.BITMAP_HELVETICA_12, "FPS:      " + (int)Math.round(afps));
-		    gl.glRasterPos2d(-0.9, 0.875);
-		    glut.glutBitmapString(GLUT.BITMAP_HELVETICA_12, "Physics:  " + (int)Math.round(100*aphysics));
-		    gl.glRasterPos2d(-0.9, 0.85);
-		    glut.glutBitmapString(GLUT.BITMAP_HELVETICA_12, "Graphics: " + (int)Math.round(100*arendering));
-		    gl.glRasterPos2d(-0.9, 0.825);
-		    glut.glutBitmapString(GLUT.BITMAP_HELVETICA_12, "Free:     " + (int)Math.round(100*afree));
-			 */
 		}
 
 		if(dragging) {
@@ -437,12 +423,6 @@ public class PhysicsEngine implements GLEventListener, KeyListener, MouseListene
 		pmeshactive.setK(10);
 		pmeshactive.addToSystem(physics);
 		
-
-		//pgrav = new PointGravity(new Vec2D(-0.5, 0.8), 4.5, 0.09, physics);
-
-		// physics.addConstraint(new PointConstraint(pmesh.getPoints()[0][0]));
-
-		//  physics.addForce(pgrav);
 	}
 
 	/*
@@ -517,20 +497,6 @@ public class PhysicsEngine implements GLEventListener, KeyListener, MouseListene
 			pmeshactive.addToSystem(physics);
 		}
 
-		/*
-		quecount+=1;
-		if(quecount == imageque.length)
-			quecount = 0;
-		if(quecount+1 == imageque.length)
-			mesh = new DistortableMesh(1.4,1.4,1,1, imageque[0]);
-		else
-			mesh = new DistortableMesh(1.4,1.4,1,1, imageque[quecount+1]);
-		textureactive = imageque[quecount];
-		pmeshactive.delete();
-		pmeshactive = new PhysicsMesh(1.2, 24, textureactive);
-		pmeshactive.setK(10);
-		pmeshactive.addToSystem(physics);
-		 */
 	}
 
 	public void reshape(GLAutoDrawable drawable, int x, int y, int width,

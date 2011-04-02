@@ -45,10 +45,14 @@ public class TopSlider extends JPanel implements ActionListener {
 	/*
 	 * Assigns the required file data for the selected themes images and text media
 	 */
-	public void letsFight(File[] images, File[] text){
+	public void letsFight(String[] images, String[] text){
 		this.invalidate();
-		this.text = text;
-		this.images = images;
+		this.text = new File[text.length];
+		this.images = new File[images.length];
+		for(int i=0;i<text.length;i++)
+			this.text[i] = new File(text[i]);
+		for(int i=0;i<images.length;i++)
+			this.images[i] = new File(images[i]);
 		index =0;
 		genLists();
 		setupPanel();
