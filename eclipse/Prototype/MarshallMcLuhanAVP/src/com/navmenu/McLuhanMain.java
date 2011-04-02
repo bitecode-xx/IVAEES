@@ -576,6 +576,10 @@ public class McLuhanMain extends JFrame{
 	  Receive function that handles Kinect data for the theme and menu display
 	*/
 	public void recvThemeData(float x, float y, float depth, int select, String action) {
+		if (select == 0) {
+			return;
+		}
+		
 		System.out.println("Mode: " + mode);
 		
 		double ratioX = (size.getWidth() + 120) / 640;
@@ -628,6 +632,10 @@ public class McLuhanMain extends JFrame{
 	  Receive function that handles Kinect data for the physics engine display
 	*/
 	public void recvPhysicsData(float x, float y, float depth, int select, String action) {
+		if (select == 0) {
+			return;
+		}
+		
 		System.out.println("Mode: " + mode);
 		
 		double ratioX = (size.getWidth() + 120) / 640;

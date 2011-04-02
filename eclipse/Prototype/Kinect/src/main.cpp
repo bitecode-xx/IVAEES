@@ -30,7 +30,8 @@ char *action;
 
 int mode = 0;
 
-bool isConnected = true;
+bool inSession = false;
+bool isConnected = false;
 bool isGesture = false;
 bool circlePP = false;
 
@@ -40,6 +41,7 @@ std::ofstream *output;
 
 std::map<int, XnUInt32> mapID;
 
+xn::DepthMetaData depthMD;
 xn::DepthGenerator depthGenerator;
 
 xn::SceneMetaData sceneMD;
@@ -61,6 +63,8 @@ void XN_CALLBACK_TYPE SessionStart(const XnPoint3D& ptFocusPoint, void* UserCxt)
 
 	action = "sessionstart\n";
 
+	inSession = true;
+
 	logGestures();
 }
 
@@ -69,6 +73,8 @@ void XN_CALLBACK_TYPE SessionEnd(void* UserCxt) {
 	printf("Session ended\n");
 
 	action = "sessionend\n";
+
+	inSession = false;
 
 	logGestures();
 }
@@ -104,7 +110,7 @@ void XN_CALLBACK_TYPE OnPushCB(XnFloat velocity, XnFloat angle, void* cxt) {
 	action = "push\n";
 	isGesture = true;
 
-	std::map<int, XnUInt32>::iterator it = mapID.begin();
+	/*std::map<int, XnUInt32>::iterator it = mapID.begin();
 
 	printf("map size: %d\n", mapID.size());
 
@@ -112,7 +118,7 @@ void XN_CALLBACK_TYPE OnPushCB(XnFloat velocity, XnFloat angle, void* cxt) {
 		printf("first: %d\n", it->first);
 		printf("second: %d\n", it->second);
 		it++;
-	}
+	}*/
 
 	logGestures();
 
@@ -324,7 +330,9 @@ int main(int argc, char** argv) {
 	output = new std::ofstream(GESTURE_LOG);
 
 	while (1) {
-		sceneAnalyzer.GetMetaData(sceneMD);
+		if (!inSession) {
+			getGrabberLocation();
+		}
 
 		context.WaitAndUpdateAll();
 		sessionManager->Update(&context);
@@ -360,4 +368,60 @@ void logGestures() {
 	*output << asctime(timeinfo) << action << std::endl;
 
 	return;
+}
+
+void getGrabberLocation() {
+	sceneAnalyzer.GetMetaData(sceneMD);
+
+	const XnLabel *sceneLabels = sceneMD.Data();
+
+	XnLabel label = 0;
+	XnLabel labelSend = 0;
+
+	XnUInt32 lowX = 1024;
+	XnUInt32 highX = 0;
+	XnUInt32 labelX = 0;
+
+	XnUInt32 lowY = 640;
+	XnUInt32 highY = 0;
+	XnUInt32 labelY = 0;
+
+	XnUInt32 xres = sceneMD.XRes();
+	XnUInt32 yres = sceneMD.YRes();
+
+	for (XnUInt32 y = 0;y < yres;y++) {
+		for (XnUInt32 x = 0;x < xres;x++) {
+			label = *sceneLabels;
+
+			if (label != 0) {
+				if (x < lowX) {
+					lowX = x;
+				}
+				if (x > highX) {
+					highX = x;
+				}
+
+				if (y < lowY) {
+					lowY = y;
+				}
+				if (y > highY) {
+					highY = y;
+				}
+
+				labelSend = 1;
+			}
+
+			sceneLabels++;
+		}
+	}
+
+	if (isConnected && labelSend) {
+		labelX = highX - lowX;
+		labelY = highY - lowY;
+
+		action = "none\n";
+
+		kc->sendData((float)labelX, (float)labelY, 0, 0, action);
+	}
+	
 }

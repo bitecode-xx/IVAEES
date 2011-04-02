@@ -1,1 +1,2 @@
 void logGestures();
+void getGrabberLocation();
