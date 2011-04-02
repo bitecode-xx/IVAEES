@@ -4,9 +4,12 @@ import java.awt.AWTException;
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
+import java.awt.MouseInfo;
+import java.awt.Point;
 import java.awt.Robot;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -22,11 +25,14 @@ import java.util.TimerTask;
 import javax.media.opengl.GLCapabilities;
 import javax.media.opengl.GLProfile;
 import javax.media.opengl.awt.GLCanvas;
+import javax.media.opengl.awt.GLJPanel;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JLayeredPane;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.Timer;
@@ -35,6 +41,7 @@ import javax.swing.border.LineBorder;
 
 import org.pirelenito.movieGL.Main;
 
+import com.helper.GlassPane;
 import com.helper.MP3;
 import com.helper.MenuBuilder;
 import com.helper.TextureMap;
@@ -51,12 +58,13 @@ import com.physics.PhysicsGrabber;
  * system states. 
  * 
  */
-public class McLuhanMain extends JFrame{
+public class McLuhanMain extends JFrame implements MouseListener{
 	//McLuhan themes list
 	private String[] DIRS = {"City as Classroom","Extensions of Man","Global Village","The Medium is the Message"};
 
 	private JFrame frame;
-	private GLCanvas canvas,vidc,grabc;
+	//private GLCanvas canvas,vidc,grabc;
+	private GLJPanel canvas,vidc,grabc;
 	//TODO convert glnav to class to handle menu grabbing/interaction in gl scene. Might need to be added as an extension to the main gl scene
 	private JPanel menu,glnav;
 
@@ -98,19 +106,28 @@ public class McLuhanMain extends JFrame{
 
 	private MenuBuilder backsnbtns;
 
+	private JLayeredPane layeredPane;
+	
+	private GlassPane hands;
+
+
 	public McLuhanMain() {
 		frame = this;
 		frame.setName("McLuhan Server");
+		layeredPane = frame.getLayeredPane();
+		layeredPane.setLayout(new BorderLayout());
 		frame.setSize(size);
 		//this.setUndecorated(true);
 		bgsel =1;
 		menu = new JPanel();
-
+		hands = new GlassPane();
+		hands.setOpaque(false);
+		
 		CardLayout system = new CardLayout();
 		menu.setLayout(system);
 
 		backsnbtns = new MenuBuilder();
-
+		
 		//initGrabber();
 		initTSlide();
 		initTData();
@@ -120,19 +137,25 @@ public class McLuhanMain extends JFrame{
 		initSelections4();
 		initLoading();
 		initGLNav();
-
+		
+		hands.setHandOne(new Point(525,525));
+		
 		btns = btns1;
-
 		//menu.add("Grabber",grabc);
 		menu.add("1",p1);
 		menu.add("2",p2);
 		menu.add("3",p3);
 		menu.add("4",p4);
 		menu.add("Loader",load);
-
-		frame.getContentPane().add(BorderLayout.NORTH,tslide);
-		frame.getContentPane().add(BorderLayout.CENTER,menu);
-		frame.getContentPane().add(BorderLayout.WEST,glnav);
+		layeredPane.add(tslide,BorderLayout.NORTH,-30000);
+		layeredPane.add(menu,BorderLayout.CENTER,-30000);
+		layeredPane.add(glnav,BorderLayout.WEST,-30000);
+		//frame.getContentPane().add(BorderLayout.NORTH,tslide);
+		//frame.getContentPane().add(BorderLayout.CENTER,menu);
+		//frame.getContentPane().add(BorderLayout.WEST,glnav);
+		frame.setGlassPane(hands);
+		frame.getGlassPane().setVisible(true);
+		//frame.getContentPane().add(BorderLayout.CENTER,hands);
 
 		glnav.setVisible(false);
 		tslide.setVisible(false);
@@ -200,6 +223,7 @@ public class McLuhanMain extends JFrame{
 		};
 		
 		steadyTimer = new Timer(3000 * 1, steadyAL);
+		
 	}
 	
 	/*
@@ -208,8 +232,9 @@ public class McLuhanMain extends JFrame{
 	private void initGrabber() {
 		GLProfile glp = GLProfile.getDefault();
 		GLCapabilities caps = new GLCapabilities(glp);
-		grabc = new GLCanvas(caps);
-
+		//grabc = new GLCanvas(caps);
+		grabc = new GLJPanel(caps);
+		
 		grabber = new PhysicsGrabber();
 		grabc.addGLEventListener(grabber);
 		grabc.addKeyListener(grabber);
@@ -411,6 +436,7 @@ public class McLuhanMain extends JFrame{
 		activateAnimation();
 		((CardLayout)menu.getLayout()).show(menu, "ogl");
 		canvas.validate();
+		hands.repaint();
 	}
 
 	private void activateGrabber(){
@@ -515,7 +541,8 @@ public class McLuhanMain extends JFrame{
 	private void initCanvas(int opt) {
 		GLProfile glp = GLProfile.getDefault();
 		GLCapabilities caps = new GLCapabilities(glp);
-		canvas = new GLCanvas(caps);
+		//canvas = new GLCanvas(caps);
+		canvas = new GLJPanel(caps);
 
 		app = new PhysicsEngine(themes.getMap(opt*3), themes.getMap((opt*3)+1), themes.getMap((opt*3)+2),themes.getVids(opt));
 		canvas.addGLEventListener(app);
@@ -950,6 +977,37 @@ public class McLuhanMain extends JFrame{
 			p4.add(btns4[i]);
 		}
 
+	}
+
+	@Override
+	public void mouseClicked(MouseEvent arg0) {
+		hands.setHandOne(new Point(250,250));
+		hands.repaint();
+		
+	}
+
+	@Override
+	public void mouseEntered(MouseEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseExited(MouseEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mousePressed(MouseEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseReleased(MouseEvent arg0) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

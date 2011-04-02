@@ -25,6 +25,7 @@ public class McLuhanServer {
 	private static boolean isConnected = true;
 
 	public static void main(String[] args) {
+		System.setProperty("sun.awt.disableMixing", "false");
 		GLProfile.initSingleton(true);
 		GraphicsDevice screen = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
 	    System.out.println(screen.isFullScreenSupported());

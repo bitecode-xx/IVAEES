@@ -7,9 +7,12 @@ import javax.media.ControllerListener;
 import javax.media.EndOfMediaEvent;
 import javax.media.Manager;
 import javax.media.Player;
+import javax.media.RealizeCompleteEvent;
 import javax.media.Time;
 
 import org.pirelenito.multimedia.jmf.plugin.IGLTextureRenderer;
+
+import com.physics.PhysicsEngine;
 
 /**
  * Interface to JMF player and has helper functions to work
@@ -27,16 +30,19 @@ public class MoviePlayer implements ControllerListener  {
 	/**
 	 * Loop flag
 	 */
-	private boolean loop;
+	private boolean loop, rendered;
+	private PhysicsEngine linkback;
 
 	public MoviePlayer (String filename) throws Exception {
 		Manager.setHint(Manager.PLUGIN_PLAYER, true);
-		
+		Manager.setHint(Manager.LIGHTWEIGHT_RENDERER, new Boolean(true)); 
 		// open the file.
-		player = Manager.createRealizedPlayer( new URL("file:" + filename) );
+		player = Manager.createPlayer( new URL("file:" + filename) );
 		player.addControllerListener(this);
+		player.realize();
 		player.prefetch();
-		
+		player.addControllerListener(this);
+		rendered = false;
 		// wait for it to be done.
 		while(player.getTargetState() != Player.Prefetched );
 	}
@@ -45,9 +51,16 @@ public class MoviePlayer implements ControllerListener  {
 	 * @return GL texture renderer
 	 */
 	public IGLTextureRenderer getRenderer () {
-		return (IGLTextureRenderer) player.getControl("javax.media.renderer.VideoRenderer");
+		if(rendered)
+			return (IGLTextureRenderer) player.getControl("javax.media.renderer.VideoRenderer");
+		else 
+			return null;
 	}
 
+	public void setRender(PhysicsEngine linkback){
+		this.linkback = linkback;
+	}
+	
 	public void play() {
 		player.start();
 		while(player.getTargetState() != Player.Started );
@@ -91,6 +104,11 @@ public class MoviePlayer implements ControllerListener  {
 		if (event instanceof EndOfMediaEvent && loop) {
 			rewind();
 			play();
+		}
+		else if(event instanceof RealizeCompleteEvent ) {
+			rendered = true;
+			linkback.setRender(getRenderer());
+
 		}
 	}
 
