@@ -58,7 +58,7 @@ import com.physics.PhysicsGrabber;
  * system states. 
  * 
  */
-public class McLuhanMain extends JFrame implements MouseListener{
+public class McLuhanMain extends JFrame{
 	//McLuhan themes list
 	private String[] DIRS = {"City as Classroom","Extensions of Man","Global Village","The Medium is the Message"};
 
@@ -342,6 +342,7 @@ public class McLuhanMain extends JFrame implements MouseListener{
 					int opt = Integer.parseInt(((JButton)ae.getSource()).getName());
 					roll = false;
 					ploop.stop();
+					if(flash!=null)
 						flash.stop();
 					starter.stop();
 					menu.validate();
@@ -477,6 +478,7 @@ public class McLuhanMain extends JFrame implements MouseListener{
 				setPage();
 				setBtns(bgsel);
 				ploop.stop();
+				if(flash !=null)
 					flash.stop();
 				starter.stop();
 				ploop.start();
@@ -986,36 +988,15 @@ public class McLuhanMain extends JFrame implements MouseListener{
 		}
 
 	}
-
-	@Override
-	public void mouseClicked(MouseEvent arg0) {
-		hands.setHandOne(new Point(250,250));
-		hands.repaint();
-		
+	
+	private void updateHandOne(Point p){
+		hands.setHandOne(p);
+	}
+	
+	private void updateHandTwo(Point p){
+		hands.setHandTwo(p);
 	}
 
-	@Override
-	public void mouseEntered(MouseEvent arg0) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void mouseExited(MouseEvent arg0) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void mousePressed(MouseEvent arg0) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void mouseReleased(MouseEvent arg0) {
-		// TODO Auto-generated method stub
-		
-	}
+	
 
 }
