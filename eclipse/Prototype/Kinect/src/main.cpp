@@ -30,10 +30,12 @@ char *action;
 
 int mode = 0;
 
-bool inSession = false;
-bool isConnected = true;
-bool isGesture = false;
-bool circlePP = false;
+XnBool record = false;
+XnBool isRecording = true;
+XnBool inSession = false;
+XnBool isConnected = true;
+XnBool isGesture = false;
+XnBool circlePP = false;
 
 Kinect_Client *kc;
 
@@ -41,20 +43,21 @@ std::ofstream *output;
 
 std::map<int, XnUInt32> mapID;
 
+XnStatus rc;
+xn::Context context;
+
 xn::DepthMetaData depthMD;
 xn::DepthGenerator depthGenerator;
 
 xn::SceneMetaData sceneMD;
 xn::SceneAnalyzer sceneAnalyzer;
 
-xn::HandsGenerator handsGenerator;
-xn::UserGenerator userGenerator;
+xn::Recorder *recorder;
 
 int lastID = 0;
 
 // Callback for when the focus is in progress
 void XN_CALLBACK_TYPE SessionProgress(const XnChar* strFocus, const XnPoint3D& ptFocusPoint, XnFloat fProgress, void* UserCxt) {
-	//printf("Session progress (%6.2f,%6.2f,%6.2f) - %6.2f [%s]\n", ptFocusPoint.X, ptFocusPoint.Y, ptFocusPoint.Z, fProgress,  strFocus);
 }
 
 // callback for session start
@@ -64,6 +67,10 @@ void XN_CALLBACK_TYPE SessionStart(const XnPoint3D& ptFocusPoint, void* UserCxt)
 	action = "sessionstart\n";
 
 	inSession = true;
+
+	if (isRecording) {
+		startCapture();
+	}
 
 	logGestures();
 }
@@ -75,6 +82,8 @@ void XN_CALLBACK_TYPE SessionEnd(void* UserCxt) {
 	action = "sessionend\n";
 
 	inSession = false;
+
+	stopCapture();
 
 	logGestures();
 }
@@ -109,16 +118,6 @@ void XN_CALLBACK_TYPE OnNoCircleCB(XnFloat lastValue, XnVCircleDetector::XnVNoCi
 void XN_CALLBACK_TYPE OnPushCB(XnFloat velocity, XnFloat angle, void* cxt) {
 	action = "push\n";
 	isGesture = true;
-
-	/*std::map<int, XnUInt32>::iterator it = mapID.begin();
-
-	printf("map size: %d\n", mapID.size());
-
-	while (it != mapID.end()) {
-		printf("first: %d\n", it->first);
-		printf("second: %d\n", it->second);
-		it++;
-	}*/
 
 	logGestures();
 
@@ -251,12 +250,10 @@ void XN_CALLBACK_TYPE OnPointUpdateCB(const XnVHandPointContext* pContext, void*
   Kinect hand tracking and gesture recognition
 */
 int main(int argc, char** argv) {
-	xn::Context context;
-
 	XnVSessionManager* sessionManager;
 
 	// Create context
-	XnStatus rc = context.InitFromXmlFile(SAMPLE_XML_FILE);
+	rc = context.InitFromXmlFile(SAMPLE_XML_FILE);
 
 	if (rc != XN_STATUS_OK) {
 		printf("Couldn't initialize: %s\n", xnGetStatusString(rc));
@@ -350,6 +347,8 @@ int main(int argc, char** argv) {
 		kc->endClient();
 	}
 
+	stopCapture();
+
 	output->close();
 
 	delete output;
@@ -431,4 +430,62 @@ void getGrabberLocation() {
 		kc->sendData((float)labelX, (float)labelY, 0, 0, action);
 	}
 	
+}
+
+void startCapture() {
+	char recordFile[256] = {0};
+	time_t rawtime;
+	struct tm *timeinfo;
+
+	time(&rawtime);
+	timeinfo = localtime(&rawtime);
+
+	XnUInt32 size;
+
+	xnOSStrFormat(recordFile, sizeof(recordFile)-1, &size, "%d_%02d_%02d[%02d_%02d_%02d].oni",
+				  timeinfo->tm_year + 1900, timeinfo->tm_mon + 1, timeinfo->tm_mday, timeinfo->tm_hour, timeinfo->tm_min, timeinfo->tm_sec);
+
+	if (recorder != NULL) {
+		stopCapture();
+	}
+
+	recorder = new xn::Recorder;
+
+	rc = context.CreateAnyProductionTree(XN_NODE_TYPE_RECORDER, NULL, *recorder);
+
+	if (rc != XN_STATUS_OK) {
+		printf("Recorder couldn't initialize: %s\n", xnGetStatusString(rc));
+		stopCapture();
+		return;
+	}
+
+	rc = recorder->SetDestination(XN_RECORD_MEDIUM_FILE, recordFile);
+
+	if (rc != XN_STATUS_OK) {
+		printf("Destination couldn't initialize: %s\n", xnGetStatusString(rc));
+		stopCapture();
+		return;
+	}
+
+	rc = recorder->AddNodeToRecording(depthGenerator, XN_CODEC_16Z_EMB_TABLES);
+
+	if (rc != XN_STATUS_OK) {
+		printf("Node couldn't initialize: %s\n", xnGetStatusString(rc));
+		stopCapture();
+		return;
+	}
+
+	record = true;
+}
+
+void stopCapture() {
+	record = false;
+
+	if (recorder != NULL) {
+		recorder->RemoveNodeFromRecording(depthGenerator);
+		recorder->Unref();
+		delete recorder;
+	}
+
+	recorder = NULL;
 }
