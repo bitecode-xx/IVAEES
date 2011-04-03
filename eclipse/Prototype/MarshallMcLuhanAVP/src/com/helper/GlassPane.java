@@ -55,7 +55,13 @@ public class GlassPane extends JPanel{
     	handTwo.setVisible(true);
     }
     
-
+    public void disableHandOne(){
+    	handOne.setVisible(false);
+    }
+    
+    public void disableHandTwo(){
+    	handTwo.setVisible(false);
+    }
 
 }
 

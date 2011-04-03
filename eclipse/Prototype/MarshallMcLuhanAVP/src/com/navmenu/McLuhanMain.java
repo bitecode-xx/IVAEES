@@ -223,7 +223,6 @@ public class McLuhanMain extends JFrame{
 		};
 		
 		steadyTimer = new Timer(3000 * 1, steadyAL);
-		
 	}
 	
 	/*
@@ -574,7 +573,7 @@ public class McLuhanMain extends JFrame{
 	*/
 	@SuppressWarnings("unused")
 	public void recvGrabberData(float x, float y, float depth, int select, String action) {
-		System.out.println("Mode: " + mode);
+		//System.out.println("Mode: " + mode);
 
 		double ratioX = (size.getWidth() + 120) / 640;
 		double ratioY = (size.getHeight() + 160) / 480;
@@ -609,7 +608,30 @@ public class McLuhanMain extends JFrame{
 			return;
 		}
 		
-		System.out.println("Mode: " + mode);
+		if (action.compareTo("primarypointcreate") == 0) {
+			handArray[select - 1].setState(1);
+			
+			hands.enableHandOne();
+		}
+		if (action.compareTo("primarypointdestroy") == 0) {
+			handArray[select - 1].setState(0);
+			
+			hands.disableHandOne();
+		}
+		if (action.compareTo("pointcreate") == 0) {
+			handArray[select - 1].setState(1);
+			
+			hands.enableHandTwo();
+		}
+		if (action.compareTo("pointdestroy") == 0) {
+			handArray[select - 1].setState(0);
+			
+			hands.disableHandTwo();
+		}
+		
+		if (handArray[select - 1].getState() == 0) {
+			return;
+		}
 		
 		double ratioX = (size.getWidth() + 120) / 640;
 		double ratioY = (size.getHeight() + 160) / 480;
@@ -629,13 +651,15 @@ public class McLuhanMain extends JFrame{
 			newY = 768;
 		}
 		
-		if (handArray[select - 1].getState() == 0) {
-			handArray[select - 1].setState(1);
-		}
 		handArray[select - 1].setX(newX);
 		handArray[select - 1].setY(newY);
 
-		mouseRobot.mouseMove(newX, newY);
+		if (select == 1) {
+			updateHandOne(new Point(newX, newY));
+		}
+		if (select == 2) {
+			updateHandTwo(new Point(newX, newY));
+		}
 
 		if (action.compareTo("push") == 0 && handArray[select - 1].getPressed() == false) {
 			switch (select) {
@@ -646,10 +670,6 @@ public class McLuhanMain extends JFrame{
 				case 2:
 					mouseRobot.mousePress(MouseEvent.BUTTON2_MASK);
 					mouseRobot.mouseRelease(MouseEvent.BUTTON2_MASK);
-					break;
-				case 3:
-					mouseRobot.mousePress(MouseEvent.BUTTON3_MASK);
-					mouseRobot.mouseRelease(MouseEvent.BUTTON3_MASK);
 					break;
 			}
 		}
@@ -665,7 +685,30 @@ public class McLuhanMain extends JFrame{
 			return;
 		}
 		
-		System.out.println("Mode: " + mode);
+		if (action.compareTo("primarypointcreate") == 0) {
+			handArray[select - 1].setState(1);
+			
+			hands.enableHandOne();
+		}
+		if (action.compareTo("primarypointdestroy") == 0) {
+			handArray[select - 1].setState(0);
+			
+			hands.disableHandOne();
+		}
+		if (action.compareTo("pointcreate") == 0) {
+			handArray[select - 1].setState(1);
+			
+			hands.enableHandTwo();
+		}
+		if (action.compareTo("pointdestroy") == 0) {
+			handArray[select - 1].setState(0);
+			
+			hands.disableHandTwo();
+		}
+		
+		if (handArray[select - 1].getState() == 0) {
+			return;
+		}
 		
 		double ratioX = (size.getWidth() + 120) / 640;
 		double ratioY = (size.getHeight() + 160) / 480;
@@ -684,37 +727,19 @@ public class McLuhanMain extends JFrame{
 		if (newY > 768) {
 			newY = 768;
 		}
-		
-		if (handArray[select - 1].getState() == 0) {
-			handArray[select - 1].setState(1);
-		}
+
 		handArray[select - 1].setX(newX);
 		handArray[select - 1].setY(newY);
 		
-		/*if (action.compareTo("circle") == 0) {
-			if (handArray[select - 1].getState() == 0) {
-				handArray[select - 1].setState(1);
-			}
-			else {
-				handArray[select - 1].setState(0);
-			}
-		}*/
+		if (select == 1) {
+			updateHandOne(new Point(newX, newY));
+		}
+		if (select == 2) {
+			updateHandTwo(new Point(newX, newY));
+		}
 		
-		/*if (action.compareTo("circle") == 0) {
-			switch (select) {
-				case 1:
-					mouseRobot.mouseRelease(MouseEvent.BUTTON1_MASK);
-					break;
-				case 2:
-					mouseRobot.mouseRelease(MouseEvent.BUTTON2_MASK);
-					break;
-				case 3:
-					mouseRobot.mouseRelease(MouseEvent.BUTTON3_MASK);
-					break;
-			}
-		}*/
-		
-		mouseRobot.mouseMove(newX, newY);
+		Date timestamp = new Date();
+		MouseEvent me;
 
 		if (action.compareTo("steady") == 0 && handArray[select - 1].getPressed() == false) {
 			if (steady == 0 && (newY < 100 || newX < 60)) {
@@ -723,16 +748,21 @@ public class McLuhanMain extends JFrame{
 				
 				switch (select) {
 					case 1:
+						/*me = new MouseEvent(glnav, MouseEvent.MOUSE_PRESSED, timestamp.getTime(), MouseEvent.BUTTON1_MASK, 
+                        					handArray[select - 1].getX(), handArray[select - 1].getY(), 0, false);
+						app.mousePressed(me);
+						me = new MouseEvent(glnav, MouseEvent.MOUSE_RELEASED, timestamp.getTime(), MouseEvent.BUTTON1_MASK, 
+											handArray[select - 1].getX(), handArray[select - 1].getY(), 0, false);
+						app.mouseReleased(me);
+						me = new MouseEvent(glnav, MouseEvent.MOUSE_CLICKED, timestamp.getTime(), MouseEvent.BUTTON1_MASK, 
+											handArray[select - 1].getX(), handArray[select - 1].getY(), 0, false);
+						app.mouseClicked(me);*/
 						mouseRobot.mousePress(MouseEvent.BUTTON1_MASK);
 						mouseRobot.mouseRelease(MouseEvent.BUTTON1_MASK);
 						break;
 					case 2:
 						mouseRobot.mousePress(MouseEvent.BUTTON2_MASK);
 						mouseRobot.mouseRelease(MouseEvent.BUTTON2_MASK);
-						break;
-					case 3:
-						mouseRobot.mousePress(MouseEvent.BUTTON3_MASK);
-						mouseRobot.mouseRelease(MouseEvent.BUTTON3_MASK);
 						break;
 				}
 			}
@@ -742,16 +772,38 @@ public class McLuhanMain extends JFrame{
 			if (newY > 100) {
 				switch (select) {
 					case 1:
-						mouseRobot.mousePress(MouseEvent.BUTTON1_MASK);
+						//mouseRobot.mousePress(MouseEvent.BUTTON1_MASK);
+						me = new MouseEvent(canvas, MouseEvent.MOUSE_PRESSED, timestamp.getTime(), MouseEvent.BUTTON1_MASK, 
+            								handArray[select - 1].getX(), handArray[select - 1].getY(), 0, false);
+						app.mousePressed(me);
 						break;
 					case 2:
-						mouseRobot.mousePress(MouseEvent.BUTTON2_MASK);
-						break;
-					case 3:
-						mouseRobot.mousePress(MouseEvent.BUTTON3_MASK);
+						//mouseRobot.mousePress(MouseEvent.BUTTON2_MASK);
+						me = new MouseEvent(canvas, MouseEvent.MOUSE_PRESSED, timestamp.getTime(), MouseEvent.BUTTON2_MASK, 
+											handArray[select - 1].getX(), handArray[select - 1].getY(), 0, false);
+						app.mousePressed(me);
 						break;
 				}
 				handArray[select - 1].setPressed(true);
+			}
+		}
+		
+		if (depth < 1000 && handArray[select - 1].getPressed() == true) {
+			if (newY > 100) {
+				switch (select) {
+					case 1:
+						//mouseRobot.mousePress(MouseEvent.BUTTON1_MASK);
+						me = new MouseEvent(canvas, MouseEvent.MOUSE_DRAGGED, timestamp.getTime(), MouseEvent.BUTTON1_MASK, 
+            								handArray[select - 1].getX(), handArray[select - 1].getY(), 0, false);
+						app.mouseDragged(me);
+						break;
+					case 2:
+						//mouseRobot.mousePress(MouseEvent.BUTTON2_MASK);
+						me = new MouseEvent(canvas, MouseEvent.MOUSE_DRAGGED, timestamp.getTime(), MouseEvent.BUTTON2_MASK, 
+											handArray[select - 1].getX(), handArray[select - 1].getY(), 0, false);
+						app.mouseDragged(me);
+						break;
+				}
 			}
 		}
 		
@@ -759,13 +811,16 @@ public class McLuhanMain extends JFrame{
 			if (newY > 100) {
 				switch (select) {
 					case 1:
-						mouseRobot.mouseRelease(MouseEvent.BUTTON1_MASK);
+						//mouseRobot.mouseRelease(MouseEvent.BUTTON1_MASK);
+						me = new MouseEvent(canvas, MouseEvent.MOUSE_RELEASED, timestamp.getTime(), MouseEvent.BUTTON1_MASK, 
+											handArray[select - 1].getX(), handArray[select - 1].getY(), 0, false);
+						app.mouseReleased(me);
 						break;
 					case 2:
-						mouseRobot.mouseRelease(MouseEvent.BUTTON2_MASK);
-						break;
-					case 3:
-						mouseRobot.mouseRelease(MouseEvent.BUTTON3_MASK);
+						//mouseRobot.mouseRelease(MouseEvent.BUTTON2_MASK);
+						me = new MouseEvent(canvas, MouseEvent.MOUSE_RELEASED, timestamp.getTime(), MouseEvent.BUTTON2_MASK, 
+											handArray[select - 1].getX(), handArray[select - 1].getY(), 0, false);
+						app.mouseReleased(me);
 						break;
 				}
 				handArray[select - 1].setPressed(false);

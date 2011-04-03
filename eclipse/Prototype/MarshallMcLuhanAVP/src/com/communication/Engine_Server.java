@@ -10,7 +10,7 @@ public class Engine_Server {
 	
     static int POS = 3;		/* number of items per position packet */
     static int SEL = 1;		/* number of items per selection packet */
-    static int COM = 20;	/* number of items per command packet */
+    static int COM = 30;	/* number of items per command packet */
     
 	private float position[];
 	private int selection[];

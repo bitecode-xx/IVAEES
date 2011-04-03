@@ -31,7 +31,7 @@ char *action;
 int mode = 0;
 
 bool inSession = false;
-bool isConnected = false;
+bool isConnected = true;
 bool isGesture = false;
 bool circlePP = false;
 
@@ -148,11 +148,15 @@ void XN_CALLBACK_TYPE OnWaveCB(void* cxt) {
 void XN_CALLBACK_TYPE OnPrimaryPointCreateCB(const XnVHandPointContext* pContext, const XnPoint3D& ptFocus, void* cxt) {
 	if (mapID.find(1) == mapID.end()) {
 		mapID.insert(std::make_pair(1, pContext->nID));
+
+		action = "primarypointcreate\n";
+
+		if (isConnected) {
+			kc->sendData(-500.0, -500.0, -500.0, 1, action);
+		}
 	}
 	else {
 	}
-
-	printf("map size: %d\n", mapID.size());
 
 	printf("PrimaryPointCreate\n");
 }
@@ -160,23 +164,29 @@ void XN_CALLBACK_TYPE OnPrimaryPointCreateCB(const XnVHandPointContext* pContext
 void XN_CALLBACK_TYPE OnPrimaryPointDestroyCB(XnUInt32 nID, void* cxt) {
 	mapID.erase(1);
 
-	printf("map size: %d\n", mapID.size());
+	action = "primarypointdestroy\n";
+
+	if (isConnected) {
+		kc->sendData(-500.0, -500.0, -500.0, 1, action);
+	}
 
 	printf("PrimaryPointDestroy\n");
 }
 
 void XN_CALLBACK_TYPE OnPointCreateCB(const XnVHandPointContext* pContext, void* cxt) {
 	if (mapID.find(1) != mapID.end()) {
-
 		if (mapID.find(2) == mapID.end()) {
 			mapID.insert(std::make_pair(2, pContext->nID));
+
+			action = "pointcreate\n";
+
+			if (isConnected) {
+				kc->sendData(-500.0, -500.0, -500.0, 2, action);
+			}
 		}
 		else {
 		}
-
 	}
-
-	printf("map size: %d\n", mapID.size());
 
 	printf("PointCreate\n");
 }
@@ -184,9 +194,13 @@ void XN_CALLBACK_TYPE OnPointCreateCB(const XnVHandPointContext* pContext, void*
 void XN_CALLBACK_TYPE OnPointDestroyCB(XnUInt32 nID, void* cxt) {
 	if (mapID.find(1)->second != nID) {
 		mapID.erase(2);
-	}
 
-	printf("map size: %d\n", mapID.size());
+		action = "pointcreate\n";
+
+		if (isConnected) {
+			kc->sendData(-500.0, -500.0, -500.0, 2, action);
+		}
+	}
 
 	printf("PointDestroy\n");
 }
@@ -256,13 +270,6 @@ int main(int argc, char** argv) {
 		printf("Depth Generator couldn't initialize: %s\n", xnGetStatusString(rc));
 		return 1;
 	}
-
-	/*rc = context.FindExistingNode(XN_NODE_TYPE_USER, userGenerator);
-
-	if (rc != XN_STATUS_OK) {
-		printf("User Generator couldn't initialize: %s\n", xnGetStatusString(rc));
-		return 1;
-	}*/
 
 	rc = context.FindExistingNode(XN_NODE_TYPE_SCENE, sceneAnalyzer);
 

@@ -1,6 +1,6 @@
 #define POS 3		 /* number of items per position packet */
 #define SEL 1		 /* number of items per selection packet */
-#define COM 20       /* number of items per command packet */
+#define COM 30       /* number of items per command packet */
 
 #include "Client.h"
 
