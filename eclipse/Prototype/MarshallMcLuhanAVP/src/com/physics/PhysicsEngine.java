@@ -49,11 +49,11 @@ public class PhysicsEngine implements GLEventListener, KeyListener, MouseListene
 	private double afps, aphysics, arendering, afree;
 
 	private int width = 800, height = 800;
-	private int mousex = 0, mousey = 0;
-	private boolean dragging = false;
-	private int mouse = -1;
+	private int mousex = 0, mousey = 0, mousex2 = 0, mousey2 = 0;
+	private boolean dragging = false, dragging2 = false;
+	private int mouse = -1, mouse2 = -1;
 
-	private double mx = -0.6, my = 0;
+	private double mx = -0.6, my = 0, mx2 = -0.6, my2 = 0;
 
 	private PositionableConstraint constraint1;
 	private PositionableConstraint constraint2;
@@ -193,6 +193,10 @@ public class PhysicsEngine implements GLEventListener, KeyListener, MouseListene
 		else if(mouse == 3){
 			newpos3 = new Vec2D(mx, my);
 		}
+		
+		if(mouse2 == 2){
+			newpos2 = new Vec2D(mx2, my2);
+		}
 
 
 		if(mouse == 1) {
@@ -208,6 +212,12 @@ public class PhysicsEngine implements GLEventListener, KeyListener, MouseListene
 			constraint3.setPos(constraint3.getPos().scale(0.666666).add(newpos3.scale(0.333333)));
 		}
 		physics.timestep();
+		
+		if(mouse2 == 2){
+			newpos2 = new Vec2D(mx2, my2);
+			constraint2.setPos(constraint2.getPos().scale(0.666666).add(newpos2.scale(0.333333)));
+		}
+		physics.timestep();
 		if(mouse == 1) {
 			newpos1 = new Vec2D(mx, my);
 			constraint1.setPos(constraint1.getPos().scale(0.5).add(newpos1.scale(0.5)));
@@ -221,6 +231,14 @@ public class PhysicsEngine implements GLEventListener, KeyListener, MouseListene
 			constraint3.setPos(constraint3.getPos().scale(0.5).add(newpos3.scale(0.5)));
 		}
 		physics.timestep();
+		
+		if(mouse2 == 2){
+			newpos2 = new Vec2D(mx2, my2);
+			constraint2.setPos(constraint2.getPos().scale(0.5).add(newpos2.scale(0.5)));
+		}
+		
+		physics.timestep();
+		
 		if(mouse == 1) {
 			newpos1 = new Vec2D(mx, my);
 			constraint1.setPos(newpos1);
@@ -232,6 +250,12 @@ public class PhysicsEngine implements GLEventListener, KeyListener, MouseListene
 		else if(mouse == 3){
 			newpos3 = new Vec2D(mx, my);
 			constraint3.setPos(newpos3);
+		}
+		physics.timestep();
+		
+		if(mouse2 == 2){
+			newpos2 = new Vec2D(mx2, my2);
+			constraint2.setPos(newpos2);
 		}
 
 		if(pmeshactive.computeBrokenPercent() >= 0.80) {
@@ -309,12 +333,29 @@ public class PhysicsEngine implements GLEventListener, KeyListener, MouseListene
 			gl.glEnd();
 		}
 
+		if(dragging2) {
+			gl.glBegin(GL.GL_POINTS);
+			gl.glVertex2d(mx2, my2);
+			gl.glEnd();
+		}
+		
 		gl.glFlush();
 	}
 
 	private void convertMouseCoordinates() {
 		this.mx = 2*(double)mousex/width*(double)width/(double)height - (double)width/(double)height;
 		this.my = 2*(double)(height-mousey)/height - 1.0;
+	}
+	
+	private void convertMouseCoordinates(boolean hands) {
+		if(hands){
+			this.mx = 2*(double)mousex/width*(double)width/(double)height - (double)width/(double)height;
+			this.my = 2*(double)(height-mousey)/height - 1.0;
+		}
+		else {
+			this.mx2 = 2*(double)mousex2/width*(double)width/(double)height - (double)width/(double)height;
+			this.my2 = 2*(double)(height-mousey2)/height - 1.0;
+		}
 	}
 
 	public void display(GLAutoDrawable drawable) {
@@ -717,4 +758,75 @@ public class PhysicsEngine implements GLEventListener, KeyListener, MouseListene
 		}
 
 	}
+	
+	public void handPressed(Point p, boolean handone) {
+		if(handone){
+			this.mousex = p.x-59;
+			this.mousey = p.y-134;
+			this.dragging = true;
+		}
+		else{
+			this.mousex2 = p.x-59;
+			this.mousey2 = p.y-134;
+			this.dragging2 = true;
+		}
+		convertMouseCoordinates(handone);
+		if(handone) {
+			if(constraint1 != null) {
+				constraint1.delete();
+			}
+			ArrayList<PhysPoint> points = getPointsInCircle(new Vec2D(mx, my), 0.15);
+			if(points.size() == 0) {
+				constraint1 = new CircleConstraint(physics, new Vec2D(mx, my), 0.15);
+			}
+			else {
+				constraint1 = new CentroidConstraint(points);
+			}
+			physics.addConstraint(constraint1);
+			mouse = 1;
+			newpos1 = new Vec2D(mx, my);
+		}
+		else if(!handone) {
+			if(constraint2 != null) {
+				constraint2.delete();
+			}
+			ArrayList<PhysPoint> points = getPointsInCircle(new Vec2D(mx2, my2), 0.15);
+			if(points.size() == 0) {
+				constraint2 = new CircleConstraint(physics, new Vec2D(mx2, my2), 0.15);
+			}
+			else {
+				constraint2 = new CentroidConstraint(points);
+			}
+			physics.addConstraint(constraint2);
+			mouse2 = 2;
+			newpos2 = new Vec2D(mx2, my2);
+		}
+	}
+
+	public void handReleased(Point p, boolean handone) {
+		if(handone){
+			this.mousex = p.x-59;
+			this.mousey = p.y-134;
+			this.dragging = false;
+		}
+		else{
+			this.mousex2 = p.x-59;
+			this.mousey2 = p.y-134;
+			this.dragging2 = false;
+		}
+		convertMouseCoordinates(handone);
+	}
+
+	public void handDragged(Point p, boolean handone) {
+		if(handone){
+			this.mousex = p.x-59;
+			this.mousey = p.y-134;
+		}
+		else{
+			this.mousex2 = p.x-59;
+			this.mousey2 = p.y-134;
+		}		
+		convertMouseCoordinates(handone);
+	}
+	
 }
