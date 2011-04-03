@@ -763,17 +763,19 @@ public class McLuhanMain extends JFrame{
 						me = new MouseEvent(glnav, MouseEvent.MOUSE_CLICKED, timestamp.getTime(), MouseEvent.BUTTON1_MASK, 
 											handArray[select - 1].getX(), handArray[select - 1].getY(), 0, false);
 						app.mouseClicked(me);*/
-							//mouseRobot.mousePress(MouseEvent.BUTTON1_MASK);
-							//mouseRobot.mouseRelease(MouseEvent.BUTTON1_MASK);
-							app.handPressed(new Point(handArray[select - 1].getX(), handArray[select - 1].getY()),true);
-							app.handReleased(new Point(handArray[select - 1].getX(), handArray[select - 1].getY()),true);
+							mouseRobot.mouseMove(handArray[select - 1].getX(), handArray[select - 1].getY());
+							mouseRobot.mousePress(MouseEvent.BUTTON1_MASK);
+							mouseRobot.mouseRelease(MouseEvent.BUTTON1_MASK);
+							//app.handPressed(new Point(handArray[select - 1].getX(), handArray[select - 1].getY()),true);
+							//app.handReleased(new Point(handArray[select - 1].getX(), handArray[select - 1].getY()),true);
 							
 							break;
 						case 2:
-							//mouseRobot.mousePress(MouseEvent.BUTTON2_MASK);
-							//mouseRobot.mouseRelease(MouseEvent.BUTTON2_MASK);
-							app.handPressed(new Point(handArray[select - 1].getX(), handArray[select - 1].getY()),false);
-							app.handReleased(new Point(handArray[select - 1].getX(), handArray[select - 1].getY()),false);
+							mouseRobot.mouseMove(handArray[select - 1].getX(), handArray[select - 1].getY());
+							mouseRobot.mousePress(MouseEvent.BUTTON1_MASK);
+							mouseRobot.mouseRelease(MouseEvent.BUTTON1_MASK);
+							//app.handPressed(new Point(handArray[select - 1].getX(), handArray[select - 1].getY()),false);
+							//app.handReleased(new Point(handArray[select - 1].getX(), handArray[select - 1].getY()),false);
 							
 							break;
 						}
