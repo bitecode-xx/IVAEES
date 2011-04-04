@@ -576,7 +576,29 @@ public class McLuhanMain extends JFrame{
 	*/
 	private void startGrabber() {
 		if(canvas != null){
-			pmen.doClick();
+			pmen.setEnabled(false);
+			pmen.setVisible(false);
+			aud.setIcon(new ImageIcon("play.jpg"));
+			aud.setEnabled(false);
+			aud.setVisible(false);
+			aud.removeActionListener(aud.getActionListeners()[0]);
+			setPage();
+			setBtns(bgsel);
+			ploop.stop();
+			if(flash !=null)
+				flash.stop();
+			starter.stop();
+			app.stopVid();
+			menu.remove(canvas);
+			canvas = null;
+			animator.stop();
+			menu.validate();
+			quepush.stop();
+			soundbite.close();
+			tslide.removeAll();
+			glnav.setVisible(false);
+			tslide.setVisible(false);
+			roll = true;
 		}
 		if(starter != null)
 			starter.stop();
