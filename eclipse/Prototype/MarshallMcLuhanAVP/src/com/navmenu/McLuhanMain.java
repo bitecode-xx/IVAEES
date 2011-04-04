@@ -77,7 +77,7 @@ public class McLuhanMain extends JFrame{
 
 	private Dimension size = new Dimension(1024,768);
 
-	private FPSAnimator animator;
+	private FPSAnimator animator, animator2;
 	private PhysicsEngine app;
 	private PhysicsGrabber grabber;
 
@@ -225,7 +225,6 @@ public class McLuhanMain extends JFrame{
 		
 		steadyTimer = new Timer(3000 * 1, steadyAL);
 		
-		activateGrabber();
 	}
 	
 	/*
@@ -244,6 +243,8 @@ public class McLuhanMain extends JFrame{
 		grabc.addMouseMotionListener(grabber);
 
 		grabc.requestFocus();
+		
+		activateGrabber();
 
 	}
 
@@ -442,9 +443,9 @@ public class McLuhanMain extends JFrame{
 	}
 
 	private void activateGrabber(){
-		animator = new FPSAnimator(60);
-		animator.add(grabc);
-		animator.start();
+		animator2 = new FPSAnimator(60);
+		animator2.add(grabc);
+		animator2.start();
 	}
 
 
@@ -583,8 +584,8 @@ public class McLuhanMain extends JFrame{
 			flash.stop();
 		if(ploop != null)
 			ploop.stop();
-		initGrabber();
-		menu.add("Grabber",grabc);
+		grabber.reset();
+		animator2.start();
 		((CardLayout)menu.getLayout()).show(menu, "Grabber");
 	}
 	
@@ -592,14 +593,10 @@ public class McLuhanMain extends JFrame{
 	 * 
 	*/
 	private void stopGrabber() {
-		menu.remove(grabc);
+		animator2.stop();
 		((CardLayout)menu.getLayout()).show(menu, bgsel+"");
-        menu.validate();
 		starter.start();
-		ploop.start();
-		animator.stop();
-        grabc = null;
-		
+		ploop.start();	
 		return;
 	}
 	
@@ -616,12 +613,12 @@ public class McLuhanMain extends JFrame{
 			mode = 1;
 			
 			System.out.println("Mode: " + mode);
-			
 			stopGrabber();
-			
+
 			return;
 		}
 
+		
 		double ratioX = (size.getWidth() + 120) / 640;
 		double ratioY = (size.getHeight() + 160) / 480;
 		int newX = (int) ((x - 40) * ratioX);
@@ -655,7 +652,6 @@ public class McLuhanMain extends JFrame{
 		if (select == 0) {
 			return;
 		}
-		
 		if (action.compareTo("sessionend") == 0) {
 			mode = 0;
 			startGrabber();

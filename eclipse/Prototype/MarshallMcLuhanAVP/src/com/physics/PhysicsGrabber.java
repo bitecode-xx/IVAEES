@@ -114,15 +114,17 @@ public class PhysicsGrabber implements GLEventListener, KeyListener, MouseListen
 			constraint1.setPos(newpos1);
 		}
 
-		if(pmeshactive.computeBrokenPercent() >= 0.95) {
-
-			callTimer();
-			if(quepush != null) {
-				quepush.restart();
-			}
-		}
-
 		physics.timestep();
+	}
+	
+	public void reset(){
+		if(pgrav != null)
+			pgrav.delete();
+		mesh = new DistortableMesh(1.0,1.0,1,1, wave);
+		pmeshactive.delete();
+		new PhysicsMesh(1.0, 28, textureactive, 0);
+		pmeshactive.setK(10);
+		pmeshactive.addToSystem(physics);
 	}
 
 	private void render(GLAutoDrawable drawable) {
