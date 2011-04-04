@@ -67,7 +67,7 @@ public class PhysicsGrabber implements GLEventListener, KeyListener, MouseListen
 
 
 	public PhysicsGrabber(){
-		source = "McLuhan poster small.jpg";
+		source = "yellowbackground.png";
 		source2 = "wavenow.png";
 	}
 
@@ -233,7 +233,7 @@ public class PhysicsGrabber implements GLEventListener, KeyListener, MouseListen
 
 		physics = new ParticleSystem(new Vec2D(0, -0.4), 0.3333/60.0, new Vec2D(-1.6, -1.0), new Vec2D(1.6, 1.0));
 
-		pmeshactive = new PhysicsMesh(1.0, 28, textureactive, 0);
+		pmeshactive = new PhysicsMesh(2.4, 56, textureactive, 0);
 		pmeshactive.setK(10);
 		pmeshactive.addToSystem(physics);
 
@@ -338,7 +338,7 @@ public class PhysicsGrabber implements GLEventListener, KeyListener, MouseListen
 			physics.addConstraint(constraint1);
 			mouse = 1;
 			newpos1 = new Vec2D(mx, my);
-			pgrav = new PointGravity(new Vec2D(mx, my), 1.0, 0.09, physics);
+			pgrav = new PointGravity(new Vec2D(mx, my), 1.5, 0.09, physics);
 			physics.addForce(pgrav);
 		}
 	}
