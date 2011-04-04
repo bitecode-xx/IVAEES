@@ -30,10 +30,13 @@ char *action;
 
 int mode = 0;
 
-XnBool record = false;
-XnBool isRecording = true;
-XnBool inSession = false;
+// Modify functionality
 XnBool isConnected = true;
+XnBool isRecording = false;
+
+// Don't modify
+XnBool record = false;
+XnBool inSession = false;
 XnBool isGesture = false;
 XnBool circlePP = false;
 
@@ -293,10 +296,10 @@ int main(int argc, char** argv) {
 	sessionManager->RegisterSession(NULL, &SessionStart, &SessionEnd, &SessionProgress);
 
 	// Circle Detector
-	XnVCircleDetector circle;
-	circle.RegisterCircle(NULL, OnCircleCB);
-	circle.RegisterNoCircle(NULL, OnNoCircleCB);
-	circle.RegisterPointUpdate(NULL, OnPointUpdateCB);
+	//XnVCircleDetector circle;
+	//circle.RegisterCircle(NULL, OnCircleCB);
+	//circle.RegisterNoCircle(NULL, OnNoCircleCB);
+	//circle.RegisterPointUpdate(NULL, OnPointUpdateCB);
 
 	// Push Detector
 	XnVPushDetector push;
@@ -315,7 +318,7 @@ int main(int argc, char** argv) {
 
 	XnVPointDenoiser denoiser;
 
-	denoiser.AddListener(&circle);
+	//denoiser.AddListener(&circle);
 	denoiser.AddListener(&push);
 	denoiser.AddListener(&steady);
 	denoiser.RegisterPrimaryPointCreate(NULL, OnPrimaryPointCreateCB);
@@ -422,14 +425,13 @@ void getGrabberLocation() {
 	}
 
 	if (isConnected && labelSend) {
-		labelX = highX - lowX;
-		labelY = highY - lowY;
+		labelX = (highX + lowX) / 2;
+		labelY = (highY + lowY) / 2;
 
 		action = "none\n";
 
 		kc->sendData((float)labelX, (float)labelY, 0, 0, action);
 	}
-	
 }
 
 void startCapture() {
