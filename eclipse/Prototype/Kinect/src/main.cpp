@@ -32,7 +32,7 @@ int mode = 0;
 
 // Modify functionality
 XnBool isConnected = true;
-XnBool isRecording = false;
+XnBool isRecording = true;
 
 // Don't modify
 XnBool record = false;
@@ -56,6 +56,8 @@ xn::SceneMetaData sceneMD;
 xn::SceneAnalyzer sceneAnalyzer;
 
 xn::Recorder *recorder;
+
+//xn::ImageGenerator imageGenerator;
 
 int lastID = 0;
 
@@ -87,7 +89,7 @@ void XN_CALLBACK_TYPE SessionEnd(void* UserCxt) {
 	printf("Session ended\n");
 
 	action = "sessionend\n";
-
+	
 	if (isConnected) {
 		kc->sendData(0.0, 0.0, 0.0, 1, action);
 	}
@@ -271,6 +273,14 @@ int main(int argc, char** argv) {
 		return 1;
 	}
 
+	// Setup for image generation
+	/*rc = context.FindExistingNode(XN_NODE_TYPE_IMAGE, imageGenerator);
+
+	if (rc != XN_STATUS_OK) {
+		printf("Image Generator couldn't initialize: %s\n", xnGetStatusString(rc));
+		return 1;
+	}*/
+
 	// Setup for depth generation
 	rc = context.FindExistingNode(XN_NODE_TYPE_DEPTH, depthGenerator);
 
@@ -279,6 +289,7 @@ int main(int argc, char** argv) {
 		return 1;
 	}
 
+	// Setup for scene analysis
 	rc = context.FindExistingNode(XN_NODE_TYPE_SCENE, sceneAnalyzer);
 
 	if (rc != XN_STATUS_OK) {
@@ -326,7 +337,6 @@ int main(int argc, char** argv) {
 
 	XnVPointDenoiser denoiser;
 
-	//denoiser.AddListener(&circle);
 	denoiser.AddListener(&push);
 	denoiser.AddListener(&steady);
 	denoiser.RegisterPrimaryPointCreate(NULL, OnPrimaryPointCreateCB);
