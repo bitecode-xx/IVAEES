@@ -31,10 +31,12 @@ public class PhysicsGrabber implements GLEventListener, KeyListener, MouseListen
 
 	private double moving = 0;
 
-	private Texture textureactive;	
+	private Texture textureactive, wave;	
 
 	private PhysicsMesh pmeshactive;
-
+	
+	private DistortableMesh mesh;
+	
 	private ParticleSystem physics;
 
 	private int framecount = 0;
@@ -53,12 +55,11 @@ public class PhysicsGrabber implements GLEventListener, KeyListener, MouseListen
 	private double mx = -0.6, my = 0;
 
 	private PositionableConstraint constraint1;
-	private PositionableConstraint constraint2;
-	private PositionableConstraint constraint3;
 
 	private Vec2D newpos1, newpos2, newpos3;
 
 	private String source;
+	private String source2;
 
 
 	private Timer quepush = null;
@@ -67,6 +68,7 @@ public class PhysicsGrabber implements GLEventListener, KeyListener, MouseListen
 
 	public PhysicsGrabber(){
 		source = "McLuhan poster small.jpg";
+		source2 = "wavenow.png";
 	}
 
 	public void setTimer(Timer q) {
@@ -101,39 +103,15 @@ public class PhysicsGrabber implements GLEventListener, KeyListener, MouseListen
 			newpos1 = new Vec2D(mx, my);
 			constraint1.setPos(constraint1.getPos().scale(0.666666).add(newpos1.scale(0.333333)));
 		}
-		else if(mouse == 2){
-			newpos2 = new Vec2D(mx, my);
-			constraint2.setPos(constraint2.getPos().scale(0.666666).add(newpos2.scale(0.333333)));
-		}
-		else if(mouse == 3){
-			newpos3 = new Vec2D(mx, my);
-			constraint3.setPos(constraint3.getPos().scale(0.666666).add(newpos3.scale(0.333333)));
-		}
 		physics.timestep();
 		if(mouse == 1) {
 			newpos1 = new Vec2D(mx, my);
 			constraint1.setPos(constraint1.getPos().scale(0.5).add(newpos1.scale(0.5)));
 		}
-		else if(mouse == 2){
-			newpos2 = new Vec2D(mx, my);
-			constraint2.setPos(constraint2.getPos().scale(0.5).add(newpos2.scale(0.5)));
-		}
-		else if(mouse == 3){
-			newpos3 = new Vec2D(mx, my);
-			constraint3.setPos(constraint3.getPos().scale(0.5).add(newpos3.scale(0.5)));
-		}
 		physics.timestep();
 		if(mouse == 1) {
 			newpos1 = new Vec2D(mx, my);
 			constraint1.setPos(newpos1);
-		}
-		else if(mouse == 2){
-			newpos2 = new Vec2D(mx, my);
-			constraint2.setPos(newpos2);
-		}
-		else if(mouse == 3){
-			newpos3 = new Vec2D(mx, my);
-			constraint3.setPos(newpos3);
 		}
 
 		if(pmeshactive.computeBrokenPercent() >= 0.95) {
@@ -161,18 +139,11 @@ public class PhysicsGrabber implements GLEventListener, KeyListener, MouseListen
 
 		physics.render(gl);
 		
+		mesh.render(gl);
+		
 		pmeshactive.renderMesh(gl);
-
-		/*
-		if(constraint1 != null) {
-			constraint1.render(gl);
-		}
-		if(constraint2 != null) {
-			constraint2.render(gl);
-		}
-		if(constraint3 != null) {
-			constraint3.render(gl);
-		}*/
+		
+		
 
 		if(frameInterval != 0 ) {
 			int fps = 1000000000/(int)frameInterval;
@@ -242,22 +213,29 @@ public class PhysicsGrabber implements GLEventListener, KeyListener, MouseListen
 		textureactive.setTexParameteri(GL.GL_TEXTURE_WRAP_T, GL.GL_REPEAT);
 		textureactive.setTexParameteri(GL.GL_TEXTURE_MAG_FILTER, GL.GL_LINEAR);
 		textureactive.setTexParameteri(GL.GL_TEXTURE_MIN_FILTER, GL.GL_LINEAR);
+		
+		try{
+			wave = TextureIO.newTexture(new File(source2), false);
+
+		} catch(Exception e) {
+			e.printStackTrace();
+			System.exit(1);
+		}
+
+		wave.setTexParameteri(GL.GL_TEXTURE_WRAP_S, GL.GL_REPEAT);
+		wave.setTexParameteri(GL.GL_TEXTURE_WRAP_T, GL.GL_REPEAT);
+		wave.setTexParameteri(GL.GL_TEXTURE_MAG_FILTER, GL.GL_LINEAR);
+		wave.setTexParameteri(GL.GL_TEXTURE_MIN_FILTER, GL.GL_LINEAR);
 
 
 
 		physics = new ParticleSystem(new Vec2D(0, -0.4), 0.3333/60.0, new Vec2D(-1.6, -1.0), new Vec2D(1.6, 1.0));
 
-		pmeshactive = new PhysicsMesh(1.0, 28, textureactive, PhysicsMesh.defaultBreakage);
+		pmeshactive = new PhysicsMesh(1.0, 28, textureactive, 0);
 		pmeshactive.setK(10);
 		pmeshactive.addToSystem(physics);
 
-
-		//pgrav = new PointGravity(new Vec2D(-0.5, 0.8), 0.5, 0.09, physics);
-
-		//physics.addConstraint(new PointConstraint(pmesh.getPoints()[0][0]));
-
-	     // physics.addForce(pgrav);
-
+		mesh = new DistortableMesh(1.0,1.0,9,9, wave);
 	}
 
 	/*
@@ -358,7 +336,7 @@ public class PhysicsGrabber implements GLEventListener, KeyListener, MouseListen
 			physics.addConstraint(constraint1);
 			mouse = 1;
 			newpos1 = new Vec2D(mx, my);
-			pgrav = new PointGravity(new Vec2D(mx, my), 0.5, 0.09, physics);
+			pgrav = new PointGravity(new Vec2D(mx, my), 1.0, 0.09, physics);
 			physics.addForce(pgrav);
 		}
 	}

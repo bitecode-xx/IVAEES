@@ -224,6 +224,8 @@ public class McLuhanMain extends JFrame{
 		};
 		
 		steadyTimer = new Timer(3000 * 1, steadyAL);
+		
+		activateGrabber();
 	}
 	
 	/*
@@ -243,7 +245,6 @@ public class McLuhanMain extends JFrame{
 
 		grabc.requestFocus();
 
-		activateGrabber();
 	}
 
 	private void initTSlide() {
