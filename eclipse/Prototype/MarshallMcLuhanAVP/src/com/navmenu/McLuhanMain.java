@@ -573,6 +573,15 @@ public class McLuhanMain extends JFrame{
 	 * 
 	*/
 	private void startGrabber() {
+		if(canvas != null){
+			pmen.doClick();
+		}
+		if(starter != null)
+			starter.stop();
+		if(flash != null)
+			flash.stop();
+		if(ploop != null)
+			ploop.stop();
 		initGrabber();
 		menu.add("Grabber",grabc);
 		((CardLayout)menu.getLayout()).show(menu, "Grabber");
@@ -582,11 +591,12 @@ public class McLuhanMain extends JFrame{
 	 * 
 	*/
 	private void stopGrabber() {
+		menu.remove(grabc);
 		((CardLayout)menu.getLayout()).show(menu, bgsel+"");
+        menu.validate();
 		starter.start();
 		ploop.start();
 		animator.stop();
-		menu.remove(grabc);
         grabc = null;
 		
 		return;
