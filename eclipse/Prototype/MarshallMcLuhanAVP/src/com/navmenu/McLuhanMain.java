@@ -608,6 +608,18 @@ public class McLuhanMain extends JFrame{
 	@SuppressWarnings("unused")
 	public void recvGrabberData(float x, float y, float depth, int select, String action) {
 		//System.out.println("Mode: " + mode);
+		
+		if (action.compareTo("sessionstart") == 0) {
+			System.out.println("start of session");
+			
+			mode = 1;
+			
+			System.out.println("Mode: " + mode);
+			
+			stopGrabber();
+			
+			return;
+		}
 
 		double ratioX = (size.getWidth() + 120) / 640;
 		double ratioY = (size.getHeight() + 160) / 480;
@@ -615,28 +627,22 @@ public class McLuhanMain extends JFrame{
 		int newY = (int) ((y - 30) * ratioY);
 		
 		if (newX < 0) {
-			newX = 0;
+			newX = 50;
 		}
 		if (newX > 1024) {
-			newX = 1024;
+			newX = 1074;
 		}
 		if (newY < 0) {
-			newY = 0;
+			newY = 50;
 		}
 		if (newY > 768) {
-			newY = 768;
+			newY = 718;
 		}
 		
 		mouseRobot.mouseMove(newX, newY);
 		
 		mouseRobot.mousePress(MouseEvent.BUTTON1_MASK);
 		mouseRobot.mouseRelease(MouseEvent.BUTTON1_MASK);
-		
-		if (action.compareTo("sessionstart") == 0) {
-			mode = 1;
-			stopGrabber();
-			System.out.println("START");
-		}
 		
 		return;
 	}
@@ -651,9 +657,10 @@ public class McLuhanMain extends JFrame{
 		
 		if (action.compareTo("sessionend") == 0) {
 			mode = 0;
+			startGrabber();
+			
+			return;
 		}
-		
-		
 		
 		if (action.compareTo("primarypointcreate") == 0) {
 			handArray[select - 1].setState(1);
@@ -737,6 +744,9 @@ public class McLuhanMain extends JFrame{
 				
 				if (action.compareTo("sessionend") == 0) {
 					mode = 0;
+					startGrabber();
+					
+					return;
 				}
 
 				if (action.compareTo("primarypointcreate") == 0) {

@@ -69,6 +69,10 @@ void XN_CALLBACK_TYPE SessionStart(const XnPoint3D& ptFocusPoint, void* UserCxt)
 
 	action = "sessionstart\n";
 
+	if (isConnected) {
+		kc->sendData(0.0, 0.0, 0.0, 1, action);
+	}
+
 	inSession = true;
 
 	if (isRecording) {
@@ -83,6 +87,10 @@ void XN_CALLBACK_TYPE SessionEnd(void* UserCxt) {
 	printf("Session ended\n");
 
 	action = "sessionend\n";
+
+	if (isConnected) {
+		kc->sendData(0.0, 0.0, 0.0, 1, action);
+	}
 
 	inSession = false;
 
@@ -154,7 +162,7 @@ void XN_CALLBACK_TYPE OnPrimaryPointCreateCB(const XnVHandPointContext* pContext
 		action = "primarypointcreate\n";
 
 		if (isConnected) {
-			kc->sendData(-500.0, -500.0, -500.0, 1, action);
+			kc->sendData(0.0, 0.0, 0.0, 1, action);
 		}
 	}
 	else {
@@ -169,7 +177,7 @@ void XN_CALLBACK_TYPE OnPrimaryPointDestroyCB(XnUInt32 nID, void* cxt) {
 	action = "primarypointdestroy\n";
 
 	if (isConnected) {
-		kc->sendData(-500.0, -500.0, -500.0, 1, action);
+		kc->sendData(0.0, 0.0, 0.0, 1, action);
 	}
 
 	printf("PrimaryPointDestroy\n");
@@ -183,7 +191,7 @@ void XN_CALLBACK_TYPE OnPointCreateCB(const XnVHandPointContext* pContext, void*
 			action = "pointcreate\n";
 
 			if (isConnected) {
-				kc->sendData(-500.0, -500.0, -500.0, 2, action);
+				kc->sendData(0.0, 0.0, 0.0, 2, action);
 			}
 		}
 		else {
@@ -200,7 +208,7 @@ void XN_CALLBACK_TYPE OnPointDestroyCB(XnUInt32 nID, void* cxt) {
 		action = "pointcreate\n";
 
 		if (isConnected) {
-			kc->sendData(-500.0, -500.0, -500.0, 2, action);
+			kc->sendData(0.0, 0.0, 0.0, 2, action);
 		}
 	}
 
