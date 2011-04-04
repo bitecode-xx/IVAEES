@@ -608,16 +608,11 @@ public class McLuhanMain extends JFrame{
 		//System.out.println("Mode: " + mode);
 		
 		if (action.compareTo("sessionstart") == 0) {
-			System.out.println("start of session");
-			
 			mode = 1;
-			
-			System.out.println("Mode: " + mode);
 			stopGrabber();
 
 			return;
 		}
-
 		
 		double ratioX = (size.getWidth() + 120) / 640;
 		double ratioY = (size.getHeight() + 160) / 480;
@@ -733,7 +728,6 @@ public class McLuhanMain extends JFrame{
 	*/
 	public void recvPhysicsData(final float x, final float y, final float depth, final int select, final String action) {
 		SwingUtilities.invokeLater(new Runnable( ) {
-
 			public void run( ) {
 				if (select == 0) {
 					return;
@@ -864,7 +858,6 @@ public class McLuhanMain extends JFrame{
 					}
 				}
 			}});
-
 
 		return;
 		

@@ -32,7 +32,7 @@ int mode = 0;
 
 // Modify functionality
 XnBool isConnected = true;
-XnBool isRecording = false;
+XnBool isRecording = true;
 
 // Don't modify
 XnBool record = false;
