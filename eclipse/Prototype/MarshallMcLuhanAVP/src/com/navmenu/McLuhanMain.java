@@ -584,8 +584,8 @@ public class McLuhanMain extends JFrame{
 			flash.stop();
 		if(ploop != null)
 			ploop.stop();
-		grabber.reset();
-		animator2.start();
+		initGrabber();
+		menu.add("Grabber",grabc);
 		((CardLayout)menu.getLayout()).show(menu, "Grabber");
 	}
 	
@@ -593,10 +593,11 @@ public class McLuhanMain extends JFrame{
 	 * 
 	*/
 	private void stopGrabber() {
-		animator2.stop();
+		menu.remove(grabc);
 		((CardLayout)menu.getLayout()).show(menu, bgsel+"");
 		starter.start();
-		ploop.start();	
+		ploop.start();
+		
 		return;
 	}
 	
@@ -604,7 +605,9 @@ public class McLuhanMain extends JFrame{
 	  Receive function that handles Kinect data for the attention "grabber" display
 	*/
 	@SuppressWarnings("unused")
-	public void recvGrabberData(float x, float y, float depth, int select, String action) {
+	public void recvGrabberData(final float x, final float y, float depth, int select, final String action) {
+		SwingUtilities.invokeLater(new Runnable( ) {
+			public void run( ) {
 		//System.out.println("Mode: " + mode);
 		
 		if (action.compareTo("sessionstart") == 0) {
@@ -641,14 +644,17 @@ public class McLuhanMain extends JFrame{
 		
 		mouseRobot.mousePress(MouseEvent.BUTTON1_MASK);
 		mouseRobot.mouseRelease(MouseEvent.BUTTON1_MASK);
-		
+		}});
+
 		return;
 	}
 
 	/*
 	  Receive function that handles Kinect data for the theme and menu display
 	*/
-	public void recvThemeData(float x, float y, float depth, int select, String action) {
+	public void recvThemeData(final float x, final float y, float depth, final int select, final String action) {
+		SwingUtilities.invokeLater(new Runnable( ) {
+			public void run( ) {
 		if (select == 0) {
 			return;
 		}
@@ -724,7 +730,7 @@ public class McLuhanMain extends JFrame{
 					break;
 			}
 		}
-		
+			}});
 		return;
 	}
 	
