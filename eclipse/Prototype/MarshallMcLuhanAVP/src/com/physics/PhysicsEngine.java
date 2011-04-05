@@ -561,6 +561,10 @@ public class PhysicsEngine implements GLEventListener, KeyListener, MouseListene
 		gl.glLoadIdentity();
 		glu.gluOrtho2D(-(double)width/(double)height, (double)width/(double)height, -1.0, 1.0);
 	}
+	
+	public ParticleSystem getP(){
+		return physics;
+	}
 
 	private ArrayList<PhysPoint> getPointsInCircle(Vec2D pos, double radius) {
 		ArrayList<PhysPoint> result = new ArrayList<PhysPoint>();
