@@ -848,15 +848,17 @@ public class McLuhanMain extends JFrame{
 
 				if (depth < pushDepth && handArray[select - 1].getPressed() == false) {
 					if (newY > 100) {
-						switch (select) {
-						case 1:
-							app.handPressed(new Point(handArray[select - 1].getX(), handArray[select - 1].getY()),true);
-							break;
-						case 2:
-							app.handPressed(new Point(handArray[select - 1].getX(), handArray[select - 1].getY()),false);
-							break;
+						if(app.getP() != null){
+							switch (select) {
+							case 1:
+								app.handPressed(new Point(handArray[select - 1].getX(), handArray[select - 1].getY()),true);
+								break;
+							case 2:
+								app.handPressed(new Point(handArray[select - 1].getX(), handArray[select - 1].getY()),false);
+								break;
+							}
+							handArray[select - 1].setPressed(true);
 						}
-						handArray[select - 1].setPressed(true);
 					}
 				}
 
