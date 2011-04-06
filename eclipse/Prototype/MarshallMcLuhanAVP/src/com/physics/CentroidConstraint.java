@@ -24,7 +24,7 @@ public class CentroidConstraint extends PositionableConstraint {
 		PhysPoint p;
 		for(Iterator<PhysPoint> iter = points.iterator(); iter.hasNext();) {
 			p = iter.next();
-			if(pos != null && p.pos.sub(pos).length() > radius*1.5) {
+			if(pos != null && p.pos.sub(pos).length() > radius*2) {
 				iter.remove();
 			}
 			else {

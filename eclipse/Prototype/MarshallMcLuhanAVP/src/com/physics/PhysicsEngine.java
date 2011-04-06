@@ -183,78 +183,70 @@ public class PhysicsEngine implements GLEventListener, KeyListener, MouseListene
 		else {
 			//pgrav.magnitude = 2.0;
 		}
-
-		if(mouse == 1) {
-			newpos1 = new Vec2D(mx, my);
-		}
-		else if(mouse == 2){
-			newpos2 = new Vec2D(mx, my);
-		}
-		else if(mouse == 3){
-			newpos3 = new Vec2D(mx, my);
-		}
 		
-		if(mouse2 == 2){
-			newpos2 = new Vec2D(mx2, my2);
-		}
-
-
-		if(mouse == 1) {
-			newpos1 = new Vec2D(mx, my);
-			constraint1.setPos(constraint1.getPos().scale(0.666666).add(newpos1.scale(0.333333)));
-		}
-		else if(mouse == 2){
-			newpos2 = new Vec2D(mx, my);
-			constraint2.setPos(constraint2.getPos().scale(0.666666).add(newpos2.scale(0.333333)));
-		}
-		else if(mouse == 3){
-			newpos3 = new Vec2D(mx, my);
-			constraint3.setPos(constraint3.getPos().scale(0.666666).add(newpos3.scale(0.333333)));
-		}
-		if(mouse2 == 2){
-			newpos2 = new Vec2D(mx2, my2);
-			constraint2.setPos(constraint2.getPos().scale(0.666666).add(newpos2.scale(0.333333)));
-		}
-		physics.timestep();
+		double maxMovement = 0.05;
 		
 		if(mouse == 1) {
 			newpos1 = new Vec2D(mx, my);
-			constraint1.setPos(constraint1.getPos().scale(0.5).add(newpos1.scale(0.5)));
+			Vec2D delta = newpos1.sub(constraint1.getPos());
+			if((constraint1 instanceof CentroidConstraint) && delta.length() > maxMovement) {
+				delta = delta.scale(maxMovement/delta.length());
+				newpos1 = constraint1.getPos().add(delta);
+			}
 		}
 		else if(mouse == 2){
 			newpos2 = new Vec2D(mx, my);
-			constraint2.setPos(constraint2.getPos().scale(0.5).add(newpos2.scale(0.5)));
+			Vec2D delta = newpos2.sub(constraint2.getPos());
+			if((constraint2 instanceof CentroidConstraint) && delta.length() > maxMovement) {
+				delta = delta.scale(maxMovement/delta.length());
+				newpos2 = constraint2.getPos().add(delta);
+			}
 		}
 		else if(mouse == 3){
 			newpos3 = new Vec2D(mx, my);
-			constraint3.setPos(constraint3.getPos().scale(0.5).add(newpos3.scale(0.5)));
+			Vec2D delta = newpos3.sub(constraint3.getPos());
+			if((constraint3 instanceof CentroidConstraint) && delta.length() > maxMovement) {
+				delta = delta.scale(maxMovement/delta.length());
+				newpos3 = constraint3.getPos().add(delta);
+			}
 		}
-		
 		if(mouse2 == 2){
 			newpos2 = new Vec2D(mx2, my2);
-			constraint2.setPos(constraint2.getPos().scale(0.5).add(newpos2.scale(0.5)));
+			Vec2D delta = newpos2.sub(constraint2.getPos());
+			if((constraint2 instanceof CentroidConstraint) && delta.length() > maxMovement) {
+				delta = delta.scale(maxMovement/delta.length());
+				newpos2 = constraint2.getPos().add(delta);
+			}
 		}
-		physics.timestep();
-		
 
-		
-		if(mouse == 1) {
-			newpos1 = new Vec2D(mx, my);
-			constraint1.setPos(newpos1);
+		for(int i=0; i<3; i++) {
+			double scale1 = 0, scale2 = 0;
+			switch(i) {
+			case 0:
+				scale1 = 0.666666; scale2 = 0.333333;
+				break;
+			case 1:
+				scale1 = 0.5; scale2 = 0.5;
+				break;
+			case 2:
+				scale1 = 0; scale2 = 1;
+				break;
+			}
+			
+			if(mouse == 1) {
+				constraint1.setPos(constraint1.getPos().scale(scale1).add(newpos1.scale(scale2)));
+			}
+			else if(mouse == 2){
+				constraint2.setPos(constraint2.getPos().scale(scale1).add(newpos2.scale(scale2)));
+			}
+			else if(mouse == 3){
+				constraint3.setPos(constraint3.getPos().scale(scale1).add(newpos3.scale(scale2)));
+			}
+			if(mouse2 == 2){
+				constraint2.setPos(constraint2.getPos().scale(scale1).add(newpos2.scale(scale2)));
+			}
+			physics.timestep();
 		}
-		else if(mouse == 2){
-			newpos2 = new Vec2D(mx, my);
-			constraint2.setPos(newpos2);
-		}
-		else if(mouse == 3){
-			newpos3 = new Vec2D(mx, my);
-			constraint3.setPos(newpos3);
-		}
-		if(mouse2 == 2){
-			newpos2 = new Vec2D(mx2, my2);
-			constraint2.setPos(newpos2);
-		}
-		physics.timestep();
 
 		if(pmeshactive.computeBrokenPercent() >= 0.90) {
 

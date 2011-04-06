@@ -111,7 +111,7 @@ public class McLuhanMain extends JFrame{
 	
 	private GlassPane hands;
 	
-	private int pushDepth = 1000;
+	private int pushDepth = 1500;
 
 	public McLuhanMain() {
 		frame = this;
