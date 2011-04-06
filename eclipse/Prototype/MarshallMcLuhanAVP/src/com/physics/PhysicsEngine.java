@@ -211,13 +211,12 @@ public class PhysicsEngine implements GLEventListener, KeyListener, MouseListene
 			newpos3 = new Vec2D(mx, my);
 			constraint3.setPos(constraint3.getPos().scale(0.666666).add(newpos3.scale(0.333333)));
 		}
-		physics.timestep();
-		
 		if(mouse2 == 2){
 			newpos2 = new Vec2D(mx2, my2);
 			constraint2.setPos(constraint2.getPos().scale(0.666666).add(newpos2.scale(0.333333)));
 		}
 		physics.timestep();
+		
 		if(mouse == 1) {
 			newpos1 = new Vec2D(mx, my);
 			constraint1.setPos(constraint1.getPos().scale(0.5).add(newpos1.scale(0.5)));
@@ -230,14 +229,14 @@ public class PhysicsEngine implements GLEventListener, KeyListener, MouseListene
 			newpos3 = new Vec2D(mx, my);
 			constraint3.setPos(constraint3.getPos().scale(0.5).add(newpos3.scale(0.5)));
 		}
-		physics.timestep();
 		
 		if(mouse2 == 2){
 			newpos2 = new Vec2D(mx2, my2);
 			constraint2.setPos(constraint2.getPos().scale(0.5).add(newpos2.scale(0.5)));
 		}
-		
 		physics.timestep();
+		
+
 		
 		if(mouse == 1) {
 			newpos1 = new Vec2D(mx, my);
@@ -251,14 +250,13 @@ public class PhysicsEngine implements GLEventListener, KeyListener, MouseListene
 			newpos3 = new Vec2D(mx, my);
 			constraint3.setPos(newpos3);
 		}
-		physics.timestep();
-		
 		if(mouse2 == 2){
 			newpos2 = new Vec2D(mx2, my2);
 			constraint2.setPos(newpos2);
 		}
+		physics.timestep();
 
-		if(pmeshactive.computeBrokenPercent() >= 0.80) {
+		if(pmeshactive.computeBrokenPercent() >= 0.90) {
 
 			callTimer();
 			if(quepush != null) {
@@ -266,7 +264,6 @@ public class PhysicsEngine implements GLEventListener, KeyListener, MouseListene
 			}
 		}
 
-		physics.timestep();
 	}
 
 	private void render(GLAutoDrawable drawable) {
@@ -467,7 +464,7 @@ public class PhysicsEngine implements GLEventListener, KeyListener, MouseListene
 
 		}
 
-		pmeshactive = new PhysicsMesh(2.0, 40, textureactive, PhysicsMesh.defaultBreakage);
+		pmeshactive = new PhysicsMesh(2.0, 20, textureactive, PhysicsMesh.defaultBreakage);
 		pmeshactive.setK(10);
 		pmeshactive.addToSystem(physics);
 		
@@ -509,7 +506,7 @@ public class PhysicsEngine implements GLEventListener, KeyListener, MouseListene
 					mesh = new DistortableMesh(2.6,2.0,1,1, textque[tquecount+1]);
 				textureactive = imageque[quecount];
 				pmeshactive.delete();
-				pmeshactive = new PhysicsMesh(2.0, 40, textureactive, PhysicsMesh.defaultBreakage);
+				pmeshactive = new PhysicsMesh(2.0, 20, textureactive, PhysicsMesh.defaultBreakage);
 				pmeshactive.setK(10);
 				pmeshactive.addToSystem(physics);
 			}
@@ -525,7 +522,7 @@ public class PhysicsEngine implements GLEventListener, KeyListener, MouseListene
 					mesh = new DistortableMesh(2.6,2.0,1,1, imageque[quecount+1]);
 				textureactive = textque[tquecount];
 				pmeshactive.delete();
-				pmeshactive = new PhysicsMesh(2.0, 40, textureactive, PhysicsMesh.defaultBreakage);
+				pmeshactive = new PhysicsMesh(2.0, 20, textureactive, PhysicsMesh.defaultBreakage);
 				pmeshactive.setK(10);
 				pmeshactive.addToSystem(physics);
 			}
@@ -540,7 +537,7 @@ public class PhysicsEngine implements GLEventListener, KeyListener, MouseListene
 				mesh = new DistortableMesh(2.6,2.0,1,1, imageque[quecount+1]);
 			textureactive = imageque[quecount];
 			pmeshactive.delete();
-			pmeshactive = new PhysicsMesh(2.0, 40, textureactive, PhysicsMesh.defaultBreakage);
+			pmeshactive = new PhysicsMesh(2.0, 20, textureactive, PhysicsMesh.defaultBreakage);
 			pmeshactive.setK(10);
 			pmeshactive.addToSystem(physics);
 		}
@@ -700,7 +697,7 @@ public class PhysicsEngine implements GLEventListener, KeyListener, MouseListene
 				mesh = new DistortableMesh(2.6,2.0,1,1, textque[tquecount+1]);
 			textureactive = imageque[quecount];
 			pmeshactive.delete();
-			pmeshactive = new PhysicsMesh(2.0, 40, textureactive, PhysicsMesh.defaultBreakage);
+			pmeshactive = new PhysicsMesh(2.0, 20, textureactive, PhysicsMesh.defaultBreakage);
 			pmeshactive.setK(10);
 			pmeshactive.addToSystem(physics);
 		}
@@ -714,7 +711,7 @@ public class PhysicsEngine implements GLEventListener, KeyListener, MouseListene
 				mesh = new DistortableMesh(2.6,2.0,1,1, imageque[quecount+1]);
 			textureactive = imageque[quecount];
 			pmeshactive.delete();
-			pmeshactive = new PhysicsMesh(2.0, 40, textureactive, PhysicsMesh.defaultBreakage);
+			pmeshactive = new PhysicsMesh(2.0, 20, textureactive, PhysicsMesh.defaultBreakage);
 			pmeshactive.setK(10);
 			pmeshactive.addToSystem(physics);
 		}
@@ -754,7 +751,7 @@ public class PhysicsEngine implements GLEventListener, KeyListener, MouseListene
 			mesh = new DistortableMesh(2.6,2.0,1,1, imageque[quecount+1]);
 		textureactive = textque[tquecount];
 		pmeshactive.delete();
-		pmeshactive = new PhysicsMesh(2.0, 40, textureactive, PhysicsMesh.defaultBreakage);
+		pmeshactive = new PhysicsMesh(2.0, 20, textureactive, PhysicsMesh.defaultBreakage);
 		pmeshactive.setK(10);
 		pmeshactive.addToSystem(physics);
 		if(quepush != null) {

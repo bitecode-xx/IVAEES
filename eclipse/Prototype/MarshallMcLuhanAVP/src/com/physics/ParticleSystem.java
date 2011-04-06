@@ -16,6 +16,9 @@ public class ParticleSystem {
 	
 	private int numIters = 1;
 	
+	private static int systemCount = 0;
+	private int systemIndex = 0;
+	
 	public ParticleSystem(Vec2D gravity, double timestep, 
 			Vec2D bottomleft, Vec2D topright) {
 		this.gravity = gravity;
@@ -23,6 +26,8 @@ public class ParticleSystem {
 		
 		bl = bottomleft;
 		tr = topright;
+		this.systemIndex = systemCount;
+		systemCount++;
 	}
 	
 	public LinkedList<PhysPoint> getParticles() {
@@ -66,6 +71,7 @@ public class ParticleSystem {
 				p.oldpos = temp;
 			}
 		}
+		//System.out.println("Particle System " + systemIndex);
 	}
 	
 	private void satisfyConstraints() {

@@ -170,6 +170,8 @@ void XN_CALLBACK_TYPE OnPrimaryPointCreateCB(const XnVHandPointContext* pContext
 	else {
 	}
 
+	printf("map size: %d", mapID.size());
+
 	printf("PrimaryPointCreate\n");
 }
 
@@ -181,6 +183,8 @@ void XN_CALLBACK_TYPE OnPrimaryPointDestroyCB(XnUInt32 nID, void* cxt) {
 	if (isConnected) {
 		kc->sendData(0.0, 0.0, 0.0, 1, action);
 	}
+
+	printf("map size: %d", mapID.size());
 
 	printf("PrimaryPointDestroy\n");
 }
@@ -200,6 +204,8 @@ void XN_CALLBACK_TYPE OnPointCreateCB(const XnVHandPointContext* pContext, void*
 		}
 	}
 
+	printf("map size: %d", mapID.size());
+
 	printf("PointCreate\n");
 }
 
@@ -213,6 +219,8 @@ void XN_CALLBACK_TYPE OnPointDestroyCB(XnUInt32 nID, void* cxt) {
 			kc->sendData(0.0, 0.0, 0.0, 2, action);
 		}
 	}
+
+	printf("map size: %d", mapID.size());
 
 	printf("PointDestroy\n");
 }

@@ -16,25 +16,6 @@
 	<classpathentry kind="lib" path="lib/jl1.0.1.jar"/>
 	<classpathentry kind="lib" path="lib/mp3spi1.9.5.jar"/>
 	<classpathentry kind="lib" path="lib/tritonus_share.jar"/>
-	<classpathentry kind="lib" path="lib/jogl/jogl-2.0-b293-20110206-windows-i586/jar/gluegen-rt.jar">
-		<attributes>
-			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="MarshallMcLuhanAVP/lib/jogl/jogl-2.0-b293-20110206-windows-i586/lib"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="lib/jogl/jogl-2.0-b293-20110206-windows-i586/jar/jogl.all.jar">
-		<attributes>
-			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="MarshallMcLuhanAVP/lib/jogl/jogl-2.0-b293-20110206-windows-i586/lib"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="lib/jogl/jogl-2.0-b293-20110206-windows-i586/jar/nativewindow.all.jar">
-		<attributes>
-			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="MarshallMcLuhanAVP/lib/jogl/jogl-2.0-b293-20110206-windows-i586/lib"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="lib/jogl/jogl-2.0-b293-20110206-windows-i586/jar/newt.all.jar">
-		<attributes>
-			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="MarshallMcLuhanAVP/lib/jogl/jogl-2.0-b293-20110206-windows-i586/lib"/>
-		</attributes>
-	</classpathentry>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/jogl-2.0"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

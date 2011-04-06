@@ -19,7 +19,8 @@ public class PhysicsMesh extends ForceGenerator {
 	private double breakage;
 	private boolean breakable;
 	
-	public static final double defaultBreakage = 3.0;
+	public static final double defaultBreakage = 2.0;
+	public static final double defaultSoftness = 0.5;
 	
 	public PhysicsMesh(double width, double height, int xres, int yres, Texture texture, double breakage) {
 		this.breakage = breakage;
@@ -96,10 +97,10 @@ public class PhysicsMesh extends ForceGenerator {
 		for(int row = 0; row < yres; row++) {
 			for(int column = 0; column < xres; column++) {
 				if(breakable) {
-					c = new BreakableSoftStickConstraint(points[row][column], points[row][column+1], 0.5, breakage);
+					c = new BreakableSoftStickConstraint(points[row][column], points[row][column+1], defaultSoftness, breakage);
 				}
 				else {
-					c = new SoftStickConstraint(points[row][column], points[row][column+1], 0.5);
+					c = new SoftStickConstraint(points[row][column], points[row][column+1], defaultSoftness);
 				}
 				constraints[row][column][0] = c;
 				if(row > 0) {
@@ -108,10 +109,10 @@ public class PhysicsMesh extends ForceGenerator {
 				s.addConstraint(c);
 				allConstraints.add(c);
 				if(breakable) {
-					c = new BreakableSoftStickConstraint(points[row][column], points[row+1][column], 0.5, breakage);
+					c = new BreakableSoftStickConstraint(points[row][column], points[row+1][column], defaultSoftness, breakage);
 				}
 				else {
-					c = new SoftStickConstraint(points[row][column], points[row+1][column], 0.5);
+					c = new SoftStickConstraint(points[row][column], points[row+1][column], defaultSoftness);
 				}
 				constraints[row][column][1] = c;
 				if(column > 0) {
@@ -124,10 +125,10 @@ public class PhysicsMesh extends ForceGenerator {
 		
 		for(int row = 0; row < yres; row++) {
 			if(breakable) {
-				c = new BreakableSoftStickConstraint(points[row][xres], points[row+1][xres], 0.5, breakage);
+				c = new BreakableSoftStickConstraint(points[row][xres], points[row+1][xres], defaultSoftness, breakage);
 			}
 			else {
-				c = new SoftStickConstraint(points[row][xres], points[row+1][xres], 0.5);
+				c = new SoftStickConstraint(points[row][xres], points[row+1][xres], defaultSoftness);
 			}
 			constraints[row][xres-1][3] = c;
 			s.addConstraint(c);
@@ -136,10 +137,10 @@ public class PhysicsMesh extends ForceGenerator {
 		
 		for(int column = 0; column < xres; column++) {
 			if(breakable) {
-				c = new BreakableSoftStickConstraint(points[yres][column], points[yres][column+1], 0.5, breakage);
+				c = new BreakableSoftStickConstraint(points[yres][column], points[yres][column+1], defaultSoftness, breakage);
 			}
 			else {
-				c = new SoftStickConstraint(points[yres][column], points[yres][column+1], 0.5);
+				c = new SoftStickConstraint(points[yres][column], points[yres][column+1], defaultSoftness);
 			}
 			constraints[yres-1][column][2] = c;
 			s.addConstraint(c);

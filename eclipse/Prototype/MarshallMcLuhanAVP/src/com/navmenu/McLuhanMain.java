@@ -628,7 +628,7 @@ public class McLuhanMain extends JFrame{
 	  Receive function that handles Kinect data for the attention "grabber" display
 	*/
 	@SuppressWarnings("unused")
-	public void recvGrabberData(final float x, final float y, float depth, int select, final String action) {
+	public void recvGrabberData(final float x, final float y, float depth, final int select, final String action) {
 		SwingUtilities.invokeLater(new Runnable( ) {
 			public void run( ) {
 		//System.out.println("Mode: " + mode);
@@ -639,6 +639,29 @@ public class McLuhanMain extends JFrame{
 
 			return;
 		}
+		
+		if (action.compareTo("primarypointcreate") == 0) {
+			handArray[select - 1].setState(1);
+			
+			hands.enableHandOne();
+		}
+		if (action.compareTo("primarypointdestroy") == 0) {
+			handArray[select - 1].setState(0);
+			
+			hands.disableHandOne();
+		}
+		if (action.compareTo("pointcreate") == 0) {
+			handArray[select - 1].setState(1);
+			
+			hands.enableHandTwo();
+		}
+		if (action.compareTo("pointdestroy") == 0) {
+			handArray[select - 1].setState(0);
+			
+			hands.disableHandTwo();
+		}
+		
+
 		
 		double ratioX = (size.getWidth() + 120) / 640;
 		double ratioY = (size.getHeight() + 160) / 480;
