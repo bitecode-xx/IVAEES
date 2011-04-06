@@ -110,7 +110,8 @@ public class McLuhanMain extends JFrame{
 	private JLayeredPane layeredPane;
 	
 	private GlassPane hands;
-
+	
+	private int pushDepth = 1000;
 
 	public McLuhanMain() {
 		frame = this;
@@ -845,7 +846,7 @@ public class McLuhanMain extends JFrame{
 					}
 				}
 
-				if (depth < 1000 && handArray[select - 1].getPressed() == false) {
+				if (depth < pushDepth && handArray[select - 1].getPressed() == false) {
 					if (newY > 100) {
 						switch (select) {
 						case 1:
@@ -859,7 +860,7 @@ public class McLuhanMain extends JFrame{
 					}
 				}
 
-				if (depth < 1000 && handArray[select - 1].getPressed() == true) {
+				if (depth < pushDepth && handArray[select - 1].getPressed() == true) {
 					if (newY > 100) {
 						switch (select) {
 						case 1:
@@ -872,7 +873,7 @@ public class McLuhanMain extends JFrame{
 					}
 				}
 
-				if (depth > 1000 && handArray[select - 1].getPressed() == true) {
+				if (depth > pushDepth && handArray[select - 1].getPressed() == true) {
 					if (newY > 100) {
 						switch (select) {
 						case 1:
