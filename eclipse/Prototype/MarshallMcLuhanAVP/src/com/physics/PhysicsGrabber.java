@@ -338,7 +338,7 @@ public class PhysicsGrabber implements GLEventListener, KeyListener, MouseListen
 			physics.addConstraint(constraint1);
 			mouse = 1;
 			newpos1 = new Vec2D(mx, my);
-			pgrav = new PointGravity(new Vec2D(mx, my), 1.5, 0.09, physics);
+			pgrav = new PointGravity(new Vec2D(mx, my), 2.0, 0.09, physics);
 			physics.addForce(pgrav);
 		}
 	}

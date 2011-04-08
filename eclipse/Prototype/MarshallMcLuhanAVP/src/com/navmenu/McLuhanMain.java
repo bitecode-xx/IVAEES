@@ -119,7 +119,7 @@ public class McLuhanMain extends JFrame{
 		layeredPane = frame.getLayeredPane();
 		layeredPane.setLayout(new BorderLayout());
 		frame.setSize(size);
-		//this.setUndecorated(true);
+		this.setUndecorated(true);
 		bgsel =1;
 		menu = new JPanel();
 		hands = new GlassPane();

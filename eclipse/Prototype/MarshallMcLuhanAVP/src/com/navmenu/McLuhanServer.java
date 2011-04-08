@@ -40,7 +40,7 @@ public class McLuhanServer {
 		McLuhanMain ml = new McLuhanMain();
 		ml.setVisible(true);
 		ml.setCursor(cursor);
-		//screen.setFullScreenWindow(ml);
+		screen.setFullScreenWindow(ml);
 		
 		// If the server is going to connect via sockets then wait for Kinect data in a loop
 		if (isConnected) {
