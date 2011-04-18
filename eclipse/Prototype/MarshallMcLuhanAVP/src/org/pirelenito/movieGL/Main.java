@@ -60,6 +60,7 @@ public class Main implements WindowListener, GLEventListener {
 	/**
 	 * Used to draw the neat teapot
 	 */
+	@SuppressWarnings("unused")
 	private static GLUT glut = new GLUT();
 	
 	/**

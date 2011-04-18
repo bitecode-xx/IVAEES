@@ -14,19 +14,24 @@ import javax.swing.JPanel;
 /**
  * We have to provide our own glass pane so that it can paint.
  */
+@SuppressWarnings("unused")
 public class GlassPane extends JPanel{
-    private JLabel handOne,handTwo;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = -1360018254627150638L;
+	private JLabel handOne,handTwo;
     
     public GlassPane(){
     	this.setLayout(null);
     	handOne = new JLabel(new ImageIcon("rh1.png"));
-    	handOne.setSize(40, 48);
+    	handOne.setSize(50, 48);
     	handOne.setLocation(0, 0);
     	handOne.setVisible(false);
     	
     	
     	handTwo = new JLabel(new ImageIcon("lh1.png"));
-    	handTwo.setSize(40, 48);
+    	handTwo.setSize(50, 48);
     	handTwo.setLocation(0, 0);
     	handTwo.setVisible(false);
     	
@@ -61,6 +66,21 @@ public class GlassPane extends JPanel{
     
     public void disableHandTwo(){
     	handTwo.setVisible(false);
+    }
+    
+    public void activeHandOne(){
+    	handOne.setIcon(new ImageIcon("rh2.png"));
+    }
+    
+    public void activeHandTwo(){
+    	handTwo.setIcon(new ImageIcon("lh2.png"));
+    }
+    
+    public void releaseHandOne(){
+    	handOne.setIcon(new ImageIcon("rh1.png"));
+    }
+    public void releaseHandTwo(){
+    	handTwo.setIcon(new ImageIcon("lh1.png"));
     }
 
 }

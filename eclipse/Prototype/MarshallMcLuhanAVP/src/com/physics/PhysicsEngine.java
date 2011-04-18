@@ -24,6 +24,7 @@ import com.jogamp.opengl.util.*;
 import com.jogamp.opengl.util.gl2.GLUT;
 import com.jogamp.opengl.util.texture.*;
 
+@SuppressWarnings("unused")
 public class PhysicsEngine implements GLEventListener, KeyListener, MouseListener, MouseMotionListener {
 
 	private double moving = 0;
@@ -448,7 +449,7 @@ public class PhysicsEngine implements GLEventListener, KeyListener, MouseListene
 
 		PhysicsMesh pm;
 		for(int i = 0;i<qteque.length;i++){
-			pm = new PhysicsMesh(0.8, 16, qteque[i], 0);
+			pm = new PhysicsMesh(1.6, 16, qteque[i], 0);
 			pm.translate(new Vec2D(Math.random()-0.5, Math.random()-0.5));
 			pm.setK(5);
 			pm.addToSystem(physics);
@@ -556,13 +557,60 @@ public class PhysicsEngine implements GLEventListener, KeyListener, MouseListene
 	}
 
 	private ArrayList<PhysPoint> getPointsInCircle(Vec2D pos, double radius) {
+//		ArrayList<PhysPoint> result = new ArrayList<PhysPoint>();
+//		double sqradius = radius*radius;
+//		for(PhysPoint p : physics.getParticles()) {
+//			Vec2D delta = pos.sub(p.pos);
+//			double sqdist = delta.dot(delta);
+//			if(sqdist <= sqradius) {
+//				result.add(p);
+//			}
+//		}
+//		return result;
 		ArrayList<PhysPoint> result = new ArrayList<PhysPoint>();
 		double sqradius = radius*radius;
-		for(PhysPoint p : physics.getParticles()) {
-			Vec2D delta = pos.sub(p.pos);
-			double sqdist = delta.dot(delta);
-			if(sqdist <= sqradius) {
-				result.add(p);
+		if(pmeshactive != null) {
+			for(PhysPoint[] pa : pmeshactive.getPoints()) {
+				for(PhysPoint p : pa) {
+					Vec2D delta = pos.sub(p.pos);
+					double sqdist = delta.dot(delta);
+					if(sqdist <= sqradius) {
+						result.add(p);
+					}
+				}
+			}
+		}
+		if(result.size() > 0) {
+			return result;
+		}
+		if(pmhide != null) {
+			for(PhysPoint[] pa : pmhide.getPoints()) {
+				for(PhysPoint p : pa) {
+					Vec2D delta = pos.sub(p.pos);
+					double sqdist = delta.dot(delta);
+					if(sqdist <= sqradius) {
+						result.add(p);
+					}
+				}
+			}
+		}
+		if(result.size() > 0) {
+			return result;
+		}
+		for(PhysicsMesh pm : qts) {
+			if(pm != null) {
+				for(PhysPoint[] pa : pm.getPoints()) {
+					for(PhysPoint p : pa) {
+						Vec2D delta = pos.sub(p.pos);
+						double sqdist = delta.dot(delta);
+						if(sqdist <= sqradius) {
+							result.add(p);
+						}
+					}
+				}
+			}
+			if(result.size() > 0) {
+				return result;
 			}
 		}
 		return result;

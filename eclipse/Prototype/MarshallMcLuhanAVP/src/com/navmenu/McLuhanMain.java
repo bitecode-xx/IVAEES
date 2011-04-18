@@ -59,7 +59,13 @@ import com.physics.PhysicsGrabber;
  * system states. 
  * 
  */
+@SuppressWarnings("unused")
 public class McLuhanMain extends JFrame{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1739205605051932874L;
+
 	//McLuhan themes list
 	private String[] DIRS = {"City as Classroom","Extensions of Man","Global Village","The Medium is the Message"};
 
@@ -111,7 +117,7 @@ public class McLuhanMain extends JFrame{
 	
 	private GlassPane hands;
 	
-	private int pushDepth = 1500;
+	private int pushDepth = 2000;
 
 	public McLuhanMain() {
 		frame = this;
@@ -608,6 +614,7 @@ public class McLuhanMain extends JFrame{
 		if(ploop != null)
 			ploop.stop();
 		initGrabber();
+		mode = 0;
 		menu.add("Grabber",grabc);
 		((CardLayout)menu.getLayout()).show(menu, "Grabber");
 	}
@@ -627,7 +634,6 @@ public class McLuhanMain extends JFrame{
 	/*
 	  Receive function that handles Kinect data for the attention "grabber" display
 	*/
-	@SuppressWarnings("unused")
 	public void recvGrabberData(final float x, final float y, float depth, final int select, final String action) {
 		SwingUtilities.invokeLater(new Runnable( ) {
 			public void run( ) {
@@ -875,9 +881,18 @@ public class McLuhanMain extends JFrame{
 							switch (select) {
 							case 1:
 								app.handPressed(new Point(handArray[select - 1].getX(), handArray[select - 1].getY()),true);
+								hands.activeHandOne();
+								//mouseRobot.mouseMove(handArray[select - 1].getX(), handArray[select - 1].getY());
+								//mouseRobot.mousePress(MouseEvent.BUTTON1_MASK);
+								//mouseRobot.mouseRelease(MouseEvent.BUTTON1_MASK);
+								System.out.println("Click");
 								break;
 							case 2:
 								app.handPressed(new Point(handArray[select - 1].getX(), handArray[select - 1].getY()),false);
+								hands.activeHandTwo();
+								//mouseRobot.mouseMove(handArray[select - 1].getX(), handArray[select - 1].getY());
+								//mouseRobot.mousePress(MouseEvent.BUTTON1_MASK);
+								//mouseRobot.mouseRelease(MouseEvent.BUTTON1_MASK);
 								break;
 							}
 							handArray[select - 1].setPressed(true);
@@ -903,9 +918,11 @@ public class McLuhanMain extends JFrame{
 						switch (select) {
 						case 1:
 							app.handReleased(new Point(handArray[select - 1].getX(), handArray[select - 1].getY()),true);
+							hands.releaseHandOne();
 							break;
 						case 2:
 							app.handReleased(new Point(handArray[select - 1].getX(), handArray[select - 1].getY()),false);
+							hands.releaseHandTwo();
 							break;
 						}
 						handArray[select - 1].setPressed(false);

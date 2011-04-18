@@ -26,8 +26,13 @@ import com.physics.PhysicsEngine;
  * @author Jozef
  *
  */
+@SuppressWarnings("unused")
 public class TopSlider extends JPanel implements ActionListener {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 450673558116706554L;
 	private File[] images, text;
 	private ImageIcon[] img, txt;
 	private Component[] list;

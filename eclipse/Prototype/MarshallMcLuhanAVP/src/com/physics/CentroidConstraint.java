@@ -52,10 +52,12 @@ public class CentroidConstraint extends PositionableConstraint {
 
 	public void render(GL2 gl) {
 		gl.glColor3d(0, 0.5, 1);
-		gl.glBegin(GL2.GL_LINE_LOOP);
-		for(int i=0; i<32; i++) {
+		//gl.glBegin(GL2.GL_LINE_LOOP);
+		gl.glBegin(GL2.GL_QUAD_STRIP);
+		for(int i=0; i<=32; i++) {
 			double theta = i*Math.PI*2/32;
 			gl.glVertex2d(pos.x+radius*Math.cos(theta), pos.y+radius*Math.sin(theta));
+			gl.glVertex2d(pos.x+radius*1.1*Math.cos(theta), pos.y+radius*1.1*Math.sin(theta));
 		}
 		gl.glEnd();
 	}

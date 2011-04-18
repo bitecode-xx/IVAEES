@@ -15,8 +15,13 @@ import javax.swing.JPanel;
  * widht/height values as the background. 
  * 
  */
+@SuppressWarnings("unused")
 public class BackgroundPanel extends JPanel{
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -615808005501871051L;
 	private Image image;
 	private Dimension size;
 	private int x,y;

@@ -20,6 +20,7 @@ import com.physics.FileFinder;
  * @author Jozef
  *
  */
+@SuppressWarnings("unused")
 public class TextureMap {
 	
 	//regex string for image search

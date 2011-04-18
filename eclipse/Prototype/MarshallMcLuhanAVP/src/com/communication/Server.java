@@ -658,6 +658,7 @@ public class Server {
 
    private void RecvAck() throws IOException
    {
+	@SuppressWarnings("unused")
 	int ack;
 
 	if (VERBOSE)

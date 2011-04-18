@@ -4,6 +4,7 @@ import java.util.*;
 import javax.media.opengl.GL;
 import javax.media.opengl.GL2;
 
+@SuppressWarnings("unused")
 public class ParticleSystem {
 	private LinkedList<PhysPoint> particles = new LinkedList<PhysPoint>();
 	private LinkedList<Constraint> constraints = new LinkedList<Constraint>();
