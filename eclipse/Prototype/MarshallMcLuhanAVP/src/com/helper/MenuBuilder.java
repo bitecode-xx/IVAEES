@@ -95,10 +95,11 @@ public class MenuBuilder {
 		for(int i = 0;i<4;i++){
 			os = i+1;
 			ro = i+5;
-			temp = new JButton(new ImageIcon(path+ro+".png"));
-			temp.setRolloverIcon(new ImageIcon(path+os+".png"));
+			temp = new JButton(new ImageIcon(path+os+".png"));
+			//temp = new JButton(new ImageIcon(path+ro+".png"));
+			//temp.setRolloverIcon(new ImageIcon(path+os+".png"));
 			temp.setName(i+"");			
-			temp.setBorder(null);
+			//temp.setBorder(null);
 			list[i] = temp;
 		}
 		

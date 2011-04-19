@@ -37,7 +37,7 @@ public class TopSlider extends JPanel implements ActionListener {
 	private ImageIcon[] img, txt;
 	private Component[] list;
 	private JButton left, right;
-	private Dimension nav = new Dimension(45,45), btn = new Dimension(100,100);
+	private Dimension nav = new Dimension(45,45),nav2 = new Dimension(75,75), btn = new Dimension(100,100);
 	private int index;
 	private PhysicsEngine eng;
 	private boolean type;
@@ -79,8 +79,9 @@ public class TopSlider extends JPanel implements ActionListener {
 	 */
 	private void setupPanel() {
 		left = new JButton(new ImageIcon("First_Button1.jpg"));
-		left.setPreferredSize(nav);
+		left.setPreferredSize(nav2);
 		left.setOpaque(false);
+		left.setContentAreaFilled(false);
 		left.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e) {
 				moveList(false);
@@ -88,8 +89,9 @@ public class TopSlider extends JPanel implements ActionListener {
 		});
 		
 		right = new JButton(new ImageIcon("Last_Button1.jpg"));
-		right.setPreferredSize(nav);
+		right.setPreferredSize(nav2);
 		right.setOpaque(false);
+		right.setContentAreaFilled(false);
 		right.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e) {
 				moveList(true);
@@ -223,7 +225,7 @@ public class TopSlider extends JPanel implements ActionListener {
 	private JPanel gridPan(){
 		JPanel grid = new JPanel();
 		GridLayout scroll = new GridLayout(0,5);
-		scroll.setHgap(100);
+		scroll.setHgap(85);
 		scroll.setVgap(5);
 		grid.setLayout(scroll);
 		grid.setSize(750,200);

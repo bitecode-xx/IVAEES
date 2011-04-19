@@ -89,7 +89,7 @@ public class McLuhanMain extends JFrame{
 
 	private Main video;
 
-	private Timer quepush, ploop, flash, starter, steadyTimer;
+	private Timer quepush, ploop, steadyTimer;//flash, starter;
 	
 	private int steady;
 
@@ -125,7 +125,7 @@ public class McLuhanMain extends JFrame{
 		layeredPane = frame.getLayeredPane();
 		layeredPane.setLayout(new BorderLayout());
 		frame.setSize(size);
-		this.setUndecorated(true);
+		//this.setUndecorated(true);
 		bgsel =1;
 		menu = new JPanel();
 		hands = new GlassPane();
@@ -175,31 +175,31 @@ public class McLuhanMain extends JFrame{
 		});
 
 		//creates the flash sequence and theme menu loops
-		roll = true;
-		initFlshSeq();
+		//roll = true;
+		//initFlshSeq();
 
-		gogo = new ActionListener(){
+		/*gogo = new ActionListener(){
 			public void actionPerformed(ActionEvent arg0) {
 				roll = true;
 				flash = new Timer(3000,one);
 				flash.setRepeats(false);
 				flash.start();
 			}
-		};
+		};*/
 
 		loop = new ActionListener(){
 			public void actionPerformed(ActionEvent arg0) {
 				setPage();
 				setBtns(bgsel);
-					flash.stop();
-					starter.stop();
-				starter.start();
+					//flash.stop();
+					//starter.stop();
+				//starter.start();
 				((CardLayout)menu.getLayout()).show(menu, bgsel+"");
 			}
 		};
 
-		starter = new Timer(1000,gogo);
-		starter.setRepeats(false);
+	//	starter = new Timer(1000,gogo);
+		//starter.setRepeats(false);
 		//starter.start();
 
 		ploop = new Timer(45000,loop);
@@ -272,6 +272,7 @@ public class McLuhanMain extends JFrame{
 	 * 
 	 * Flashing is achieved by forcing the button modals rollover effect to occur.
 	 */
+	/*
 	private void initFlshSeq() {
 		one = new ActionListener(){
 			public void actionPerformed(ActionEvent arg0) {
@@ -334,6 +335,7 @@ public class McLuhanMain extends JFrame{
 
 
 	}
+	*/
 
 	/*
 	 * Generates and starts the base theme selection loop, for each theme option 
@@ -351,9 +353,9 @@ public class McLuhanMain extends JFrame{
 					int opt = Integer.parseInt(((JButton)ae.getSource()).getName());
 					roll = false;
 					ploop.stop();
-					if(flash!=null)
-						flash.stop();
-					starter.stop();
+				//	if(flash!=null)
+				//		flash.stop();
+				//	starter.stop();
 					menu.validate();
 					paintSlide(opt);
 					initCanvas(opt);
@@ -467,12 +469,12 @@ public class McLuhanMain extends JFrame{
 		dem.setBackground(Color.black);
 
 		aud = new JButton(new ImageIcon("play.jpg"));
-		aud.setPreferredSize(new Dimension(45,45));
+		aud.setPreferredSize(new Dimension(75,75));
 		aud.setOpaque(false);
 		aud.setContentAreaFilled(false);
 
 		pmen = new JButton(new ImageIcon("home.jpg"));
-		pmen.setPreferredSize(new Dimension(45,45));
+		pmen.setPreferredSize(new Dimension(75,75));
 		pmen.setOpaque(false);
 		pmen.setContentAreaFilled(false);
 		//destroys the open gl context and reverts to the main theme selection
@@ -487,9 +489,9 @@ public class McLuhanMain extends JFrame{
 				setPage();
 				setBtns(bgsel);
 				ploop.stop();
-				if(flash !=null)
-					flash.stop();
-				starter.stop();
+			//	if(flash !=null)
+			//		flash.stop();
+			//	starter.stop();
 				ploop.start();
 				app.stopVid();
 				((CardLayout)menu.getLayout()).show(menu, bgsel+"");
@@ -521,9 +523,9 @@ public class McLuhanMain extends JFrame{
 		glnav = new JPanel();
 		glnav.setBackground(Color.black);
 		glnav.setLayout(new FlowLayout());
-		((FlowLayout)glnav.getLayout()).setVgap(520);
-		dem.add(aud);
+		((FlowLayout)glnav.getLayout()).setVgap(20);
 		dem.add(pmen);
+		dem.add(aud);
 		//glnav.add(pmen);
 		glnav.add(dem);
 	}
@@ -559,7 +561,7 @@ public class McLuhanMain extends JFrame{
 		canvas.addGLEventListener(app);
 		canvas.addKeyListener(app);
 		//canvas.addMouseListener(app);
-		//canvas.addMouseMotionListener(app);
+	//	canvas.addMouseMotionListener(app);
 		tslide.setEngine(app);
 
 		canvas.requestFocus();
@@ -592,9 +594,9 @@ public class McLuhanMain extends JFrame{
 			setPage();
 			setBtns(bgsel);
 			ploop.stop();
-			if(flash !=null)
-				flash.stop();
-			starter.stop();
+		//	if(flash !=null)
+		//		flash.stop();
+		//	starter.stop();
 			app.stopVid();
 			menu.remove(canvas);
 			canvas = null;
@@ -607,10 +609,10 @@ public class McLuhanMain extends JFrame{
 			tslide.setVisible(false);
 			roll = true;
 		}
-		if(starter != null)
-			starter.stop();
-		if(flash != null)
-			flash.stop();
+	//	if(starter != null)
+	//		starter.stop();
+	//	if(flash != null)
+	//		flash.stop();
 		if(ploop != null)
 			ploop.stop();
 		initGrabber();
@@ -625,7 +627,7 @@ public class McLuhanMain extends JFrame{
 	private void stopGrabber() {
 		menu.remove(grabc);
 		((CardLayout)menu.getLayout()).show(menu, bgsel+"");
-		starter.start();
+	//	starter.start();
 		ploop.start();
 		
 		return;
@@ -950,8 +952,8 @@ public class McLuhanMain extends JFrame{
 					int opt = Integer.parseInt(((JButton)ae.getSource()).getName());
 					roll = false;
 					ploop.stop();
-						flash.stop();
-					starter.stop();
+				//		flash.stop();
+				//	starter.stop();
 					menu.validate();
 					paintSlide(opt);
 					initCanvas(opt);
@@ -1021,8 +1023,8 @@ public class McLuhanMain extends JFrame{
 					int opt = Integer.parseInt(((JButton)ae.getSource()).getName());
 					roll = false;
 					ploop.stop();
-						flash.stop();
-					starter.stop();
+				//		flash.stop();
+				//	starter.stop();
 					menu.validate();
 					paintSlide(opt);
 					initCanvas(opt);
@@ -1090,8 +1092,8 @@ public class McLuhanMain extends JFrame{
 			btns4[i].addActionListener(new ActionListener(){
 				public void actionPerformed(final ActionEvent ae) {
 					ploop.stop();
-						flash.stop();
-					starter.stop();
+			//			flash.stop();
+			//		starter.stop();
 					int opt = Integer.parseInt(((JButton)ae.getSource()).getName());
 					roll = false;
 					menu.validate();

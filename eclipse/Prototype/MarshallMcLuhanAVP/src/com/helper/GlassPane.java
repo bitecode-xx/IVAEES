@@ -21,17 +21,18 @@ public class GlassPane extends JPanel{
 	 */
 	private static final long serialVersionUID = -1360018254627150638L;
 	private JLabel handOne,handTwo;
+	private Dimension small = new Dimension(40,61),big = new Dimension(85,130);
     
     public GlassPane(){
     	this.setLayout(null);
     	handOne = new JLabel(new ImageIcon("rh1.png"));
-    	handOne.setSize(50, 48);
+    	handOne.setSize(small);
     	handOne.setLocation(0, 0);
     	handOne.setVisible(false);
     	
     	
     	handTwo = new JLabel(new ImageIcon("lh1.png"));
-    	handTwo.setSize(50, 48);
+    	handTwo.setSize(small);
     	handTwo.setLocation(0, 0);
     	handTwo.setVisible(false);
     	
@@ -70,17 +71,21 @@ public class GlassPane extends JPanel{
     
     public void activeHandOne(){
     	handOne.setIcon(new ImageIcon("rh2.png"));
+    	handOne.setSize(big);
     }
     
     public void activeHandTwo(){
     	handTwo.setIcon(new ImageIcon("lh2.png"));
+    	handTwo.setSize(big);
     }
     
     public void releaseHandOne(){
     	handOne.setIcon(new ImageIcon("rh1.png"));
+    	handOne.setSize(small);
     }
     public void releaseHandTwo(){
     	handTwo.setIcon(new ImageIcon("lh1.png"));
+    	handTwo.setSize(small);
     }
 
 }
