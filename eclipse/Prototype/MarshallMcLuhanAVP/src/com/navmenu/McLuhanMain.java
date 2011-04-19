@@ -616,6 +616,10 @@ public class McLuhanMain extends JFrame{
 		if(ploop != null)
 			ploop.stop();
 		initGrabber();
+		if(hands != null){
+			hands.releaseHandOne();
+			hands.releaseHandTwo();
+		}
 		mode = 0;
 		menu.add("Grabber",grabc);
 		((CardLayout)menu.getLayout()).show(menu, "Grabber");
