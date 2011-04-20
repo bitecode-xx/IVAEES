@@ -89,13 +89,13 @@ public class McLuhanMain extends JFrame{
 
 	private Main video;
 
-	private Timer quepush, ploop, steadyTimer;//flash, starter;
+	private Timer quepush, ploop, steadyTimer, depthTimer;//flash, starter;
 	
-	private int steady;
+	private int isSteady, isDepth;
 
 	private boolean roll, audio;
 
-	private ActionListener gogo, repeat, one, two, three, four, loop, steadyAL;
+	private ActionListener gogo, repeat, one, two, three, four, loop, steadyAL, depthAL;
 
 	private TextureMap themes;
 
@@ -117,7 +117,7 @@ public class McLuhanMain extends JFrame{
 	
 	private GlassPane hands;
 	
-	private int pushDepth = 2000;
+	private int pushDepth = 900;
 
 	public McLuhanMain() {
 		frame = this;
@@ -226,12 +226,23 @@ public class McLuhanMain extends JFrame{
 		
 		steadyAL = new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				steady = 0;
+				isSteady = 0;
 			}
 		};
 		
-		steadyTimer = new Timer(3000 * 1, steadyAL);
+		isSteady = 0;
 		
+		steadyTimer = new Timer(1000 * 2, steadyAL);
+		
+		depthAL = new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				isDepth = 0;
+			}
+		};
+		
+		isDepth = 0;
+		
+		depthTimer = new Timer(1000 * 2, depthAL);
 	}
 	
 	/*
@@ -618,7 +629,9 @@ public class McLuhanMain extends JFrame{
 		initGrabber();
 		if(hands != null){
 			hands.releaseHandOne();
+			hands.disableHandOne();
 			hands.releaseHandTwo();
+			hands.disableHandTwo();
 		}
 		mode = 0;
 		menu.add("Grabber",grabc);
@@ -643,61 +656,58 @@ public class McLuhanMain extends JFrame{
 	public void recvGrabberData(final float x, final float y, float depth, final int select, final String action) {
 		SwingUtilities.invokeLater(new Runnable( ) {
 			public void run( ) {
-		//System.out.println("Mode: " + mode);
-		
-		if (action.compareTo("sessionstart") == 0) {
-			mode = 1;
-			stopGrabber();
-
-			return;
-		}
-		
-		if (action.compareTo("primarypointcreate") == 0) {
-			handArray[select - 1].setState(1);
+				if (action.compareTo("sessionstart") == 0) {
+					mode = 1;
+					stopGrabber();
 			
-			hands.enableHandOne();
-		}
-		if (action.compareTo("primarypointdestroy") == 0) {
-			handArray[select - 1].setState(0);
+					return;
+				}
+		
+				if (action.compareTo("primarypointcreate") == 0) {
+					handArray[select - 1].setState(1);
 			
-			hands.disableHandOne();
-		}
-		if (action.compareTo("pointcreate") == 0) {
-			handArray[select - 1].setState(1);
+					hands.enableHandOne();
+				}
+				if (action.compareTo("primarypointdestroy") == 0) {
+					handArray[select - 1].setState(0);
 			
-			hands.enableHandTwo();
-		}
-		if (action.compareTo("pointdestroy") == 0) {
-			handArray[select - 1].setState(0);
+					hands.disableHandOne();
+				}
+				if (action.compareTo("pointcreate") == 0) {
+					handArray[select - 1].setState(1);
 			
-			hands.disableHandTwo();
-		}
+					hands.enableHandTwo();
+				}
+				if (action.compareTo("pointdestroy") == 0) {
+					handArray[select - 1].setState(0);
+			
+					hands.disableHandTwo();
+				}
 		
-
+				double ratioX = (size.getWidth() + 120) / 640;
+				double ratioY = (size.getHeight() + 160) / 480;
+				int newX = (int) ((x - 40) * ratioX);
+				int newY = (int) ((y - 30) * ratioY);
 		
-		double ratioX = (size.getWidth() + 120) / 640;
-		double ratioY = (size.getHeight() + 160) / 480;
-		int newX = (int) ((x - 40) * ratioX);
-		int newY = (int) ((y - 30) * ratioY);
+				if (newX < 0) {
+					newX = 50;
+				}
+				if (newX > 1024) {
+					newX = 1074;
+				}
+				if (newY < 0) {
+					newY = 50;
+				}
+				if (newY > 768) {
+					newY = 718;
+				}
 		
-		if (newX < 0) {
-			newX = 50;
-		}
-		if (newX > 1024) {
-			newX = 1074;
-		}
-		if (newY < 0) {
-			newY = 50;
-		}
-		if (newY > 768) {
-			newY = 718;
-		}
+				mouseRobot.mouseMove(newX, newY);
 		
-		mouseRobot.mouseMove(newX, newY);
-		
-		mouseRobot.mousePress(MouseEvent.BUTTON1_MASK);
-		mouseRobot.mouseRelease(MouseEvent.BUTTON1_MASK);
-		}});
+				mouseRobot.mousePress(MouseEvent.BUTTON1_MASK);
+				mouseRobot.mouseRelease(MouseEvent.BUTTON1_MASK);
+			}
+		});
 
 		return;
 	}
@@ -708,82 +718,94 @@ public class McLuhanMain extends JFrame{
 	public void recvThemeData(final float x, final float y, float depth, final int select, final String action) {
 		SwingUtilities.invokeLater(new Runnable( ) {
 			public void run( ) {
-		if (select == 0) {
-			return;
-		}
-		if (action.compareTo("sessionend") == 0) {
-			mode = 0;
-			startGrabber();
+				if (select == 0) {
+					return;
+				}
+				if (action.compareTo("sessionend") == 0) {
+					mode = 0;
+					startGrabber();
 			
-			return;
-		}
+					return;
+				}
 		
-		if (action.compareTo("primarypointcreate") == 0) {
-			handArray[select - 1].setState(1);
+				if (action.compareTo("primarypointcreate") == 0) {
+					handArray[select - 1].setState(1);
 			
-			hands.enableHandOne();
-		}
-		if (action.compareTo("primarypointdestroy") == 0) {
-			handArray[select - 1].setState(0);
+					hands.enableHandOne();
+				}
+				if (action.compareTo("primarypointdestroy") == 0) {
+					handArray[select - 1].setState(0);
 			
-			hands.disableHandOne();
-		}
-		if (action.compareTo("pointcreate") == 0) {
-			handArray[select - 1].setState(1);
+					hands.disableHandOne();
+				}
+				if (action.compareTo("pointcreate") == 0) {
+					handArray[select - 1].setState(1);
 			
-			hands.enableHandTwo();
-		}
-		if (action.compareTo("pointdestroy") == 0) {
-			handArray[select - 1].setState(0);
+					hands.enableHandTwo();
+				}
+				if (action.compareTo("pointdestroy") == 0) {
+					handArray[select - 1].setState(0);
 			
-			hands.disableHandTwo();
-		}
+					hands.disableHandTwo();
+				}
 		
-		if (handArray[select - 1].getState() == 0) {
-			return;
-		}
+				if (handArray[select - 1].getState() == 0) {
+					return;
+				}
 		
-		double ratioX = (size.getWidth() + 120) / 640;
-		double ratioY = (size.getHeight() + 160) / 480;
-		int newX = (int) ((x - 40) * ratioX);
-		int newY = (int) ((y - 30) * ratioY);
+				double ratioX = (size.getWidth() + 120) / 640;
+				double ratioY = (size.getHeight() + 160) / 480;
+				int newX = (int) ((x - 40) * ratioX);
+				int newY = (int) ((y - 30) * ratioY);
 		
-		if (newX < 0) {
-			newX = 0;
-		}
-		if (newX > 1024) {
-			newX = 1024;
-		}
-		if (newY < 0) {
-			newY = 0;
-		}
-		if (newY > 768) {
-			newY = 768;
-		}
+				if (newX < 0) {
+					newX = 0;
+				}
+				if (newX > 1024) {
+					newX = 1024;
+				}
+				if (newY < 0) {
+					newY = 0;
+				}
+				if (newY > 768) {
+					newY = 768;
+				}
 		
-		handArray[select - 1].setX(newX);
-		handArray[select - 1].setY(newY);
+				handArray[select - 1].setX(newX);
+				handArray[select - 1].setY(newY);
 
-		if (select == 1) {
-			updateHandOne(new Point(newX, newY));
-		}
-		if (select == 2) {
-			updateHandTwo(new Point(newX, newY));
-		}
+				if (select == 1) {
+					updateHandOne(new Point(newX, newY));
+				}
+				if (select == 2) {
+					updateHandTwo(new Point(newX, newY));
+				}
+				
+				if (action.compareTo("steady") == 0 && handArray[select - 1].getPressed() == false) {
+						switch (select) {
+							case 1:
+								mouseRobot.mouseMove(handArray[select - 1].getX(), handArray[select - 1].getY());
+								mouseRobot.mousePress(MouseEvent.BUTTON1_MASK);
+								mouseRobot.mouseRelease(MouseEvent.BUTTON1_MASK);
+								break;
+							default:
+								break;
+						}
+				}
 
-		if (action.compareTo("push") == 0 && handArray[select - 1].getPressed() == false) {
-			switch (select) {
-				case 1:
-					mouseRobot.mousePress(MouseEvent.BUTTON1_MASK);
-					mouseRobot.mouseRelease(MouseEvent.BUTTON1_MASK);
-					break;
-				case 2:
-					mouseRobot.mousePress(MouseEvent.BUTTON2_MASK);
-					mouseRobot.mouseRelease(MouseEvent.BUTTON2_MASK);
-					break;
+				if (action.compareTo("push") == 0 && handArray[select - 1].getPressed() == false) {
+					switch (select) {
+						case 1:
+							mouseRobot.mousePress(MouseEvent.BUTTON1_MASK);
+							mouseRobot.mouseRelease(MouseEvent.BUTTON1_MASK);
+							break;
+						default:
+							break;
+					}
+				}
 			}
-		}
-			}});
+		});
+		
 		return;
 	}
 	
@@ -858,48 +880,42 @@ public class McLuhanMain extends JFrame{
 				}
 
 				if (action.compareTo("steady") == 0 && handArray[select - 1].getPressed() == false) {
-					if (steady == 0 && (newY < 100 || newX < 60)) {
-						steady = 1;
+					if (isSteady == 0 && (newY < 100 || newX < 60)) {
+						isSteady = 1;
 						steadyTimer.start();
 
 						switch (select) {
-						case 1:
-							mouseRobot.mouseMove(handArray[select - 1].getX(), handArray[select - 1].getY());
-							mouseRobot.mousePress(MouseEvent.BUTTON1_MASK);
-							mouseRobot.mouseRelease(MouseEvent.BUTTON1_MASK);
-							//app.handPressed(new Point(handArray[select - 1].getX(), handArray[select - 1].getY()),true);
-							//app.handReleased(new Point(handArray[select - 1].getX(), handArray[select - 1].getY()),true);
-							break;
-						case 2:
-							mouseRobot.mouseMove(handArray[select - 1].getX(), handArray[select - 1].getY());
-							mouseRobot.mousePress(MouseEvent.BUTTON1_MASK);
-							mouseRobot.mouseRelease(MouseEvent.BUTTON1_MASK);
-							//app.handPressed(new Point(handArray[select - 1].getX(), handArray[select - 1].getY()),false);
-							//app.handReleased(new Point(handArray[select - 1].getX(), handArray[select - 1].getY()),false);
-							break;
+							case 1:
+								mouseRobot.mouseMove(handArray[select - 1].getX(), handArray[select - 1].getY());
+								mouseRobot.mousePress(MouseEvent.BUTTON1_MASK);
+								mouseRobot.mouseRelease(MouseEvent.BUTTON1_MASK);
+								break;
+							default:
+								break;
 						}
 					}
 				}
 
 				if (depth < pushDepth && handArray[select - 1].getPressed() == false) {
-					if (newY > 100) {
+					if (isDepth == 0 && (newY < 100 || newX < 60)) {
+						isDepth = 1;
+						depthTimer.start();
+						
+						mouseRobot.mouseMove(handArray[select - 1].getX(), handArray[select - 1].getY());
+						mouseRobot.mousePress(MouseEvent.BUTTON1_MASK);
+						mouseRobot.mouseRelease(MouseEvent.BUTTON1_MASK);
+					}
+					if (newY > 100 || newX > 60) {
 						if(app.getP() != null){
 							switch (select) {
-							case 1:
-								app.handPressed(new Point(handArray[select - 1].getX(), handArray[select - 1].getY()),true);
-								hands.activeHandOne();
-								//mouseRobot.mouseMove(handArray[select - 1].getX(), handArray[select - 1].getY());
-								//mouseRobot.mousePress(MouseEvent.BUTTON1_MASK);
-								//mouseRobot.mouseRelease(MouseEvent.BUTTON1_MASK);
-								System.out.println("Click");
-								break;
-							case 2:
-								app.handPressed(new Point(handArray[select - 1].getX(), handArray[select - 1].getY()),false);
-								hands.activeHandTwo();
-								//mouseRobot.mouseMove(handArray[select - 1].getX(), handArray[select - 1].getY());
-								//mouseRobot.mousePress(MouseEvent.BUTTON1_MASK);
-								//mouseRobot.mouseRelease(MouseEvent.BUTTON1_MASK);
-								break;
+								case 1:
+									app.handPressed(new Point(handArray[select - 1].getX(), handArray[select - 1].getY()),true);
+									hands.activeHandOne();
+									break;
+								case 2:
+									app.handPressed(new Point(handArray[select - 1].getX(), handArray[select - 1].getY()),false);
+									hands.activeHandTwo();
+									break;
 							}
 							handArray[select - 1].setPressed(true);
 						}
@@ -907,29 +923,45 @@ public class McLuhanMain extends JFrame{
 				}
 
 				if (depth < pushDepth && handArray[select - 1].getPressed() == true) {
-					if (newY > 100) {
+					if (isDepth == 0 && (newY < 100 || newX < 60)) {
+						isDepth = 1;
+						depthTimer.start();
+						
+						mouseRobot.mouseMove(handArray[select - 1].getX(), handArray[select - 1].getY());
+						mouseRobot.mousePress(MouseEvent.BUTTON1_MASK);
+						mouseRobot.mouseRelease(MouseEvent.BUTTON1_MASK);
+					}
+					if (newY > 100 || newX > 60) {
 						switch (select) {
-						case 1:
-							app.handDragged(new Point(handArray[select - 1].getX(), handArray[select - 1].getY()),true);
-							break;
-						case 2:
-							app.handDragged(new Point(handArray[select - 1].getX(), handArray[select - 1].getY()),false);
-							break;
+							case 1:
+								app.handDragged(new Point(handArray[select - 1].getX(), handArray[select - 1].getY()),true);
+								break;
+							case 2:
+								app.handDragged(new Point(handArray[select - 1].getX(), handArray[select - 1].getY()),false);
+								break;
 						}
 					}
 				}
 
 				if (depth > pushDepth && handArray[select - 1].getPressed() == true) {
-					if (newY > 100) {
+					if (isDepth == 0 && (newY < 100 || newX < 60)) {
+						isDepth = 1;
+						depthTimer.start();
+						
+						mouseRobot.mouseMove(handArray[select - 1].getX(), handArray[select - 1].getY());
+						mouseRobot.mousePress(MouseEvent.BUTTON1_MASK);
+						mouseRobot.mouseRelease(MouseEvent.BUTTON1_MASK);
+					}
+					if (newY > 100 || newX > 60) {
 						switch (select) {
-						case 1:
-							app.handReleased(new Point(handArray[select - 1].getX(), handArray[select - 1].getY()),true);
-							hands.releaseHandOne();
-							break;
-						case 2:
-							app.handReleased(new Point(handArray[select - 1].getX(), handArray[select - 1].getY()),false);
-							hands.releaseHandTwo();
-							break;
+							case 1:
+								app.handReleased(new Point(handArray[select - 1].getX(), handArray[select - 1].getY()),true);
+								hands.releaseHandOne();
+								break;
+							case 2:
+								app.handReleased(new Point(handArray[select - 1].getX(), handArray[select - 1].getY()),false);
+								hands.releaseHandTwo();
+								break;
 						}
 						handArray[select - 1].setPressed(false);
 					}

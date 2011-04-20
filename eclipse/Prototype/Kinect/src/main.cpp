@@ -7,7 +7,6 @@
 #include <XnvPointDenoiser.h>
 
 // Detector headers
-#include <XnVCircleDetector.h>
 #include <XnVPushDetector.h>
 #include <XnVSteadyDetector.h>
 #include <XnVWaveDetector.h>
@@ -57,8 +56,6 @@ xn::SceneAnalyzer sceneAnalyzer;
 
 xn::Recorder *recorder;
 
-//xn::ImageGenerator imageGenerator;
-
 int lastID = 0;
 
 // Callback for when the focus is in progress
@@ -99,32 +96,6 @@ void XN_CALLBACK_TYPE SessionEnd(void* UserCxt) {
 	stopCapture();
 
 	logGestures();
-}
-
-// Callback for wave detection
-void XN_CALLBACK_TYPE OnCircleCB(XnFloat times, XnBool confident, const XnVCircle* circle, void* cxt) {
-	action = "circle\n";
-	isGesture = true;
-
-	logGestures();
-
-	if (circlePP) {
-		printf("CirclePP\n");
-	}
-	else {
-		printf("Circle\n");
-	}
-}
-
-// Callback for wave detection
-void XN_CALLBACK_TYPE OnNoCircleCB(XnFloat lastValue, XnVCircleDetector::XnVNoCircleReason reason, void* cxt) {
-	action = "nocircle\n";
-	isGesture = true;
-	circlePP = false;
-
-	logGestures();
-
-	printf("No Circle\n");
 }
 
 // Callback for wave detection
@@ -321,12 +292,7 @@ int main(int argc, char** argv) {
 
 	// Register session callbacks
 	sessionManager->RegisterSession(NULL, &SessionStart, &SessionEnd, &SessionProgress);
-
-	// Circle Detector
-	//XnVCircleDetector circle;
-	//circle.RegisterCircle(NULL, OnCircleCB);
-	//circle.RegisterNoCircle(NULL, OnNoCircleCB);
-	//circle.RegisterPointUpdate(NULL, OnPointUpdateCB);
+	sessionManager->SetQuickRefocusTimeout(1000 * 30);
 
 	// Push Detector
 	XnVPushDetector push;
@@ -337,11 +303,6 @@ int main(int argc, char** argv) {
 	XnVSteadyDetector steady;
 	steady.RegisterSteady(NULL, OnSteadyCB);
 	steady.RegisterPointUpdate(NULL, OnPointUpdateCB);
-
-	// Wave Detector
-	//XnVWaveDetector wave;
-	//wave.RegisterWave(NULL, OnWaveCB);
-	//wave.RegisterPointUpdate(NULL, OnPointUpdateCB);
 
 	XnVPointDenoiser denoiser;
 
