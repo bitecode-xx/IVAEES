@@ -160,6 +160,20 @@ void XN_CALLBACK_TYPE OnPrimaryPointDestroyCB(XnUInt32 nID, void* cxt) {
 	printf("PrimaryPointDestroy\n");
 }
 
+void XN_CALLBACK_TYPE OnPrimaryPointReplaceCB(XnUInt32 nOldId, const XnVHandPointContext* pContext, void* cxt) {
+	if (mapID.find(1)->second == nOldId) {
+		XnUInt32 temp = mapID.find(2)->second;
+
+		mapID.clear();
+
+		if (temp == pContext->nID) {
+			mapID.insert(std::make_pair(1, temp));
+		}
+	}
+
+	printf("PrimaryPointReplace\n");
+}
+
 void XN_CALLBACK_TYPE OnPointCreateCB(const XnVHandPointContext* pContext, void* cxt) {
 	if (mapID.find(1) != mapID.end()) {
 		if (mapID.find(2) == mapID.end()) {
@@ -310,6 +324,7 @@ int main(int argc, char** argv) {
 	denoiser.AddListener(&steady);
 	denoiser.RegisterPrimaryPointCreate(NULL, OnPrimaryPointCreateCB);
 	denoiser.RegisterPrimaryPointDestroy(NULL, OnPrimaryPointDestroyCB);
+	denoiser.RegisterPrimaryPointReplace(NULL, OnPrimaryPointReplaceCB);
 	denoiser.RegisterPointCreate(NULL, OnPointCreateCB);
 	denoiser.RegisterPointDestroy(NULL, OnPointDestroyCB);
 
