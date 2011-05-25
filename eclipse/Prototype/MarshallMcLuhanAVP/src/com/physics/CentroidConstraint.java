@@ -51,7 +51,8 @@ public class CentroidConstraint extends PositionableConstraint {
 	}
 
 	public void render(GL2 gl) {
-		gl.glColor3d(0, 0.5, 1);
+		gl.glColor4d(0, 0, 0, 0);
+		//gl.glColor3d(0, 0.5, 1);
 		//gl.glBegin(GL2.GL_LINE_LOOP);
 		gl.glBegin(GL2.GL_QUAD_STRIP);
 		for(int i=0; i<=32; i++) {

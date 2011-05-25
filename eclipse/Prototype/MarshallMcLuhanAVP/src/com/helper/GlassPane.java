@@ -21,7 +21,8 @@ public class GlassPane extends JPanel{
 	 */
 	private static final long serialVersionUID = -1360018254627150638L;
 	private JLabel handOne,handTwo;
-	private Dimension small = new Dimension(40,61),big = new Dimension(85,130);
+	private Dimension small = new Dimension(40,61),big = new Dimension(65,99);
+	private boolean big1,big2;
     
     public GlassPane(){
     	this.setLayout(null);
@@ -29,23 +30,30 @@ public class GlassPane extends JPanel{
     	handOne.setSize(small);
     	handOne.setLocation(0, 0);
     	handOne.setVisible(false);
-    	
+    	big1 = false;
     	
     	handTwo = new JLabel(new ImageIcon("lh1.png"));
     	handTwo.setSize(small);
     	handTwo.setLocation(0, 0);
     	handTwo.setVisible(false);
+    	big2 = false;
     	
     	this.add(handOne);
     	this.add(handTwo);
     	this.setSize(new Dimension(1024,768));
     }
     public void setHandOne(Point p) {
-    	handOne.setLocation(p.x-28,p.y-55);
+    	if(!big1)
+    		handOne.setLocation(p.x-28,p.y-55);
+    	else
+    		handOne.setLocation(p.x-9,p.y-75);
     }
 
     public void setHandTwo(Point p) {
-    	handTwo.setLocation(p.x-28,p.y-55);
+    	if(!big2)
+    		handTwo.setLocation(p.x-28,p.y-55);
+    	else
+    		handTwo.setLocation(p.x-9,p.y-75);
     }
 
     public void mouseClicked(MouseEvent e) {
@@ -72,20 +80,25 @@ public class GlassPane extends JPanel{
     public void activeHandOne(){
     	handOne.setIcon(new ImageIcon("rh2.png"));
     	handOne.setSize(big);
+    	big1 = true;
     }
     
     public void activeHandTwo(){
     	handTwo.setIcon(new ImageIcon("lh2.png"));
     	handTwo.setSize(big);
+    	big2 = true;
     }
     
     public void releaseHandOne(){
     	handOne.setIcon(new ImageIcon("rh1.png"));
     	handOne.setSize(small);
+    	big1 = false;
+    	
     }
     public void releaseHandTwo(){
     	handTwo.setIcon(new ImageIcon("lh1.png"));
     	handTwo.setSize(small);
+    	big2 = false;
     }
 
 }

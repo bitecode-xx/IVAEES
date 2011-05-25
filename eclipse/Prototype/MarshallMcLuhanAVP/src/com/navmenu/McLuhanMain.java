@@ -81,7 +81,7 @@ public class McLuhanMain extends JFrame{
 
 	private JButton[] btns,btns1,btns2,btns3,btns4;
 
-	private Dimension size = new Dimension(1024,768);
+	private Dimension size = new Dimension(1024,468);
 
 	private FPSAnimator animator, animator2;
 	private PhysicsEngine app;
@@ -117,7 +117,7 @@ public class McLuhanMain extends JFrame{
 	
 	private GlassPane hands;
 	
-	private int pushDepth = 900;
+	private int pushDepth = 2000;
 
 	public McLuhanMain() {
 		frame = this;
@@ -125,7 +125,7 @@ public class McLuhanMain extends JFrame{
 		layeredPane = frame.getLayeredPane();
 		layeredPane.setLayout(new BorderLayout());
 		frame.setSize(size);
-		//this.setUndecorated(true);
+		this.setUndecorated(true);
 		bgsel =1;
 		menu = new JPanel();
 		hands = new GlassPane();
@@ -521,6 +521,10 @@ public class McLuhanMain extends JFrame{
 				test.start();
 
 				// Change mode
+				if(hands != null){
+					hands.releaseHandOne();
+					hands.releaseHandTwo();
+				}
 				mode = 1;
 			}
 		});
@@ -633,6 +637,9 @@ public class McLuhanMain extends JFrame{
 			hands.releaseHandTwo();
 			hands.disableHandTwo();
 		}
+		for(int i=0;i<2;i++){
+			handArray[i].setPressed(false);
+		}
 		mode = 0;
 		menu.add("Grabber",grabc);
 		((CardLayout)menu.getLayout()).show(menu, "Grabber");
@@ -721,6 +728,7 @@ public class McLuhanMain extends JFrame{
 				if (select == 0) {
 					return;
 				}
+				System.out.println(action);
 				if (action.compareTo("sessionend") == 0) {
 					mode = 0;
 					startGrabber();
@@ -780,8 +788,7 @@ public class McLuhanMain extends JFrame{
 				if (select == 2) {
 					updateHandTwo(new Point(newX, newY));
 				}
-				
-				if (action.compareTo("steady") == 0 && handArray[select - 1].getPressed() == false) {
+				if (action.compareTo("steady") == 0 ) {
 						switch (select) {
 							case 1:
 								mouseRobot.mouseMove(handArray[select - 1].getX(), handArray[select - 1].getY());

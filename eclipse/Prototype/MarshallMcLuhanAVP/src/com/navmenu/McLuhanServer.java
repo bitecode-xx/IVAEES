@@ -38,8 +38,10 @@ public class McLuhanServer {
 		Cursor cursor = toolkit.createCustomCursor(image, hotSpot, "hand");
 		
 		McLuhanMain ml = new McLuhanMain();
+
 		ml.setVisible(true);
 		ml.setCursor(cursor);
+		//ml.setUndecorated(true);
 		//screen.setFullScreenWindow(ml);
 		
 		// If the server is going to connect via sockets then wait for Kinect data in a loop
