@@ -81,7 +81,7 @@ public class McLuhanMain extends JFrame{
 
 	private JButton[] btns,btns1,btns2,btns3,btns4;
 
-	private Dimension size = new Dimension(1024,468);
+	private Dimension size = new Dimension(1024,768);
 
 	private FPSAnimator animator, animator2;
 	private PhysicsEngine app;
@@ -117,7 +117,9 @@ public class McLuhanMain extends JFrame{
 	
 	private GlassPane hands;
 	
-	private int pushDepth = 2000;
+	private int pushDepth = 750;
+	
+	private float steadyX, steadyY;
 
 	public McLuhanMain() {
 		frame = this;
@@ -226,7 +228,7 @@ public class McLuhanMain extends JFrame{
 		
 		steadyAL = new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				isSteady = 0;
+				isSteady = 2;
 			}
 		};
 		
@@ -467,7 +469,6 @@ public class McLuhanMain extends JFrame{
 		animator2.add(grabc);
 		animator2.start();
 	}
-
 
 	/*
 	 * The left side navigation window for muting/playing the
@@ -728,7 +729,7 @@ public class McLuhanMain extends JFrame{
 				if (select == 0) {
 					return;
 				}
-				System.out.println(action);
+				
 				if (action.compareTo("sessionend") == 0) {
 					mode = 0;
 					startGrabber();
@@ -788,7 +789,26 @@ public class McLuhanMain extends JFrame{
 				if (select == 2) {
 					updateHandTwo(new Point(newX, newY));
 				}
+				
+				if (isSteady == 1) {
+					System.out.println("isSteady");
+					if (Math.abs(newX - steadyX) > 10 || Math.abs(newY - steadyY) > 10) {
+						steadyTimer.stop();
+						
+						isSteady = 0;
+					}
+				}
+				
 				if (action.compareTo("steady") == 0 ) {
+					if (isSteady == 0) {
+						isSteady = 1;
+						
+						steadyX = newX;
+						steadyY = newY;
+						
+						steadyTimer.start();
+					}
+					if (isSteady == 2) {
 						switch (select) {
 							case 1:
 								mouseRobot.mouseMove(handArray[select - 1].getX(), handArray[select - 1].getY());
@@ -798,6 +818,9 @@ public class McLuhanMain extends JFrame{
 							default:
 								break;
 						}
+						
+						isSteady = 0;
+					}
 				}
 
 				if (action.compareTo("push") == 0 && handArray[select - 1].getPressed() == false) {
@@ -886,11 +909,25 @@ public class McLuhanMain extends JFrame{
 					updateHandTwo(new Point(newX, newY));
 				}
 
+				if (isSteady == 1) {
+					System.out.println("isSteady");
+					if (Math.abs(newX - steadyX) > 10 || Math.abs(newY - steadyY) > 10) {
+						steadyTimer.stop();
+						
+						isSteady = 0;
+					}
+				}
+				
 				if (action.compareTo("steady") == 0 && handArray[select - 1].getPressed() == false) {
 					if (isSteady == 0 && (newY < 100 || newX < 60)) {
 						isSteady = 1;
+						
+						steadyX = newX;
+						steadyY = newY;
+						
 						steadyTimer.start();
-
+					}
+					if (isSteady == 2 && (newY < 100 || newX < 60)) {
 						switch (select) {
 							case 1:
 								mouseRobot.mouseMove(handArray[select - 1].getX(), handArray[select - 1].getY());
@@ -900,6 +937,8 @@ public class McLuhanMain extends JFrame{
 							default:
 								break;
 						}
+						
+						isSteady = 0;
 					}
 				}
 
@@ -913,7 +952,7 @@ public class McLuhanMain extends JFrame{
 						mouseRobot.mouseRelease(MouseEvent.BUTTON1_MASK);
 					}
 					if (newY > 100 || newX > 60) {
-						if(app.getP() != null){
+						if(app.getP() != null) {
 							switch (select) {
 								case 1:
 									app.handPressed(new Point(handArray[select - 1].getX(), handArray[select - 1].getY()),true);
@@ -982,7 +1021,6 @@ public class McLuhanMain extends JFrame{
 	/*
 	 * Generates and starts the base theme selection loop, for each theme option 
 	 * sets up its action call for the specified data objects.
-	 * 
 	 */
 	private void initSelections2() {
 		btns2 = backsnbtns.getGroup(2);
@@ -1203,7 +1241,4 @@ public class McLuhanMain extends JFrame{
 	private void updateHandTwo(Point p){
 		hands.setHandTwo(p);
 	}
-
-	
-
 }
