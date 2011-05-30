@@ -32,6 +32,7 @@ int mode = 0;
 // Modify functionality
 XnBool isConnected = true;
 XnBool isRecording = false;
+XnBool isLogging = false;
 
 // Don't modify
 XnBool record = false;
@@ -78,7 +79,9 @@ void XN_CALLBACK_TYPE SessionStart(const XnPoint3D& ptFocusPoint, void* UserCxt)
 		startCapture();
 	}
 
-	logGestures();
+	if (isLogging) {
+		logGestures();
+	}
 }
 
 // Callback for session end
@@ -93,9 +96,13 @@ void XN_CALLBACK_TYPE SessionEnd(void* UserCxt) {
 
 	inSession = false;
 
-	stopCapture();
+	if (isRecording) {
+		stopCapture();
+	}
 
-	logGestures();
+	if (isLogging) {
+		logGestures();
+	}
 }
 
 // Callback for wave detection
@@ -103,9 +110,9 @@ void XN_CALLBACK_TYPE OnPushCB(XnFloat velocity, XnFloat angle, void* cxt) {
 	action = "push\n";
 	isGesture = true;
 
-	logGestures();
-
-	printf("Push\n");
+	if (isLogging) {
+		logGestures();
+	}
 }
 
 // Callback for wave detection
@@ -113,9 +120,9 @@ void XN_CALLBACK_TYPE OnSteadyCB(XnFloat velocity, void* cxt) {
 	action = "steady\n";
 	isGesture = true;
 
-	logGestures();
-
-	//printf("Steady\n");
+	if (isLogging) {
+		logGestures();
+	}
 }
 
 // Callback for wave detection
@@ -123,9 +130,9 @@ void XN_CALLBACK_TYPE OnWaveCB(void* cxt) {
 	action = "wave\n";
 	isGesture = true;
 
-	logGestures();
-
-	printf("Wave\n");
+	if (isLogging) {
+		logGestures();
+	}
 }
 
 void XN_CALLBACK_TYPE OnPrimaryPointCreateCB(const XnVHandPointContext* pContext, const XnPoint3D& ptFocus, void* cxt) {
@@ -352,7 +359,9 @@ int main(int argc, char** argv) {
 		kc->endClient();
 	}
 
-	stopCapture();
+	if (isRecording) {
+		stopCapture();
+	}
 
 	output->close();
 
@@ -381,6 +390,9 @@ void logGestures() {
 	return;
 }
 
+/*
+  Get the location of the midpoint of all visible labels
+*/
 void getGrabberLocation() {
 	sceneAnalyzer.GetMetaData(sceneMD);
 
@@ -436,6 +448,9 @@ void getGrabberLocation() {
 	}
 }
 
+/*
+  Depth Map video recording
+*/
 void startCapture() {
 	char recordFile[256] = {0};
 	time_t rawtime;
