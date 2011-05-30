@@ -81,7 +81,7 @@ public class McLuhanMain extends JFrame{
 
 	private JButton[] btns,btns1,btns2,btns3,btns4;
 
-	private Dimension size = new Dimension(1024,468);
+	private Dimension size = new Dimension(1024,768);
 
 	private FPSAnimator animator, animator2;
 	private PhysicsEngine app;
