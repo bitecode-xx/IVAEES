@@ -28,13 +28,13 @@ public class McLuhanServer {
 		System.setProperty("sun.awt.disableMixing", "false");
 		GLProfile.initSingleton(true);
 		GraphicsDevice screen = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
-	    System.out.println(screen.isFullScreenSupported());
+	   
 	    
 		Toolkit toolkit = Toolkit.getDefaultToolkit();
-		//Image image = toolkit.getImage("rh1.png");
-		Image image = toolkit.getImage("hide.png");
-		//Point hotSpot = new Point(14,14);
-		Point hotSpot = new Point(1,1);
+		Image image = toolkit.getImage("rh1.png");
+		//Image image = toolkit.getImage("hide.png");
+		Point hotSpot = new Point(14,14);
+		//Point hotSpot = new Point(1,1);
 		Cursor cursor = toolkit.createCustomCursor(image, hotSpot, "hand");
 		
 		McLuhanMain ml = new McLuhanMain();

@@ -449,9 +449,9 @@ public class PhysicsEngine implements GLEventListener, KeyListener, MouseListene
 
 		PhysicsMesh pm;
 		for(int i = 0;i<qteque.length;i++){
-			pm = new PhysicsMesh(1.6, 16, qteque[i], 0);
+			pm = new PhysicsMesh(1.4, 16, qteque[i], 0);
 			pm.translate(new Vec2D(Math.random()-0.5, Math.random()-0.5));
-			pm.setK(5);
+			pm.setK(10);
 			pm.addToSystem(physics);
 			qts[i]=pm;
 
