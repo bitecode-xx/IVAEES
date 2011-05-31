@@ -76,6 +76,14 @@ public class TopSlider extends JPanel {
 	}
 	
 	/*
+	 * Deassigns engine to recieve rendering calls
+	 */
+	public void desetEngine(){
+		this.eng = null;
+		listAlt = null;
+	}
+	
+	/*
 	 * Creates the 5 media 2 nav button objects and assigns their
 	 * motion directions 
 	 * 

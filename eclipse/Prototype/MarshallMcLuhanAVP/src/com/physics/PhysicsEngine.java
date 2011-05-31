@@ -41,10 +41,6 @@ public class PhysicsEngine implements GLEventListener, KeyListener, MouseListene
 
 	private int framecount = 0;
 	private int quecount = 0, tquecount = 0, vidcount = 0, qtecount=0;
-	private PointGravity pgrav;
-
-	private static JFrame frame;
-	private static GLCanvas canvas;
 
 	private long start, updated, finished, frameInterval;
 	private double afps, aphysics, arendering, afree;
@@ -61,12 +57,9 @@ public class PhysicsEngine implements GLEventListener, KeyListener, MouseListene
 	private PositionableConstraint constraint3;
 
 	private Vec2D newpos1, newpos2, newpos3;
-
-	private String source,texts;
 	
 	private String[] vidFiles;
 
-	private File[] imageFiles, txtFiles, qteFiles;
 
 	private Timer quepush = null;
 
@@ -79,12 +72,15 @@ public class PhysicsEngine implements GLEventListener, KeyListener, MouseListene
 	private IGLTextureRenderer renderer;
 	
 	private Component audio;
+	
+	private GLJPanel parent;
 
 
-	public PhysicsEngine(TextureData[] source, TextureData[] texts, TextureData[] Quotes, String[] videos){
+	public PhysicsEngine(TextureData[] source, TextureData[] texts, TextureData[] Quotes, String[] videos, GLJPanel parent){
 		quecount = 0;
 		tquecount = 0;
 		vidcount= 0;
+		this.parent = parent;
 		imagequeTD = source;
 		imageque = new Texture[imagequeTD.length];
 		qtequeTD = Quotes;
@@ -104,15 +100,6 @@ public class PhysicsEngine implements GLEventListener, KeyListener, MouseListene
 		txt = true;
 		video = false;
 	}	
-
-	public PhysicsEngine(String source){
-		this.source = source;
-		//initQue();
-	}
-
-	public PhysicsEngine(){
-		source = "lolwut.jpg";
-	}
 
 	public void setTimer(Timer q) {
 		this.quepush = q;
@@ -266,72 +253,92 @@ public class PhysicsEngine implements GLEventListener, KeyListener, MouseListene
 
 		gl.glMatrixMode(GL2.GL_MODELVIEW);
 		gl.glLoadIdentity();
-		
+
 		gl.glClear(GL2.GL_COLOR_BUFFER_BIT | GL2.GL_DEPTH_BUFFER_BIT);
+			physics.render(gl);
+			mesh.render(gl);
 
-		physics.render(gl);
-		mesh.render(gl);
-		
-		if(video){
-			//System.err.println(renderer);
-			if(renderer != null){
-				if (renderer.render(gl))
-					try {
-						textvid = renderer.getTexture();
-					} catch (Exception e) {
-						e.printStackTrace();
-					}
-					pmhide.updateTexture(textvid);
-					pmhide.renderMesh(gl);
+			if(video){
+				//System.err.println(renderer);
+				if(renderer != null){
+					if (renderer.render(gl))
+						try {
+							textvid = renderer.getTexture();
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+						pmhide.updateTexture(textvid);
+						pmhide.renderMesh(gl);
+				}
 			}
-		}
-		else if(qts.length>0){
-			PhysicsMesh pm;
-			pm = qts[qtecount];
-			pm.renderMesh(gl);
-		}
-		pmeshactive.renderMesh(gl);
+			else if(qts.length>0){
+				PhysicsMesh pm;
+				pm = qts[qtecount];
+				pm.renderMesh(gl);
+			}
+			pmeshactive.renderMesh(gl);
 
 
-		if(constraint1 != null) {
-			constraint1.render(gl);
-		}
-		if(constraint2 != null) {
-			constraint2.render(gl);
-		}
-		if(constraint3 != null) {
-			constraint3.render(gl);
-		}
+			if(constraint1 != null) {
+				constraint1.render(gl);
+			}
+			if(constraint2 != null) {
+				constraint2.render(gl);
+			}
+			if(constraint3 != null) {
+				constraint3.render(gl);
+			}
 
-		if(frameInterval != 0 ) {
-			int fps = 1000000000/(int)frameInterval;
-			int frametime = (int)(finished-start);
-			double phystime = ((double)(updated-start))/frameInterval;
-			double rendertime = ((double)(finished-updated))/frameInterval;
-			double freetime = 1.0-(double)frametime/frameInterval;
+			if(frameInterval != 0 ) {
+				int fps = 1000000000/(int)frameInterval;
+				int frametime = (int)(finished-start);
+				double phystime = ((double)(updated-start))/frameInterval;
+				double rendertime = ((double)(finished-updated))/frameInterval;
+				double freetime = 1.0-(double)frametime/frameInterval;
 
-			afps = 0.1*fps + 0.9*afps;
-			aphysics = 0.1*phystime + 0.9*aphysics;
-			arendering = 0.1*rendertime + 0.9*arendering;
-			afree = 0.1*freetime + 0.9*afree;
+				afps = 0.1*fps + 0.9*afps;
+				aphysics = 0.1*phystime + 0.9*aphysics;
+				arendering = 0.1*rendertime + 0.9*arendering;
+				afree = 0.1*freetime + 0.9*afree;
 
-		}
+			}
 
-		if(dragging) {
-			gl.glBegin(GL.GL_POINTS);
-			gl.glVertex2d(mx, my);
-			gl.glEnd();
-		}
+			if(dragging) {
+				gl.glBegin(GL.GL_POINTS);
+				gl.glVertex2d(mx, my);
+				gl.glEnd();
+			}
 
-		if(dragging2) {
-			gl.glBegin(GL.GL_POINTS);
-			gl.glVertex2d(mx2, my2);
-			gl.glEnd();
-		}
-		
-		gl.glFlush();
+			if(dragging2) {
+				gl.glBegin(GL.GL_POINTS);
+				gl.glVertex2d(mx2, my2);
+				gl.glEnd();
+			}
+
+			gl.glFlush();
+
 	}
+	
+	public void clearRun(){
+		for(int i=0;i<textque.length;i++){
+			textque[i].destroy(parent.getGL().getGL2());
+			textque[i].destroy(parent.getGL());
+			System.out.println("gogogo");
+		}
 
+		for(int i=0;i<imageque.length;i++){
+			imageque[i].destroy(parent.getGL().getGL2());
+			imageque[i].destroy(parent.getGL());
+			System.out.println("hahaha");
+		}
+
+		for(int i=0;i<qteque.length;i++){
+			qteque[i].destroy(parent.getGL().getGL2());
+			qteque[i].destroy(parent.getGL());
+			System.out.println("lalalla");
+		}
+	}
+	
 	private void convertMouseCoordinates() {
 		this.mx = 2*(double)mousex/width*(double)width/(double)height - (double)width/(double)height;
 		this.my = 2*(double)(height-mousey)/height - 1.0;
@@ -349,18 +356,17 @@ public class PhysicsEngine implements GLEventListener, KeyListener, MouseListene
 	}
 
 	public void display(GLAutoDrawable drawable) {
-		long start = System.nanoTime();
-		long frameInterval = start - this.start;
-		update();
-		long updated = System.nanoTime();
-		render(drawable);
-		long finished = System.nanoTime();
-
-		this.start = start;
-		this.frameInterval = frameInterval;
-		this.updated = updated;
-		this.finished = finished;
-
+			long start = System.nanoTime();
+			long frameInterval = start - this.start;
+			update();
+			long updated = System.nanoTime();
+			render(drawable);
+			long finished = System.nanoTime();
+			this.start = start;
+			this.frameInterval = frameInterval;
+			this.updated = updated;
+			this.finished = finished;
+		
 
 	}
 
@@ -460,6 +466,19 @@ public class PhysicsEngine implements GLEventListener, KeyListener, MouseListene
 		pmeshactive = new PhysicsMesh(2.0, 20, textureactive, PhysicsMesh.defaultBreakage);
 		pmeshactive.setK(10);
 		pmeshactive.addToSystem(physics);
+
+		
+		for(int i=0;i<textqueTD.length;i++){
+			textqueTD[i].destroy();
+		}
+		
+		for(int i=0;i<imagequeTD.length;i++){
+			imagequeTD[i].destroy();
+		}
+		
+		for(int i=0;i<qtequeTD.length;i++){
+			qtequeTD[i].destroy();
+		}
 		
 	}
 
@@ -690,6 +709,48 @@ public class PhysicsEngine implements GLEventListener, KeyListener, MouseListene
 		}
 	}
 
+	public void cleanup(){
+	
+	for(int i=0;i<textqueTD.length;i++){
+		textqueTD[i] = null;
+		textque[i]= null;
+	}
+	
+	for(int i=0;i<imagequeTD.length;i++){
+		imagequeTD[i] = null;
+		imageque[i] = null;
+	}
+	
+	for(int i=0;i<qtequeTD.length;i++){
+		qtequeTD[i] = null;
+		qteque[i] = null;
+	}
+	
+	textureactive = null;
+	textvid = null;	
+	for(int i=0;i<qts.length;i++){
+		qts[i] = null;
+	}
+	mesh = null;
+	pmeshactive.delete();
+	pmeshactive = null;
+	pmhide = null;
+
+	physics = null;
+
+	quepush = null;
+
+	player = null;
+	
+	soundbite = null;
+	
+	renderer = null;
+	
+	audio = null;
+	
+	
+	}
+	
 	public void mouseReleased(MouseEvent arg0) {
 		this.mousex = arg0.getX();
 		this.mousey = arg0.getY();
@@ -869,5 +930,5 @@ public class PhysicsEngine implements GLEventListener, KeyListener, MouseListene
 		}		
 		convertMouseCoordinates(handone);
 	}
-	
+
 }
