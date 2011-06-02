@@ -137,7 +137,7 @@ public class MorphingDemo extends JFrame {
         private DirectionButton(String text, Direction direction) {
             super(text);
             this.direction = direction;
-            
+            this.setPreferredSize(new Dimension(230,200));
             setupTriggers();
             setFont(getFont().deriveFont(Font.BOLD));
             setOpaque(false);
@@ -156,8 +156,10 @@ public class MorphingDemo extends JFrame {
         
         private Morphing2D createMorph() {
             Shape sourceShape = new RoundRectangle2D.Double(2.0, 2.0,
+                    50 - 4.0, 10 - 4.0, 12.0, 12.0);
+            Shape destinationShape = new RoundRectangle2D.Double(2.0, 2.0,
                     getWidth() - 4.0, getHeight() - 4.0, 12.0, 12.0);
-            
+            /*
             GeneralPath.Double destinationShape = new GeneralPath.Double();
             destinationShape.moveTo(2.0, getHeight() / 2.0);
             destinationShape.lineTo(22.0, 0.0);
@@ -166,7 +168,7 @@ public class MorphingDemo extends JFrame {
             destinationShape.lineTo(getWidth() - 2.0, getHeight() - 5.0);
             destinationShape.lineTo(22.0, getHeight() - 5.0);
             destinationShape.lineTo(22.0, getHeight());
-            destinationShape.closePath();
+            destinationShape.closePath();*/
             
             return new Morphing2D(sourceShape, destinationShape);
         }
@@ -239,6 +241,12 @@ public class MorphingDemo extends JFrame {
             g2.setColor(Color.WHITE);
             g2.drawString(getText(), x, y);
         }
+    }
+    
+    public static void main(String[] args) {
+    	MorphingDemo m = new MorphingDemo();
+    	m.setVisible(true);
+    	
     }
 }
 /*

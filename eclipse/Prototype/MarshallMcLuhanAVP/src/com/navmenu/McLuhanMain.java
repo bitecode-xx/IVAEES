@@ -899,8 +899,8 @@ public class McLuhanMain extends JFrame{
 						
 						isSteady = 0;
 					}
-					
-					app.handReleased(new Point(handArray[0].getX(), handArray[0].getY()),true);
+					if(app.getP() !=null)
+						app.handReleased(new Point(handArray[0].getX(), handArray[0].getY()),true);
 					hands.releaseHandOne();
 					handArray[0].setPressed(false);
 				}
@@ -934,8 +934,8 @@ public class McLuhanMain extends JFrame{
 						
 						isSteadySecond = 0;
 					}
-					
-					app.handReleased(new Point(handArray[1].getX(), handArray[1].getY()),true);
+					if(app.getP() != null)
+						app.handReleased(new Point(handArray[1].getX(), handArray[1].getY()),true);
 					hands.releaseHandTwo();
 					handArray[1].setPressed(false);
 				}

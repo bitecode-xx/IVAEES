@@ -122,7 +122,7 @@ void XN_CALLBACK_TYPE OnPushCB(XnFloat velocity, XnFloat angle, void* cxt) {
 
 	isGesture = true;
 
-	if (angle > 20.0) {
+	if (angle > 25.0) {
 		isGesture = false;
 	}
 
@@ -141,7 +141,7 @@ void XN_CALLBACK_TYPE OnPushSecondCB(XnFloat velocity, XnFloat angle, void* cxt)
 
 	isGesture = true;
 
-	if (angle > 20.0) {
+	if (angle > 25.0) {
 		isGesture = false;
 	}
 
