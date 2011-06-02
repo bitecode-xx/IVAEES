@@ -11,6 +11,9 @@
 #include <XnVSteadyDetector.h>
 #include <XnVWaveDetector.h>
 
+// Other headers
+#include "XnVSecondaryFilter.cpp"
+
 // Client
 #include "Kinect_Client.h"
 #include "main.h"
@@ -38,7 +41,6 @@ XnBool isLogging = false;
 XnBool record = false;
 XnBool inSession = false;
 XnBool isGesture = false;
-XnBool circlePP = false;
 
 Kinect_Client *kc;
 
@@ -57,7 +59,12 @@ xn::SceneAnalyzer sceneAnalyzer;
 
 xn::Recorder *recorder;
 
-int lastID = 0;
+float handOneX = 0.0;
+float handOneY = 0.0;
+float handOneZ = 0.0;
+float handTwoX = 0.0;
+float handTwoY = 0.0;
+float handTwoZ = 0.0;
 
 // Callback for when the focus is in progress
 void XN_CALLBACK_TYPE SessionProgress(const XnChar* strFocus, const XnPoint3D& ptFocusPoint, XnFloat fProgress, void* UserCxt) {
@@ -105,19 +112,67 @@ void XN_CALLBACK_TYPE SessionEnd(void* UserCxt) {
 	}
 }
 
-// Callback for wave detection
+// Callback for push detection of the first hand
 void XN_CALLBACK_TYPE OnPushCB(XnFloat velocity, XnFloat angle, void* cxt) {
+	if (mapID.size() <= 0) {
+		return;
+	}
+
 	action = "push\n";
+
 	isGesture = true;
+
+	if (angle > 20.0) {
+		isGesture = false;
+	}
 
 	if (isLogging) {
 		logGestures();
 	}
 }
 
-// Callback for wave detection
+// Callback for push detection of the second hand
+void XN_CALLBACK_TYPE OnPushSecondCB(XnFloat velocity, XnFloat angle, void* cxt) {
+	if (mapID.size() <= 1) {
+		return;
+	}
+
+	action = "pushsecond\n";
+
+	isGesture = true;
+
+	if (angle > 20.0) {
+		isGesture = false;
+	}
+
+	if (isLogging) {
+		logGestures();
+	}
+}
+
+// Callback for steady detection of the first hand
 void XN_CALLBACK_TYPE OnSteadyCB(XnFloat velocity, void* cxt) {
+	if (mapID.size() <= 0) {
+		return;
+	}
+
 	action = "steady\n";
+
+	isGesture = true;
+	
+	if (isLogging) {
+		logGestures();
+	}
+}
+
+// Callback for steady detection of the second hand
+void XN_CALLBACK_TYPE OnSteadySecondCB(XnFloat velocity, void* cxt) {
+	if (mapID.size() <= 1) {
+		return;
+	}
+
+	action = "steadysecond\n";
+
 	isGesture = true;
 
 	if (isLogging) {
@@ -128,6 +183,7 @@ void XN_CALLBACK_TYPE OnSteadyCB(XnFloat velocity, void* cxt) {
 // Callback for wave detection
 void XN_CALLBACK_TYPE OnWaveCB(void* cxt) {
 	action = "wave\n";
+
 	isGesture = true;
 
 	if (isLogging) {
@@ -135,6 +191,7 @@ void XN_CALLBACK_TYPE OnWaveCB(void* cxt) {
 	}
 }
 
+// callback for primarypointcreate
 void XN_CALLBACK_TYPE OnPrimaryPointCreateCB(const XnVHandPointContext* pContext, const XnPoint3D& ptFocus, void* cxt) {
 	if (mapID.find(1) == mapID.end()) {
 		mapID.insert(std::make_pair(1, pContext->nID));
@@ -148,11 +205,12 @@ void XN_CALLBACK_TYPE OnPrimaryPointCreateCB(const XnVHandPointContext* pContext
 	else {
 	}
 
-	printf("map size: %d", mapID.size());
-
 	printf("PrimaryPointCreate\n");
+
+	printf("map size: %d\n", mapID.size());
 }
 
+// callback for primarypointdestroy
 void XN_CALLBACK_TYPE OnPrimaryPointDestroyCB(XnUInt32 nID, void* cxt) {
 	mapID.erase(1);
 
@@ -162,11 +220,12 @@ void XN_CALLBACK_TYPE OnPrimaryPointDestroyCB(XnUInt32 nID, void* cxt) {
 		kc->sendData(0.0, 0.0, 0.0, 1, action);
 	}
 
-	printf("map size: %d", mapID.size());
-
 	printf("PrimaryPointDestroy\n");
+
+	printf("map size: %d\n", mapID.size());
 }
 
+// callback for primarypointreplace
 void XN_CALLBACK_TYPE OnPrimaryPointReplaceCB(XnUInt32 nOldId, const XnVHandPointContext* pContext, void* cxt) {
 	if (mapID.find(1)->second == nOldId) {
 		XnUInt32 temp = mapID.find(2)->second;
@@ -179,8 +238,11 @@ void XN_CALLBACK_TYPE OnPrimaryPointReplaceCB(XnUInt32 nOldId, const XnVHandPoin
 	}
 
 	printf("PrimaryPointReplace\n");
+
+	printf("map size: %d\n", mapID.size());
 }
 
+// callback for pointcreate
 void XN_CALLBACK_TYPE OnPointCreateCB(const XnVHandPointContext* pContext, void* cxt) {
 	if (mapID.find(1) != mapID.end()) {
 		if (mapID.find(2) == mapID.end()) {
@@ -196,11 +258,12 @@ void XN_CALLBACK_TYPE OnPointCreateCB(const XnVHandPointContext* pContext, void*
 		}
 	}
 
-	printf("map size: %d", mapID.size());
-
 	printf("PointCreate\n");
+
+	printf("map size: %d\n", mapID.size());
 }
 
+// callback for pointdestroy
 void XN_CALLBACK_TYPE OnPointDestroyCB(XnUInt32 nID, void* cxt) {
 	if (mapID.find(1)->second != nID) {
 		mapID.erase(2);
@@ -211,16 +274,106 @@ void XN_CALLBACK_TYPE OnPointDestroyCB(XnUInt32 nID, void* cxt) {
 			kc->sendData(0.0, 0.0, 0.0, 2, action);
 		}
 	}
-
-	printf("map size: %d", mapID.size());
-
+	
 	printf("PointDestroy\n");
+
+	printf("map size: %d\n", mapID.size());
 }
 
-// callback for a new position of any hand
+/*// callback for a new position of the first hand
 void XN_CALLBACK_TYPE OnPointUpdateCB(const XnVHandPointContext* pContext, void* cxt) {
-	int select;
-	bool send = true;
+	XnPoint3D ptProjective(pContext->ptPosition);
+
+	depthGenerator.ConvertRealWorldToProjective(1, &ptProjective, &ptProjective);
+
+	if (mapID.find(2)->second == pContext->nID || action == "pushsecond\n" || action == "steadysecond\n") {
+		handTwoX = ptProjective.X;
+		handTwoY = ptProjective.Y;
+		handTwoZ = ptProjective.Z;
+
+		action = "none\n";
+
+		if (isConnected) {
+			kc->sendData(handOneX, handOneY, handOneZ, 2, action);
+		}
+
+		return;
+	}
+	if (mapID.find(1)->second == pContext->nID) {
+		handOneX = ptProjective.X;
+		handOneY = ptProjective.Y;
+		handOneZ = ptProjective.Z;
+
+		action = "none\n";
+
+		if (isConnected) {
+			kc->sendData(handOneX, handOneY, handOneZ, 1, action);
+		}
+
+		return;
+	}
+}*/
+
+// callback for a new position of the first hand
+void XN_CALLBACK_TYPE OnPointUpdateCB(const XnVHandPointContext* pContext, void* cxt) {
+	if (mapID.size() <= 0) {
+		return;
+	}
+
+	int select = 0;
+
+	XnPoint3D ptProjective(pContext->ptPosition);
+
+	depthGenerator.ConvertRealWorldToProjective(1, &ptProjective, &ptProjective);
+
+	if (mapID.find(1)->second == pContext->nID) {
+		select = 1;
+
+		handOneX = ptProjective.X;
+		handOneY = ptProjective.Y;
+		handOneZ = ptProjective.Z;
+	}
+	if (mapID.find(2)->second == pContext->nID) {
+		select = 2;
+
+		handTwoX = ptProjective.X;
+		handTwoY = ptProjective.Y;
+		handTwoZ = ptProjective.Z;
+	}
+	if (action == "pushsecond\n" || action == "steadysecond\n") {
+		select = 2;
+	}
+
+	if (!isGesture) {
+	  action = "none\n";
+	}
+
+	if (isConnected) {
+		if (select == 1) {
+			kc->sendData(handOneX, handOneY, handOneZ, select, action);
+		}
+		else {
+			kc->sendData(handTwoX, handTwoY, handTwoZ, select, action);
+		}
+	}
+
+	isGesture = false;
+
+	action = "none\n";
+
+	select = 0;
+}
+
+/*// callback for a new position of the second hand
+void XN_CALLBACK_TYPE OnPointUpdateSecondCB(const XnVHandPointContext* pContext, void* cxt) {
+	if (mapID.find(2) == mapID.end()) {
+		return;
+	}
+	if (mapID.size() <= 1 || mapID.find(2)->second != pContext->nID) {
+		return;
+	}
+
+	int select = 2;
 
 	XnPoint3D ptProjective(pContext->ptPosition);
 
@@ -230,34 +383,16 @@ void XN_CALLBACK_TYPE OnPointUpdateCB(const XnVHandPointContext* pContext, void*
 	  action = "none\n";
 	}
 
-	if (circlePP) {
-	  action = "none\n";
-	}
-
-	if (mapID.find(1)->second == pContext->nID) {
-		select = 1;
-	}
-	else if (mapID.find(2)->second == pContext->nID) {
-		select = 2;
-	}
-	else {
-		send = false;
-	}
-
-	if (isConnected && send) {
+	if (isConnected) {
 		kc->sendData(ptProjective.X, ptProjective.Y, ptProjective.Z, select, action);
 	}
 
-	if (send == false) {
- 		send = true;
-	}
-
-	if (strcmp(action, "circle\n") == 0) {
-		circlePP = true;
-	}
-
 	isGesture = false;
-}
+
+	action = "none\n";
+
+	select = 0;
+}*/
 
 /*
   Kinect hand tracking and gesture recognition
@@ -272,14 +407,6 @@ int main(int argc, char** argv) {
 		printf("Couldn't initialize: %s\n", xnGetStatusString(rc));
 		return 1;
 	}
-
-	// Setup for image generation
-	/*rc = context.FindExistingNode(XN_NODE_TYPE_IMAGE, imageGenerator);
-
-	if (rc != XN_STATUS_OK) {
-		printf("Image Generator couldn't initialize: %s\n", xnGetStatusString(rc));
-		return 1;
-	}*/
 
 	// Setup for depth generation
 	rc = context.FindExistingNode(XN_NODE_TYPE_DEPTH, depthGenerator);
@@ -316,16 +443,26 @@ int main(int argc, char** argv) {
 	sessionManager->SetQuickRefocusTimeout(1000 * 30);
 
 	// Push Detector
-	XnVPushDetector push;
-	push.RegisterPush(NULL, OnPushCB);
+	XnVPushDetector push, pushSecond;
+	push.RegisterPush("Primary Steady", OnPushCB);
+	//push.RegisterPointUpdate("Primary Push Point Update", OnPointUpdateCB);
 	push.RegisterPointUpdate(NULL, OnPointUpdateCB);
 
+	pushSecond.RegisterPush("Secondary Push", OnPushSecondCB);
+	//pushSecond.RegisterPointUpdate("Secondary Push Point Update", OnPointUpdateSecondCB);
+	pushSecond.RegisterPointUpdate(NULL, OnPointUpdateCB);
+
 	// Steady Detector
-	XnVSteadyDetector steady;
-	steady.RegisterSteady(NULL, OnSteadyCB);
+	XnVSteadyDetector steady, steadySecond;
+	steady.RegisterSteady("Primary Steady", OnSteadyCB);
+	//steady.RegisterPointUpdate("Primary Steady Point Update", OnPointUpdateCB);
 	steady.RegisterPointUpdate(NULL, OnPointUpdateCB);
 
-	XnVPointDenoiser denoiser;
+	steadySecond.RegisterSteady("Secondary Steady", OnSteadySecondCB);
+	//steadySecond.RegisterPointUpdate("Secondary Steady Point Update", OnPointUpdateSecondCB);
+	steadySecond.RegisterPointUpdate(NULL, OnPointUpdateCB);
+
+	XnVPointDenoiser denoiser, denoiserSecond;
 
 	denoiser.AddListener(&push);
 	denoiser.AddListener(&steady);
@@ -335,7 +472,20 @@ int main(int argc, char** argv) {
 	denoiser.RegisterPointCreate(NULL, OnPointCreateCB);
 	denoiser.RegisterPointDestroy(NULL, OnPointDestroyCB);
 
+	//denoiserSecond.AddListener(&pushSecond);
+	//denoiserSecond.AddListener(&steadySecond);
+
+	// Secondary Filter Point
+	XnVSecondaryFilter sf;
+	//sf.AddListener(&denoiserSecond);
+	sf.AddListener(&pushSecond);
+	sf.AddListener(&steadySecond);
+
+	denoiserSecond.AddListener(&sf);
+
 	sessionManager->AddListener(&denoiser);
+	sessionManager->AddListener(&denoiserSecond);
+	//sessionManager->AddListener(&sf);
 
 	// Start up client
 	if (isConnected) {
@@ -343,7 +493,9 @@ int main(int argc, char** argv) {
 	}
 
 	// Start up file writer
-	output = new std::ofstream(GESTURE_LOG);
+	if (isLogging) {
+		output = new std::ofstream(GESTURE_LOG);
+	}
 
 	while (1) {
 		if (!inSession) {
@@ -363,9 +515,10 @@ int main(int argc, char** argv) {
 		stopCapture();
 	}
 
-	output->close();
-
-	delete output;
+	if (isLogging) {
+		output->close();
+		delete output;
+	}
 	
 	delete sessionManager;
 

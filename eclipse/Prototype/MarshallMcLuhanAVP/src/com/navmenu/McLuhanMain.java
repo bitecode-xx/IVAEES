@@ -10,6 +10,7 @@ import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.MouseInfo;
 import java.awt.Point;
+import java.awt.PointerInfo;
 import java.awt.Robot;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -81,7 +82,7 @@ public class McLuhanMain extends JFrame{
 
 	private JButton[] btns,btns1,btns2,btns3,btns4;
 
-	private Dimension size = new Dimension(1024,768);
+	private Dimension size = new Dimension(1280,868);
 
 	private FPSAnimator animator, animator2;
 	private PhysicsEngine app;
@@ -89,13 +90,13 @@ public class McLuhanMain extends JFrame{
 
 	private Main video;
 
-	private Timer quepush, ploop, steadyTimer, depthTimer;//flash, starter;
+	private Timer quepush, ploop, steadyTimer, steadySecondTimer, depthTimer;//flash, starter;
 	
-	private int isSteady, isDepth;
+	private int isSteady, isSteadySecond, isDepth;
 
 	private boolean roll, audio;
 
-	private ActionListener gogo, repeat, one, two, three, four, loop, steadyAL, depthAL;
+	private ActionListener gogo, repeat, one, two, three, four, loop, steadyAL, steadySecondAL, depthAL;
 
 	private TextureMap themes;
 
@@ -119,7 +120,7 @@ public class McLuhanMain extends JFrame{
 	
 	private int pushDepth = 750;
 	
-	private float steadyX, steadyY;
+	private int steadyX, steadyY, steadySecondX, steadySecondY;
 
 	public McLuhanMain() {
 		frame = this;
@@ -128,7 +129,7 @@ public class McLuhanMain extends JFrame{
 		layeredPane.setLayout(new BorderLayout());
 		frame.setSize(size);
 		this.setUndecorated(true);
-		bgsel =1;
+		bgsel = 1;
 		menu = new JPanel();
 		hands = new GlassPane();
 		hands.setOpaque(false);
@@ -235,6 +236,16 @@ public class McLuhanMain extends JFrame{
 		isSteady = 0;
 		
 		steadyTimer = new Timer(1000 * 2, steadyAL);
+		
+		steadySecondAL = new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				isSteadySecond = 2;
+			}
+		};
+		
+		isSteadySecond = 0;
+		
+		steadySecondTimer = new Timer(1000 * 2, steadySecondAL);
 		
 		depthAL = new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
@@ -711,7 +722,6 @@ public class McLuhanMain extends JFrame{
 				}
 		
 				mouseRobot.mouseMove(newX, newY);
-		
 				mouseRobot.mousePress(MouseEvent.BUTTON1_MASK);
 				mouseRobot.mouseRelease(MouseEvent.BUTTON1_MASK);
 			}
@@ -729,11 +739,11 @@ public class McLuhanMain extends JFrame{
 				if (select == 0) {
 					return;
 				}
-				
+
 				if (action.compareTo("sessionend") == 0) {
 					mode = 0;
 					startGrabber();
-			
+
 					return;
 				}
 		
@@ -789,49 +799,80 @@ public class McLuhanMain extends JFrame{
 				if (select == 2) {
 					updateHandTwo(new Point(newX, newY));
 				}
+
 				
-				if (isSteady == 1) {
-					System.out.println("isSteady");
-					if (Math.abs(newX - steadyX) > 10 || Math.abs(newY - steadyY) > 10) {
-						steadyTimer.stop();
+				if (action.compareTo("steady") == 0) {
+					if (isSteady == 0) {
+						isSteady = 1;
+						
+						steadyX = handArray[0].getX();
+						steadyY = handArray[0].getY();
+						
+						steadyTimer.start();
+					}
+					if (isSteady == 1) {
+						if (Math.abs(handArray[0].getX() - steadyX) > 20 || Math.abs(handArray[0].getY() - steadyY) > 20) {
+							steadyTimer.stop();
+							isSteady = 0;
+						}
+					}
+					if (isSteady == 2) {
+						if (Math.abs(handArray[0].getX() - steadyX) > 20 || Math.abs(handArray[0].getY() - steadyY) > 20) {
+							steadyTimer.stop();
+							isSteady = 0;
+							
+							return;
+						}
+						
+						mouseRobot.mouseMove(handArray[0].getX(), handArray[0].getY());
+						mouseRobot.mousePress(MouseEvent.BUTTON1_MASK);
+						mouseRobot.mouseRelease(MouseEvent.BUTTON1_MASK);
 						
 						isSteady = 0;
 					}
 				}
 				
-				if (action.compareTo("steady") == 0 ) {
-					if (isSteady == 0) {
-						isSteady = 1;
+				if (action.compareTo("steadysecond") == 0) {
+					if (isSteadySecond == 0) {
+						isSteadySecond = 1;
 						
-						steadyX = newX;
-						steadyY = newY;
+						steadySecondX = handArray[1].getX();
+						steadySecondY = handArray[1].getY();
 						
-						steadyTimer.start();
+						steadySecondTimer.start();
 					}
-					if (isSteady == 2) {
-						switch (select) {
-							case 1:
-								mouseRobot.mouseMove(handArray[select - 1].getX(), handArray[select - 1].getY());
-								mouseRobot.mousePress(MouseEvent.BUTTON1_MASK);
-								mouseRobot.mouseRelease(MouseEvent.BUTTON1_MASK);
-								break;
-							default:
-								break;
+					if (isSteadySecond == 1) {
+						if (Math.abs(handArray[1].getX() - steadySecondX) > 20 || Math.abs(handArray[1].getY() - steadySecondY) > 20) {
+							steadySecondTimer.stop();	
+							isSteadySecond = 0;
+						}
+					}
+					if (isSteadySecond == 2) {
+						if (Math.abs(handArray[1].getX() - steadySecondX) > 20 || Math.abs(handArray[1].getY() - steadySecondY) > 20) {
+							steadySecondTimer.stop();	
+							isSteadySecond = 0;
+							
+							return;
 						}
 						
-						isSteady = 0;
+						mouseRobot.mouseMove(handArray[1].getX(), handArray[1].getY());
+						mouseRobot.mousePress(MouseEvent.BUTTON1_MASK);
+						mouseRobot.mouseRelease(MouseEvent.BUTTON1_MASK);
+						
+						isSteadySecond = 0;
 					}
 				}
 
 				if (action.compareTo("push") == 0 && handArray[select - 1].getPressed() == false) {
-					switch (select) {
-						case 1:
-							mouseRobot.mousePress(MouseEvent.BUTTON1_MASK);
-							mouseRobot.mouseRelease(MouseEvent.BUTTON1_MASK);
-							break;
-						default:
-							break;
-					}
+					mouseRobot.mouseMove(handArray[select - 1].getX(), handArray[select - 1].getY());
+					mouseRobot.mousePress(MouseEvent.BUTTON1_MASK);
+					mouseRobot.mouseRelease(MouseEvent.BUTTON1_MASK);
+				}
+				
+				if (action.compareTo("pushsecond") == 0 && handArray[select - 1].getPressed() == false) {
+					mouseRobot.mouseMove(handArray[select - 1].getX(), handArray[select - 1].getY());
+					mouseRobot.mousePress(MouseEvent.BUTTON1_MASK);
+					mouseRobot.mouseRelease(MouseEvent.BUTTON1_MASK);
 				}
 			}
 		});
@@ -908,41 +949,120 @@ public class McLuhanMain extends JFrame{
 				if (select == 2) {
 					updateHandTwo(new Point(newX, newY));
 				}
-
-				if (isSteady == 1) {
-					System.out.println("isSteady");
-					if (Math.abs(newX - steadyX) > 10 || Math.abs(newY - steadyY) > 10) {
-						steadyTimer.stop();
-						
-						isSteady = 0;
-					}
-				}
 				
-				if (action.compareTo("steady") == 0 && handArray[select - 1].getPressed() == false) {
-					if (isSteady == 0 && (newY < 100 || newX < 60)) {
+				
+				if (action.compareTo("steady") == 0 && (newY < 100 || newX < 60)) {
+					if (isSteady == 0) {
 						isSteady = 1;
 						
-						steadyX = newX;
-						steadyY = newY;
+						steadyX = handArray[0].getX();
+						steadyY = handArray[0].getY();
 						
 						steadyTimer.start();
 					}
-					if (isSteady == 2 && (newY < 100 || newX < 60)) {
-						switch (select) {
-							case 1:
-								mouseRobot.mouseMove(handArray[select - 1].getX(), handArray[select - 1].getY());
-								mouseRobot.mousePress(MouseEvent.BUTTON1_MASK);
-								mouseRobot.mouseRelease(MouseEvent.BUTTON1_MASK);
-								break;
-							default:
-								break;
+					if (isSteady == 1) {
+						if (Math.abs(handArray[0].getX() - steadyX) > 20 || Math.abs(handArray[0].getY() - steadyY) > 20) {
+							steadyTimer.stop();
+							isSteady = 0;
 						}
+					}
+					if (isSteady == 2) {
+						if (Math.abs(handArray[0].getX() - steadyX) > 20 || Math.abs(handArray[0].getY() - steadyY) > 20) {
+							steadyTimer.stop();
+							isSteady = 0;
+							
+							return;
+						}
+						
+						mouseRobot.mouseMove(handArray[0].getX(), handArray[0].getY());
+						mouseRobot.mousePress(MouseEvent.BUTTON1_MASK);
+						mouseRobot.mouseRelease(MouseEvent.BUTTON1_MASK);
 						
 						isSteady = 0;
 					}
+					
+					app.handReleased(new Point(handArray[0].getX(), handArray[0].getY()),true);
+					hands.releaseHandOne();
+					handArray[0].setPressed(false);
+				}
+				
+				if (action.compareTo("steadysecond") == 0 && (newY < 100 || newX < 60)) {
+					if (isSteadySecond == 0) {
+						isSteadySecond = 1;
+						
+						steadySecondX = handArray[1].getX();
+						steadySecondY = handArray[1].getY();
+						
+						steadySecondTimer.start();
+					}
+					if (isSteadySecond == 1) {
+						if (Math.abs(handArray[1].getX() - steadySecondX) > 20 || Math.abs(handArray[1].getY() - steadySecondY) > 20) {
+							steadySecondTimer.stop();
+							isSteadySecond = 0;
+						}
+					}
+					if (isSteadySecond == 2) {
+						if (Math.abs(handArray[1].getX() - steadySecondX) > 20 || Math.abs(handArray[1].getY() - steadySecondY) > 20) {
+							steadySecondTimer.stop();
+							isSteadySecond = 0;
+							
+							return;
+						}
+						
+						mouseRobot.mouseMove(handArray[1].getX(), handArray[1].getY());
+						mouseRobot.mousePress(MouseEvent.BUTTON1_MASK);
+						mouseRobot.mouseRelease(MouseEvent.BUTTON1_MASK);
+						
+						isSteadySecond = 0;
+					}
+					
+					app.handReleased(new Point(handArray[1].getX(), handArray[1].getY()),true);
+					hands.releaseHandTwo();
+					handArray[1].setPressed(false);
+				}
+				
+				if (handArray[select - 1].getPressed() == true) {
+					switch (select) {
+						case 1:
+							app.handDragged(new Point(handArray[select - 1].getX(), handArray[select - 1].getY()), true);
+							break;
+						case 2:
+							app.handDragged(new Point(handArray[select - 1].getX(), handArray[select - 1].getY()), false);
+							break;
+					}
+				}
+				
+				if (action.compareTo("push") == 0 && (newY > 100 || newX > 60)) {
+					if (app.getP() != null) {
+						if (handArray[0].getPressed() == true) {
+							app.handReleased(new Point(handArray[0].getX(), handArray[0].getY()), true);
+							hands.releaseHandOne();
+							handArray[0].setPressed(false);
+						}
+						else {
+							app.handPressed(new Point(handArray[0].getX(), handArray[0].getY()), true);
+							hands.activeHandOne();
+							handArray[0].setPressed(true);
+						}
+					}
+				}
+				
+				if (action.compareTo("pushsecond") == 0 && (newY > 100 || newX > 60)) {
+					if (app.getP() != null) {
+						if (handArray[1].getPressed() == true) {
+							app.handReleased(new Point(handArray[1].getX(), handArray[1].getY()), false);
+							hands.releaseHandTwo();
+							handArray[1].setPressed(false);
+						}
+						else {
+							app.handPressed(new Point(handArray[1].getX(), handArray[1].getY()), false);
+							hands.activeHandTwo();
+							handArray[1].setPressed(true);
+						}
+					}
 				}
 
-				if (depth < pushDepth && handArray[select - 1].getPressed() == false) {
+				/*if (depth < pushDepth && handArray[select - 1].getPressed() == false) {
 					if (isDepth == 0 && (newY < 100 || newX < 60)) {
 						isDepth = 1;
 						depthTimer.start();
@@ -1011,7 +1131,8 @@ public class McLuhanMain extends JFrame{
 						}
 						handArray[select - 1].setPressed(false);
 					}
-				}
+				}*/
+				
 			}});
 
 		return;

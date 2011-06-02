@@ -90,6 +90,7 @@
     <ClCompile Include="src\Client.cpp" />
     <ClCompile Include="src\Kinect_Client.cpp" />
     <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\XnVSecondaryFilter.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Res\mainicon.ico" />
