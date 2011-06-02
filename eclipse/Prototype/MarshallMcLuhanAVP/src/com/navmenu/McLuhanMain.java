@@ -71,9 +71,7 @@ public class McLuhanMain extends JFrame{
 	private String[] DIRS = {"City as Classroom","Extensions of Man","Global Village","The Medium is the Message"};
 
 	private JFrame frame;
-	//private GLCanvas canvas,vidc,grabc;
-	private GLJPanel canvas,vidc,grabc;
-	//TODO convert glnav to class to handle menu grabbing/interaction in gl scene. Might need to be added as an extension to the main gl scene
+	private GLJPanel canvas,grabc;
 	private JPanel menu,glnav;
 
 	private BackgroundPanel p1,p2,p3,p4,load;
@@ -90,7 +88,7 @@ public class McLuhanMain extends JFrame{
 
 	private Main video;
 
-	private Timer quepush, ploop, steadyTimer, steadySecondTimer, depthTimer;//flash, starter;
+	private Timer quepush, ploop, steadyTimer, steadySecondTimer, depthTimer, gcpush;//flash, starter;
 	
 	private int isSteady, isSteadySecond, isDepth;
 
@@ -161,12 +159,9 @@ public class McLuhanMain extends JFrame{
 		layeredPane.add(tslide,BorderLayout.NORTH,-30000);
 		layeredPane.add(menu,BorderLayout.CENTER,-30000);
 		layeredPane.add(glnav,BorderLayout.WEST,-30000);
-		//frame.getContentPane().add(BorderLayout.NORTH,tslide);
-		//frame.getContentPane().add(BorderLayout.CENTER,menu);
-		//frame.getContentPane().add(BorderLayout.WEST,glnav);
+		
 		frame.setGlassPane(hands);
 		frame.getGlassPane().setVisible(true);
-		//frame.getContentPane().add(BorderLayout.CENTER,hands);
 
 		glnav.setVisible(false);
 		tslide.setVisible(false);
@@ -177,33 +172,15 @@ public class McLuhanMain extends JFrame{
 			}
 		});
 
-		//creates the flash sequence and theme menu loops
-		//roll = true;
-		//initFlshSeq();
-
-		/*gogo = new ActionListener(){
-			public void actionPerformed(ActionEvent arg0) {
-				roll = true;
-				flash = new Timer(3000,one);
-				flash.setRepeats(false);
-				flash.start();
-			}
-		};*/
-
 		loop = new ActionListener(){
 			public void actionPerformed(ActionEvent arg0) {
 				setPage();
 				setBtns(bgsel);
-					//flash.stop();
-					//starter.stop();
-				//starter.start();
+				
 				((CardLayout)menu.getLayout()).show(menu, bgsel+"");
 			}
 		};
 
-	//	starter = new Timer(1000,gogo);
-		//starter.setRepeats(false);
-		//starter.start();
 
 		ploop = new Timer(45000,loop);
 		//ploop.start();
@@ -264,7 +241,6 @@ public class McLuhanMain extends JFrame{
 	private void initGrabber() {
 		GLProfile glp = GLProfile.getDefault();
 		GLCapabilities caps = new GLCapabilities(glp);
-		//grabc = new GLCanvas(caps);
 		grabc = new GLJPanel(caps);
 		
 		grabber = new PhysicsGrabber();
@@ -290,76 +266,7 @@ public class McLuhanMain extends JFrame{
 		themes = new TextureMap();
 	}
 
-	/*  
-	 * 	Timers used to loop through the theme menu button flash effect and
-	 * theme menu change loop. Sequence progresses from One - Four and then Repeats
-	 * 
-	 * Flashing is achieved by forcing the button modals rollover effect to occur.
-	 */
-	/*
-	private void initFlshSeq() {
-		one = new ActionListener(){
-			public void actionPerformed(ActionEvent arg0) {
-				btns[0].getModel().setRollover(false);
-				if(roll){
-					btns[0].getModel().setRollover(true);
-					flash = new Timer(3000,two);
-					flash.setRepeats(false);
-					flash.start();
-				}
-			}
-		};
-
-		two = new ActionListener(){
-			public void actionPerformed(ActionEvent arg0) {
-				btns[0].getModel().setRollover(false);
-				if(roll){
-					btns[1].getModel().setRollover(true);
-					flash = new Timer(3000,three);
-					flash.setRepeats(false);
-					flash.start();
-				}
-			}
-		};
-
-		three = new ActionListener(){
-			public void actionPerformed(ActionEvent arg0) {
-				btns[1].getModel().setRollover(false);
-				if(roll){
-					btns[2].getModel().setRollover(true);
-					flash = new Timer(3000,four);
-					flash.setRepeats(false);
-					flash.start();
-				}
-			}
-		};
-
-		four = new ActionListener(){
-			public void actionPerformed(ActionEvent arg0) {
-				btns[2].getModel().setRollover(false);
-				if(roll){
-					btns[3].getModel().setRollover(true);
-					flash = new Timer(3000,repeat);
-					flash.setRepeats(false);
-					flash.start();
-				}
-			}
-		};
-
-		repeat = new ActionListener(){
-			public void actionPerformed(ActionEvent arg0) {
-				btns[3].getModel().setRollover(false);
-				if(roll){
-					flash = new Timer(15000,one);
-					flash.setRepeats(false);
-					flash.start();
-				}
-			}
-		};
-
-
-	}
-	*/
+	
 
 	/*
 	 * Generates and starts the base theme selection loop, for each theme option 
@@ -512,14 +419,11 @@ public class McLuhanMain extends JFrame{
 				setPage();
 				setBtns(bgsel);
 				ploop.stop();
-			//	if(flash !=null)
-			//		flash.stop();
-			//	starter.stop();
 				ploop.start();
 				app.stopVid();
+				//app.clearRun();
 				((CardLayout)menu.getLayout()).show(menu, bgsel+"");
 					menu.remove(canvas);
-					canvas = null;
 					animator.stop();
 					menu.validate();
 					quepush.stop();
@@ -538,6 +442,11 @@ public class McLuhanMain extends JFrame{
 					hands.releaseHandTwo();
 				}
 				mode = 1;
+				canvas.invalidate();
+				canvas.removeAll();
+				canvas.validate();
+				canvas = null;
+				cleanapp();
 			}
 		});
 
@@ -553,7 +462,6 @@ public class McLuhanMain extends JFrame{
 		((FlowLayout)glnav.getLayout()).setVgap(20);
 		dem.add(pmen);
 		dem.add(aud);
-		//glnav.add(pmen);
 		glnav.add(dem);
 	}
 
@@ -562,9 +470,7 @@ public class McLuhanMain extends JFrame{
 		animator = new FPSAnimator(60);
 		animator.add(canvas);
 		animator.start();
-		// glnav.setVisible(true);
-		//tslide.setVisible(true);
-
+		
 	}
 
 	private void initLoading(){
@@ -581,14 +487,13 @@ public class McLuhanMain extends JFrame{
 	private void initCanvas(int opt) {
 		GLProfile glp = GLProfile.getDefault();
 		GLCapabilities caps = new GLCapabilities(glp);
-		//canvas = new GLCanvas(caps);
 		canvas = new GLJPanel(caps);
 
-		app = new PhysicsEngine(themes.getMap(opt*3), themes.getMap((opt*3)+1), themes.getMap((opt*3)+2),themes.getVids(opt));
+		app = new PhysicsEngine(themes.getMap(opt*3), themes.getMap((opt*3)+1), themes.getMap((opt*3)+2),themes.getVids(opt), canvas);
 		canvas.addGLEventListener(app);
 		canvas.addKeyListener(app);
-		//canvas.addMouseListener(app);
-	//	canvas.addMouseMotionListener(app);
+		canvas.addMouseListener(app);
+		canvas.addMouseMotionListener(app);
 		tslide.setEngine(app);
 
 		canvas.requestFocus();
@@ -621,9 +526,6 @@ public class McLuhanMain extends JFrame{
 			setPage();
 			setBtns(bgsel);
 			ploop.stop();
-		//	if(flash !=null)
-		//		flash.stop();
-		//	starter.stop();
 			app.stopVid();
 			menu.remove(canvas);
 			canvas = null;
@@ -636,10 +538,6 @@ public class McLuhanMain extends JFrame{
 			tslide.setVisible(false);
 			roll = true;
 		}
-	//	if(starter != null)
-	//		starter.stop();
-	//	if(flash != null)
-	//		flash.stop();
 		if(ploop != null)
 			ploop.stop();
 		initGrabber();
@@ -657,13 +555,34 @@ public class McLuhanMain extends JFrame{
 		((CardLayout)menu.getLayout()).show(menu, "Grabber");
 	}
 	
+	private void cleanapp(){
+		app.cleanup();
+		app = null;
+		soundbite = null;
+		quepush = null;
+		tslide.desetEngine();
+		animator = null;
+
+		ActionListener timeout = new ActionListener(){
+			public void actionPerformed(ActionEvent arg0) {
+				if(mode != 2){
+					Runtime r = Runtime.getRuntime();
+					r.gc();
+				}
+			}
+		};
+		gcpush = new Timer(30000,timeout);
+		gcpush.setRepeats(true);
+		gcpush.start();
+	
+	}
+	
 	/*
 	 * 
 	*/
 	private void stopGrabber() {
 		menu.remove(grabc);
 		((CardLayout)menu.getLayout()).show(menu, bgsel+"");
-	//	starter.start();
 		ploop.start();
 		
 		return;

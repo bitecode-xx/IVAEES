@@ -11,6 +11,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.util.Vector;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -27,7 +28,7 @@ import com.physics.PhysicsEngine;
  *
  */
 @SuppressWarnings("unused")
-public class TopSlider extends JPanel implements ActionListener {
+public class TopSlider extends JPanel {
 	
 	/**
 	 * 
@@ -41,6 +42,8 @@ public class TopSlider extends JPanel implements ActionListener {
 	private int index;
 	private PhysicsEngine eng;
 	private boolean type;
+	private Vector<Component> listAlt;
+	private int[] active;
 	
 	public TopSlider(){
 		this.setBackground(Color.BLACK);
@@ -61,7 +64,7 @@ public class TopSlider extends JPanel implements ActionListener {
 		index =0;
 		genLists();
 		setupPanel();
-		setupList();
+		setupListAlt();
 		this.validate();
 	}
 
@@ -70,6 +73,14 @@ public class TopSlider extends JPanel implements ActionListener {
 	 */
 	public void setEngine(PhysicsEngine context){
 		this.eng = context;
+	}
+	
+	/*
+	 * Deassigns engine to recieve rendering calls
+	 */
+	public void desetEngine(){
+		this.eng = null;
+		listAlt = null;
 	}
 	
 	/*
@@ -84,7 +95,7 @@ public class TopSlider extends JPanel implements ActionListener {
 		left.setContentAreaFilled(false);
 		left.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e) {
-				moveList(false);
+				moveListAlt(false);
 			}
 		});
 		
@@ -94,7 +105,7 @@ public class TopSlider extends JPanel implements ActionListener {
 		right.setContentAreaFilled(false);
 		right.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e) {
-				moveList(true);
+				moveListAlt(true);
 			}
 		});
 
@@ -102,10 +113,12 @@ public class TopSlider extends JPanel implements ActionListener {
 	}
 
 	/*
+	 * Depricated
+	 *
 	 * Creates the buttons for all the media files
 	 * and assigns them to the TopSlider panel. 
 	 * 
-	 */
+	 
 	private void setupList() {
 		JPanel grid = gridPan();
 		list = new Component[img.length+txt.length];
@@ -116,18 +129,53 @@ public class TopSlider extends JPanel implements ActionListener {
 		for(int i=0;i<txt.length;i++){
 			list[i+j] = buttonTXT(txt[i],i);
 		}
-		int count = 0;
-		while(count < 5 ){
-			if(index != list.length){
-				grid.add(list[index]);
-				index++;
-				count++;
-			}
-			else{
-				index=0;
-			}
+		for(int i =0; i < 5; i++){
+			grid.add(list[i]);
 		}
-
+		index = 4;
+		
+		//int count = 0;
+	//	while(count < 5 ){
+		//	if(index != list.length){
+		//		grid.add(list[index]);
+		//		index++;
+	//			count++;
+		//	}
+	//		else{
+	//			index=0;
+	//		}
+//		}
+		this.invalidate();
+		this.removeAll();
+		this.add(left);
+		this.add(grid);
+		this.add(right);
+		this.validate();
+			
+	}*/
+	
+	/*
+	 * Creates the buttons for all the media files
+	 * and assigns them to the TopSlider panel. 
+	 * 
+	 */
+	private void setupListAlt() {
+		listAlt = new Vector<Component>(img.length+txt.length);
+		active = new int[5];
+		JPanel grid = gridPan();
+		
+		for (int i=0;i<img.length;i++){
+			listAlt.add(buttonIMG(img[i],i));
+		}
+		int j = img.length;
+		for(int i=0;i<txt.length;i++){
+			listAlt.add(buttonTXT(txt[i],i));
+		}
+		for(int i =0; i < 5; i++){
+			grid.add(listAlt.elementAt(i));
+			active[i] = i;
+		}
+		destroylists();
 		this.invalidate();
 		this.removeAll();
 		this.add(left);
@@ -137,6 +185,18 @@ public class TopSlider extends JPanel implements ActionListener {
 
 	}
 	
+	private void destroylists() {
+		for(int i=0;i<text.length;i++)
+			this.text[i] = null;
+		for(int i=0;i<images.length;i++)
+			this.images[i] = null;
+		for(int i=0;i<txt.length;i++)
+			this.txt[i] = null;
+		for(int i=0;i<img.length;i++)
+			this.img[i] = null;
+		
+	}
+
 	/*
 	 * Evaluates the button positions and 
 	 * if true moves the images ahead by 5
@@ -144,6 +204,47 @@ public class TopSlider extends JPanel implements ActionListener {
 	 * for out of bounds index and wrap around
 	 * 
 	 */
+	private void moveListAlt(boolean dir){
+		JPanel grid = gridPan();
+		if(dir){
+			for(int i = 0; i< 5; i++){
+				if(i == 4){
+					if(active[i] == listAlt.size()-1)
+						active[i] = 0;
+					else
+						active[i] = active[i]+1;
+				}
+				else
+					active[i] = active[i+1];
+			}
+		}
+		else{
+			for(int i = 4; i>-1; i--){
+				if(i == 0){
+					if(active[i] == 0)
+						active[i] = listAlt.size()-1;
+					else
+						active[i] = active[i]-1;
+				}
+				else
+					active[i] = active[i-1];
+			}
+		}
+		for(int i =0; i < 5; i++){
+			grid.add(listAlt.elementAt(active[i]));
+		}
+		this.invalidate();
+		this.removeAll();
+		this.add(left);
+		this.add(grid);
+		this.add(right);
+		this.validate();
+	}
+	
+	
+	/*
+	 * Depricated
+	 
 	private void moveList(boolean dir){
 		JPanel grid = gridPan();
 		if(list.length > 5){
@@ -176,7 +277,7 @@ public class TopSlider extends JPanel implements ActionListener {
 			this.add(right);
 			this.validate();
 		}
-	}
+	}/*
 
 	/*
 	 * Initialize the button to launch a specified image media object
@@ -264,11 +365,7 @@ public class TopSlider extends JPanel implements ActionListener {
 		return new ImageIcon(newimg);
 	}
 
-	@Override
-	public void actionPerformed(ActionEvent arg0) {
-		
-		
-	}
+	
 	
 
 

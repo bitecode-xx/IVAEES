@@ -28,7 +28,7 @@ public class McLuhanServer {
 		System.setProperty("sun.awt.disableMixing", "false");
 		GLProfile.initSingleton(true);
 		GraphicsDevice screen = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
-	    System.out.println(screen.isFullScreenSupported());
+	   
 	    
 		Toolkit toolkit = Toolkit.getDefaultToolkit();
 		//Image image = toolkit.getImage("rh1.png");
