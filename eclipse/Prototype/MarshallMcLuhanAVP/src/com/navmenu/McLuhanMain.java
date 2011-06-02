@@ -87,7 +87,7 @@ public class McLuhanMain extends JFrame{
 
 	private Main video;
 
-	private Timer quepush, ploop, steadyTimer, depthTimer;//flash, starter;
+	private Timer quepush, ploop, steadyTimer, depthTimer, gcpush;//flash, starter;
 	
 	private int isSteady, isDepth;
 
@@ -410,7 +410,7 @@ public class McLuhanMain extends JFrame{
 				ploop.stop();
 				ploop.start();
 				app.stopVid();
-				app.clearRun();
+				//app.clearRun();
 				((CardLayout)menu.getLayout()).show(menu, bgsel+"");
 					menu.remove(canvas);
 					animator.stop();
@@ -545,14 +545,24 @@ public class McLuhanMain extends JFrame{
 	}
 	
 	private void cleanapp(){
-		Runtime r = Runtime.getRuntime();
-		//app.cleanup();
+		app.cleanup();
 		app = null;
 		soundbite = null;
 		quepush = null;
 		tslide.desetEngine();
 		animator = null;
-		r.gc();
+
+		ActionListener timeout = new ActionListener(){
+			public void actionPerformed(ActionEvent arg0) {
+				if(mode != 2){
+					Runtime r = Runtime.getRuntime();
+					r.gc();
+				}
+			}
+		};
+		gcpush = new Timer(30000,timeout);
+		gcpush.setRepeats(true);
+		gcpush.start();
 	
 	}
 	

@@ -729,6 +729,7 @@ public class PhysicsEngine implements GLEventListener, KeyListener, MouseListene
 	textureactive = null;
 	textvid = null;	
 	for(int i=0;i<qts.length;i++){
+		qts[i].delete();
 		qts[i] = null;
 	}
 	mesh = null;

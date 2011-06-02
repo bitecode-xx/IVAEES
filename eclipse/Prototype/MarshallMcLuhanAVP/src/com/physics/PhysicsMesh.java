@@ -12,7 +12,7 @@ public class PhysicsMesh extends ForceGenerator {
 	private Vec2D[][] texcoords;
 	private SoftStickConstraint[][][] constraints;
 	private ArrayList<SoftStickConstraint> allConstraints;
-	private Texture texture;
+	private Texture texture,old;
 	
 	private double restLength;
 	private double k = 1.0;
@@ -30,6 +30,7 @@ public class PhysicsMesh extends ForceGenerator {
 		this.xres = xres;
 		this.yres = yres;
 		this.texture = texture;
+		this.old = null;
 		points = new PhysPoint[yres+1][xres+1];
 		texcoords = new Vec2D[yres+1][xres+1];
 		constraints = new SoftStickConstraint[yres][xres][4];
@@ -239,7 +240,6 @@ public class PhysicsMesh extends ForceGenerator {
 	}
 
 	public void renderMesh(GL2 gl) {
-		
 		texture.bind();
 		gl.glEnable(GL2.GL_TEXTURE_2D);
 		
