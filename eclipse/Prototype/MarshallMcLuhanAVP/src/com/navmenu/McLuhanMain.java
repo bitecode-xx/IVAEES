@@ -43,9 +43,11 @@ import javax.swing.border.LineBorder;
 
 import org.pirelenito.movieGL.Main;
 
+import com.helper.FadingButtonTF;
 import com.helper.GlassPane;
 import com.helper.MP3;
 import com.helper.MenuBuilder;
+import com.helper.MorphingPanel;
 import com.helper.TextureMap;
 import com.helper.TopSlider;
 import com.jogamp.opengl.util.FPSAnimator;
@@ -73,7 +75,8 @@ public class McLuhanMain extends JFrame{
 	private JFrame frame;
 	private GLJPanel canvas,grabc;
 	private JPanel menu,glnav;
-
+	//private MorphingPanel glnav;
+	
 	private BackgroundPanel p1,p2,p3,p4,load;
 
 	private JButton pmen, movietest,aud;
@@ -146,6 +149,7 @@ public class McLuhanMain extends JFrame{
 		initSelections4();
 		initLoading();
 		initGLNav();
+		//initGLNavAlt();
 		
 		//hands.setHandOne(new Point(525,525));
 		
@@ -159,10 +163,10 @@ public class McLuhanMain extends JFrame{
 		layeredPane.add(tslide,BorderLayout.NORTH,-30000);
 		layeredPane.add(menu,BorderLayout.CENTER,-30000);
 		layeredPane.add(glnav,BorderLayout.WEST,-30000);
+		//hands.add(glnav);
 		
 		frame.setGlassPane(hands);
 		frame.getGlassPane().setVisible(true);
-
 		glnav.setVisible(false);
 		tslide.setVisible(false);
 
@@ -396,8 +400,8 @@ public class McLuhanMain extends JFrame{
 	private void initGLNav(){
 		JPanel dem = new JPanel();
 		dem.setLayout(new GridLayout(0,1));
-		dem.setBackground(Color.black);
-
+		//dem.setBackground(Color.black);
+		dem.setOpaque(false);
 		aud = new JButton(new ImageIcon("play.jpg"));
 		aud.setPreferredSize(new Dimension(75,75));
 		aud.setOpaque(false);
@@ -458,12 +462,31 @@ public class McLuhanMain extends JFrame{
 
 		glnav = new JPanel();
 		glnav.setBackground(Color.black);
+		glnav.setOpaque(true);
 		glnav.setLayout(new FlowLayout());
 		((FlowLayout)glnav.getLayout()).setVgap(20);
 		dem.add(pmen);
 		dem.add(aud);
 		glnav.add(dem);
 	}
+	
+	/*
+	 * The left side navigation window for muting/playing the
+	 * background audio and returning to theme selection.
+	 * 
+	 */
+	private void initGLNavAlt(){
+		/*
+		aud = new FadingButtonTF(new ImageIcon("play.jpg"));
+		aud.setBounds(0, 150, 75, 75);
+		pmen = new FadingButtonTF(new ImageIcon("home.jpg"));
+	
+		glnav = new MorphingPanel(aud);
+		glnav.setLocation(0, 110);
+		glnav.setSize(new Dimension(85,657));
+		glnav.addBtn(aud);*/
+	}
+	
 
 
 	private void activateAnimation() {
@@ -492,8 +515,8 @@ public class McLuhanMain extends JFrame{
 		app = new PhysicsEngine(themes.getMap(opt*3), themes.getMap((opt*3)+1), themes.getMap((opt*3)+2),themes.getVids(opt), canvas);
 		canvas.addGLEventListener(app);
 		canvas.addKeyListener(app);
-		canvas.addMouseListener(app);
-		canvas.addMouseMotionListener(app);
+		//canvas.addMouseListener(app);
+		//canvas.addMouseMotionListener(app);
 		tslide.setEngine(app);
 
 		canvas.requestFocus();
