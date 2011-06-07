@@ -848,6 +848,13 @@ public class McLuhanMain extends JFrame{
 					handArray[select - 1].setState(0);
 
 					hands.disableHandOne();
+					
+					if (handArray[0].getPressed() == true) {
+						if(app.getP() != null)
+							app.handReleased(new Point(handArray[0].getX(), handArray[0].getY()), true);
+						hands.releaseHandOne();
+						handArray[0].setPressed(false);
+					}
 				}
 				if (action.compareTo("pointcreate") == 0) {
 					handArray[select - 1].setState(1);
@@ -858,6 +865,13 @@ public class McLuhanMain extends JFrame{
 					handArray[select - 1].setState(0);
 
 					hands.disableHandTwo();
+					
+					if (handArray[1].getPressed() == true) {
+						if(app.getP() != null)
+							app.handReleased(new Point(handArray[1].getX(), handArray[1].getY()), false);
+						hands.releaseHandTwo();
+						handArray[1].setPressed(false);
+					}
 				}
 
 				if (handArray[select - 1].getState() == 0) {
@@ -958,7 +972,7 @@ public class McLuhanMain extends JFrame{
 						isSteadySecond = 0;
 					}
 					if(app.getP() != null)
-						app.handReleased(new Point(handArray[1].getX(), handArray[1].getY()),true);
+						app.handReleased(new Point(handArray[1].getX(), handArray[1].getY()), false);
 					hands.releaseHandTwo();
 					handArray[1].setPressed(false);
 				}
