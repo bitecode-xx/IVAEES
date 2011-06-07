@@ -47,7 +47,7 @@ import com.helper.FadingButtonTF;
 import com.helper.GlassPane;
 import com.helper.MP3;
 import com.helper.MenuBuilder;
-import com.helper.MorphingPanel;
+//import com.helper.MorphingPanel;
 import com.helper.TextureMap;
 import com.helper.TopSlider;
 import com.jogamp.opengl.util.FPSAnimator;
@@ -75,7 +75,7 @@ public class McLuhanMain extends JFrame{
 	private JFrame frame;
 	private GLJPanel canvas,grabc;
 	private JPanel menu,glnav;
-	//private MorphingPanel glnav;
+//	private MorphingPanel glnav;
 	
 	private BackgroundPanel p1,p2,p3,p4,load;
 
@@ -476,15 +476,15 @@ public class McLuhanMain extends JFrame{
 	 * 
 	 */
 	private void initGLNavAlt(){
-		/*
+		
 		aud = new FadingButtonTF(new ImageIcon("play.jpg"));
 		aud.setBounds(0, 150, 75, 75);
 		pmen = new FadingButtonTF(new ImageIcon("home.jpg"));
 	
-		glnav = new MorphingPanel(aud);
+		//glnav = new MorphingPanel(aud);
 		glnav.setLocation(0, 110);
 		glnav.setSize(new Dimension(85,657));
-		glnav.addBtn(aud);*/
+	//	glnav.addBtn(aud);
 	}
 	
 
