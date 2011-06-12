@@ -1,5 +1,6 @@
 package com.helper;
 
+import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -16,6 +17,7 @@ import java.util.Vector;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JPanel;
+import javax.swing.Timer;
 
 import com.physics.PhysicsEngine;
 
@@ -39,11 +41,15 @@ public class TopSlider extends JPanel {
 	private Component[] list;
 	private JButton left, right;
 	private Dimension nav = new Dimension(45,45),nav2 = new Dimension(75,75), btn = new Dimension(100,100);
-	private int index;
+	private int index,alt, start;
 	private PhysicsEngine eng;
 	private boolean type;
-	private Vector<Component> listAlt;
+	private boolean[] types;
+	//private Vector<Component> listAlt;
+	private Vector<ImageIcon> lists;
+	private TransitionButton[] btns;
 	private int[] active;
+	private Timer progress;
 	
 	public TopSlider(){
 		this.setBackground(Color.BLACK);
@@ -80,7 +86,12 @@ public class TopSlider extends JPanel {
 	 */
 	public void desetEngine(){
 		this.eng = null;
-		listAlt = null;
+		//listAlt = null;
+		lists=null;
+	}
+	
+	public PhysicsEngine getEng(){
+		return eng;
 	}
 	
 	/*
@@ -106,6 +117,7 @@ public class TopSlider extends JPanel {
 		right.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e) {
 				moveListAlt(true);
+				progress.restart();
 			}
 		});
 
@@ -158,7 +170,7 @@ public class TopSlider extends JPanel {
 	 * Creates the buttons for all the media files
 	 * and assigns them to the TopSlider panel. 
 	 * 
-	 */
+	 *
 	private void setupListAlt() {
 		listAlt = new Vector<Component>(img.length+txt.length);
 		active = new int[5];
@@ -183,6 +195,38 @@ public class TopSlider extends JPanel {
 		this.add(right);
 		this.validate();
 
+	}*/private void setupListAlt() {
+		lists = new Vector<ImageIcon>();
+		JPanel grid = gridPan();
+		active = new int[img.length+txt.length];
+		types = new boolean[img.length+txt.length];
+		
+		for (int i=0;i<img.length;i++){
+			lists.add(img[i]);
+			active[i] = i;
+			types[i] = true;
+		}
+		for(int i=0;i<txt.length;i++){
+			lists.add(txt[i]);
+			active[img.length+i]=i;
+			types[img.length+i]=false;
+		}
+		btns = new TransitionButton[5];
+		for(int i =0; i < 5; i++){
+			btns[i] = new TransitionButton(lists.elementAt(i),true,i,this,200*i);
+		}
+		for(int i =0; i < 5; i++){
+			grid.add(btns[i]);
+		}
+		alt =0;
+		destroylists();
+		this.invalidate();
+		this.removeAll();
+		this.add(left);
+		this.add(grid);
+		this.add(right);
+		this.validate();
+
 	}
 	
 	private void destroylists() {
@@ -196,6 +240,26 @@ public class TopSlider extends JPanel {
 			this.img[i] = null;
 		
 	}
+	
+	public void startTimer(){
+		ActionListener loop = new ActionListener(){
+			public void actionPerformed(ActionEvent arg0) {
+				moveListAlt(true);
+			}
+		};
+
+		progress = new Timer(15000,loop);
+		progress.setRepeats(true);
+		progress.start();
+	}
+	
+	public void stopTimer(){
+		progress.stop();
+	}
+	
+	public void restart(){
+		progress.restart();
+	}
 
 	/*
 	 * Evaluates the button positions and 
@@ -203,7 +267,7 @@ public class TopSlider extends JPanel {
 	 * if false move the images back by 5 accounting
 	 * for out of bounds index and wrap around
 	 * 
-	 */
+	 *
 	private void moveListAlt(boolean dir){
 		JPanel grid = gridPan();
 		if(dir){
@@ -239,6 +303,29 @@ public class TopSlider extends JPanel {
 		this.add(grid);
 		this.add(right);
 		this.validate();
+	}*/
+	private void moveListAlt(boolean dir){
+		if(dir){
+			if(alt+1 > lists.size()-1)
+				start = 0;
+			else
+				start = alt+1;
+			for(int i=0;i<5;i++){
+				if(alt+1 > lists.size()-1)
+					alt = 0;
+				else
+					alt = alt+1;
+				System.err.println("Number: "+alt);
+				btns[i].updates(lists.elementAt(alt));
+				btns[i].indexed(active[alt]);
+				btns[i].type(types[alt]);
+				btns[i].begin();
+			}
+			alt = start;
+			
+		}
+		else{
+		}
 	}
 	
 	
@@ -283,7 +370,7 @@ public class TopSlider extends JPanel {
 	 * Initialize the button to launch a specified image media object
 	 * in the attached engine. 
 	 * 
-	 */
+	 *
 	private Component buttonIMG(ImageIcon img,int index) {
 		JButton temp = new JButton(img);
 		temp.setName(index+"");
@@ -297,13 +384,13 @@ public class TopSlider extends JPanel {
 
 
 		return temp;
-	}
+	}*/
 	
 	/*
 	 * Initialize the button to launch the specified text media
 	 * object in the attached engine.
 	 * 
-	 */
+	 *
 	private Component buttonTXT(ImageIcon img,int index) {
 		JButton temp = new JButton(img);
 		temp.setName(index+"");
@@ -317,7 +404,7 @@ public class TopSlider extends JPanel {
 
 		
 		return temp;
-	}
+	}*/
 	
 	/*
 	 * creates the scrolling grid panel
@@ -326,7 +413,7 @@ public class TopSlider extends JPanel {
 	private JPanel gridPan(){
 		JPanel grid = new JPanel();
 		GridLayout scroll = new GridLayout(0,5);
-		scroll.setHgap(85);
+		scroll.setHgap(65);
 		scroll.setVgap(5);
 		grid.setLayout(scroll);
 		grid.setSize(750,200);
@@ -360,7 +447,7 @@ public class TopSlider extends JPanel {
 		ImageIcon newIcon;
 		newIcon = new ImageIcon(images2.getPath());
 		Image img = newIcon.getImage();
-		Image newimg = img.getScaledInstance(100, 100,  java.awt.Image.SCALE_SMOOTH);
+		Image newimg = img.getScaledInstance(85, 85,  java.awt.Image.SCALE_SMOOTH);
 		
 		return new ImageIcon(newimg);
 	}
