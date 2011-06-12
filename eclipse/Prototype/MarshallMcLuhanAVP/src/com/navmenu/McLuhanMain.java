@@ -846,6 +846,9 @@ public class McLuhanMain extends JFrame{
 				}
 				if (action.compareTo("primarypointdestroy") == 0) {
 					handArray[select - 1].setState(0);
+					
+					System.out.println("select: " + select);
+					System.out.println("action: " + action);
 
 					hands.disableHandOne();
 					
