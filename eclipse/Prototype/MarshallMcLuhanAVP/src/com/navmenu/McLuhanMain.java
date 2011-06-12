@@ -325,12 +325,13 @@ public class McLuhanMain extends JFrame{
 						public void actionPerformed(ActionEvent arg0) {
 							glnav.setVisible(true);
 							tslide.setVisible(true);
+							tslide.startTimer();
 							((CardLayout)menu.getLayout()).show(menu, "ogl");
 							soundbite.play();
 							app.setSound(soundbite);
 						}
 					};
-					Timer t = new Timer(1000,time);
+					Timer t = new Timer(10,time);
 					t.setRepeats(false);
 					t.start();
 
@@ -435,6 +436,7 @@ public class McLuhanMain extends JFrame{
 					tslide.removeAll();
 					glnav.setVisible(false);
 					tslide.setVisible(false);
+					tslide.stopTimer();
 				roll = true;
 				Timer test = new Timer(1000,gogo);
 				test.setRepeats(false);
@@ -516,7 +518,7 @@ public class McLuhanMain extends JFrame{
 		canvas.addGLEventListener(app);
 		canvas.addKeyListener(app);
 		//canvas.addMouseListener(app);
-		//canvas.addMouseMotionListener(app);
+	//	canvas.addMouseMotionListener(app);
 		tslide.setEngine(app);
 
 		canvas.requestFocus();
@@ -1149,12 +1151,13 @@ public class McLuhanMain extends JFrame{
 						public void actionPerformed(ActionEvent arg0) {
 							glnav.setVisible(true);
 							tslide.setVisible(true);
+							tslide.restart();
 							((CardLayout)menu.getLayout()).show(menu, "ogl");
 							soundbite.play();
 							app.setSound(soundbite);
 						}
 					};
-					Timer t = new Timer(1000,time);
+					Timer t = new Timer(10,time);
 					t.setRepeats(false);
 					t.start();
 
@@ -1220,12 +1223,13 @@ public class McLuhanMain extends JFrame{
 						public void actionPerformed(ActionEvent arg0) {
 							glnav.setVisible(true);
 							tslide.setVisible(true);
+							tslide.restart();
 							((CardLayout)menu.getLayout()).show(menu, "ogl");
 							soundbite.play();
 							app.setSound(soundbite);
 						}
 					};
-					Timer t = new Timer(1000,time);
+					Timer t = new Timer(10,time);
 					t.setRepeats(false);
 					t.start();
 
@@ -1291,12 +1295,13 @@ public class McLuhanMain extends JFrame{
 						public void actionPerformed(ActionEvent arg0) {
 							glnav.setVisible(true);
 							tslide.setVisible(true);
+							tslide.restart();
 							((CardLayout)menu.getLayout()).show(menu, "ogl");
 							soundbite.play();
 							app.setSound(soundbite);
 						}
 					};
-					Timer t = new Timer(1000,time);
+					Timer t = new Timer(10,time);
 					t.setRepeats(false);
 					t.start();
 
