@@ -215,7 +215,7 @@ void XN_CALLBACK_TYPE OnPrimaryPointDestroyCB(XnUInt32 nID, void* cxt) {
 	action = "primarypointdestroy\n";
 
 	if (isConnected) {
-		kc->sendData(0.0, 0.0, 0.0, 1, action);
+		kc->sendData(-100.0, 0.0, 0.0, 1, action);
 	}
 
 	action = "none\n";
@@ -230,6 +230,18 @@ void XN_CALLBACK_TYPE OnPrimaryPointReplaceCB(XnUInt32 nOldId, const XnVHandPoin
 
 		if (temp == pContext->nID) {
 			mapID.insert(std::make_pair(1, temp));
+
+			handOneX = handTwoX;
+			handOneY = handTwoY;
+			handOneZ = handTwoZ;
+
+			action = "primarypointreplace\n";
+
+			if (isConnected) {
+				kc->sendData(handOneX, handOneY, handOneZ, 1, action);
+			}
+
+			action = "none\n";
 		}
 	}
 }
@@ -261,7 +273,7 @@ void XN_CALLBACK_TYPE OnPointDestroyCB(XnUInt32 nID, void* cxt) {
 		action = "pointdestroy\n";
 
 		if (isConnected) {
-			kc->sendData(0.0, 0.0, 0.0, 2, action);
+			kc->sendData(-100.0, 0.0, 0.0, 2, action);
 		}
 
 		action = "none\n";
