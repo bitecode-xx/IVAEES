@@ -83,7 +83,7 @@ public class McLuhanMain extends JFrame{
 
 	private JButton[] btns,btns1,btns2,btns3,btns4;
 
-	private Dimension size = new Dimension(1024,768);
+	private Dimension size = new Dimension(1280,868);
 
 	private FPSAnimator animator, animator2;
 	private PhysicsEngine app;
@@ -848,9 +848,6 @@ public class McLuhanMain extends JFrame{
 				}
 				if (action.compareTo("primarypointdestroy") == 0) {
 					handArray[select - 1].setState(0);
-					
-					System.out.println("select: " + select);
-					System.out.println("action: " + action);
 
 					hands.disableHandOne();
 					
@@ -868,6 +865,9 @@ public class McLuhanMain extends JFrame{
 				}
 				if (action.compareTo("pointdestroy") == 0) {
 					handArray[select - 1].setState(0);
+					
+					System.out.println("select: " + select);
+					System.out.println("action: " + action);
 
 					hands.disableHandTwo();
 					

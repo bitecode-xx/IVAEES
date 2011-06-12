@@ -201,13 +201,11 @@ void XN_CALLBACK_TYPE OnPrimaryPointCreateCB(const XnVHandPointContext* pContext
 		if (isConnected) {
 			kc->sendData(0.0, 0.0, 0.0, 1, action);
 		}
+
+		action = "none\n";
 	}
 	else {
 	}
-
-	printf("PrimaryPointCreate\n");
-
-	printf("map size: %d\n", mapID.size());
 }
 
 // callback for primarypointdestroy
@@ -220,9 +218,7 @@ void XN_CALLBACK_TYPE OnPrimaryPointDestroyCB(XnUInt32 nID, void* cxt) {
 		kc->sendData(0.0, 0.0, 0.0, 1, action);
 	}
 
-	printf("PrimaryPointDestroy\n");
-
-	printf("map size: %d\n", mapID.size());
+	action = "none\n";
 }
 
 // callback for primarypointreplace
@@ -236,10 +232,6 @@ void XN_CALLBACK_TYPE OnPrimaryPointReplaceCB(XnUInt32 nOldId, const XnVHandPoin
 			mapID.insert(std::make_pair(1, temp));
 		}
 	}
-
-	printf("PrimaryPointReplace\n");
-
-	printf("map size: %d\n", mapID.size());
 }
 
 // callback for pointcreate
@@ -253,66 +245,28 @@ void XN_CALLBACK_TYPE OnPointCreateCB(const XnVHandPointContext* pContext, void*
 			if (isConnected) {
 				kc->sendData(0.0, 0.0, 0.0, 2, action);
 			}
+
+			action = "none\n";
 		}
 		else {
 		}
 	}
-
-	printf("PointCreate\n");
-
-	printf("map size: %d\n", mapID.size());
 }
 
 // callback for pointdestroy
 void XN_CALLBACK_TYPE OnPointDestroyCB(XnUInt32 nID, void* cxt) {
-	if (mapID.find(1)->second != nID) {
+	if (mapID.find(2)->second == nID) {
 		mapID.erase(2);
 
-		action = "pointcreate\n";
+		action = "pointdestroy\n";
 
 		if (isConnected) {
 			kc->sendData(0.0, 0.0, 0.0, 2, action);
 		}
-	}
-	
-	printf("PointDestroy\n");
 
-	printf("map size: %d\n", mapID.size());
+		action = "none\n";
+	}
 }
-
-/*// callback for a new position of the first hand
-void XN_CALLBACK_TYPE OnPointUpdateCB(const XnVHandPointContext* pContext, void* cxt) {
-	XnPoint3D ptProjective(pContext->ptPosition);
-
-	depthGenerator.ConvertRealWorldToProjective(1, &ptProjective, &ptProjective);
-
-	if (mapID.find(2)->second == pContext->nID || action == "pushsecond\n" || action == "steadysecond\n") {
-		handTwoX = ptProjective.X;
-		handTwoY = ptProjective.Y;
-		handTwoZ = ptProjective.Z;
-
-		action = "none\n";
-
-		if (isConnected) {
-			kc->sendData(handOneX, handOneY, handOneZ, 2, action);
-		}
-
-		return;
-	}
-	if (mapID.find(1)->second == pContext->nID) {
-		handOneX = ptProjective.X;
-		handOneY = ptProjective.Y;
-		handOneZ = ptProjective.Z;
-
-		action = "none\n";
-
-		if (isConnected) {
-			kc->sendData(handOneX, handOneY, handOneZ, 1, action);
-		}
-
-		return;
-	}
-}*/
 
 // callback for a new position of the first hand
 void XN_CALLBACK_TYPE OnPointUpdateCB(const XnVHandPointContext* pContext, void* cxt) {
