@@ -107,6 +107,7 @@ public class TopSlider extends JPanel {
 		left.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e) {
 				moveListAlt(false);
+				progress.restart();
 			}
 		});
 		
@@ -315,7 +316,6 @@ public class TopSlider extends JPanel {
 					alt = 0;
 				else
 					alt = alt+1;
-				System.err.println("Number: "+alt);
 				btns[i].updates(lists.elementAt(alt));
 				btns[i].indexed(active[alt]);
 				btns[i].type(types[alt]);
@@ -325,6 +325,25 @@ public class TopSlider extends JPanel {
 			
 		}
 		else{
+			if(alt-1 <0)
+				alt = lists.size()-1;
+			else
+				alt = alt-1;
+			for(int i=4;i>-1;i--){
+				if(i == 0){
+					btns[i].updates(lists.elementAt(alt));
+					btns[i].indexed(active[alt]);
+					btns[i].type(types[alt]);
+				}
+				else{
+					btns[i].updates(btns[i-1].getup());
+					btns[i].indexed(btns[i-1].getind());
+					btns[i].type(btns[i-1].gettype());
+				}
+			}
+			for(int i=0;i<5;i++){
+				btns[i].begin();
+			}	
 		}
 	}
 	

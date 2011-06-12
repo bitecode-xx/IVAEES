@@ -75,6 +75,7 @@ public class TransitionButton extends JButton
     /** Creates a new instance of FadingButtonTF */
     public TransitionButton(ImageIcon im,boolean type, int index, TopSlider parent, int dur) {
         super(im);
+        this.image = im;
         this.type = type;
         this.index = index;
         this.parent = parent;
@@ -103,6 +104,11 @@ public class TransitionButton extends JButton
         
         // Make the graphics object sent to this paint() method translucent
 	Graphics2D g2d  = (Graphics2D)g;
+	//System.err.println("Alpha Value: "+alpha);
+	if(Float.isNaN(alpha)){
+		//System.err.println("Alpha Value: "+alpha);
+		alpha = 0.0f;
+	}
 	AlphaComposite newComposite = 
 	    AlphaComposite.getInstance(AlphaComposite.SRC_OVER, alpha);
 	g2d.setComposite(newComposite);
@@ -115,12 +121,23 @@ public class TransitionButton extends JButton
     	image = icon;
     }
     
+    public ImageIcon getup(){
+    	return image;
+    }
+    
     public void indexed(int i){
     	index = i;
     }
     
+    public int getind(){
+    	return index;
+    }
+    
     public void type(boolean type){
     	this.type = type;
+    }
+    public boolean gettype(){
+    	return type;
     }
     
     /**
