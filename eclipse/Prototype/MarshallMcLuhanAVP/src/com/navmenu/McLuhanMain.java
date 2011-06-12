@@ -83,7 +83,7 @@ public class McLuhanMain extends JFrame{
 
 	private JButton[] btns,btns1,btns2,btns3,btns4;
 
-	private Dimension size = new Dimension(1024,768);
+	private Dimension size = new Dimension(1280,868);
 
 	private FPSAnimator animator, animator2;
 	private PhysicsEngine app;
@@ -690,7 +690,19 @@ public class McLuhanMain extends JFrame{
 
 					return;
 				}
-		
+				
+				if (action.compareTo("primarypointreplace") == 0) {
+					handArray[1].setState(0);
+
+					hands.disableHandTwo();
+					
+					if (handArray[1].getPressed() == true) {
+						if(app.getP() != null)
+							app.handReleased(new Point(handArray[1].getX(), handArray[1].getY()), false);
+						hands.releaseHandTwo();
+						handArray[1].setPressed(false);
+					}
+				}
 				if (action.compareTo("primarypointcreate") == 0) {
 					handArray[select - 1].setState(1);
 			
@@ -840,7 +852,19 @@ public class McLuhanMain extends JFrame{
 					
 					return;
 				}
+				
+				if (action.compareTo("primarypointreplace") == 0) {
+					handArray[1].setState(0);
 
+					hands.disableHandTwo();
+					
+					if (handArray[1].getPressed() == true) {
+						if(app.getP() != null)
+							app.handReleased(new Point(handArray[1].getX(), handArray[1].getY()), false);
+						hands.releaseHandTwo();
+						handArray[1].setPressed(false);
+					}
+				}
 				if (action.compareTo("primarypointcreate") == 0) {
 					handArray[select - 1].setState(1);
 
