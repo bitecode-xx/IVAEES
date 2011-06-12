@@ -140,7 +140,7 @@ public class McLuhanMain extends JFrame{
 
 		backsnbtns = new MenuBuilder();
 		
-		//initGrabber();
+		initGrabber();
 		initTSlide();
 		initTData();
 		initSelections();
@@ -154,7 +154,7 @@ public class McLuhanMain extends JFrame{
 		//hands.setHandOne(new Point(525,525));
 		
 		btns = btns1;
-		//menu.add("Grabber",grabc);
+		menu.add("Grabber",grabc);
 		menu.add("1",p1);
 		menu.add("2",p2);
 		menu.add("3",p3);
@@ -517,8 +517,8 @@ public class McLuhanMain extends JFrame{
 		app = new PhysicsEngine(themes.getMap(opt*3), themes.getMap((opt*3)+1), themes.getMap((opt*3)+2),themes.getVids(opt), canvas);
 		canvas.addGLEventListener(app);
 		canvas.addKeyListener(app);
-		canvas.addMouseListener(app);
-		canvas.addMouseMotionListener(app);
+		//canvas.addMouseListener(app);
+		//canvas.addMouseMotionListener(app);
 		tslide.setEngine(app);
 
 		canvas.requestFocus();
