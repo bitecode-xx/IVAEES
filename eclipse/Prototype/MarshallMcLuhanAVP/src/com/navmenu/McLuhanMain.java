@@ -497,6 +497,49 @@ public class McLuhanMain extends JFrame{
 		aud.setBounds(0, 85, 75, 75);
 		pmen = new FadingButtonTF(new ImageIcon("home.jpg"));
 		pmen.setBounds(0, 5, 75, 75);
+		pmen.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent arg0) {
+				pmen.setEnabled(false);
+				//pmen.setVisible(false);
+				aud.setIcon(new ImageIcon("play.jpg"));
+				aud.setEnabled(false);
+				//aud.setVisible(false);
+				aud.removeActionListener(aud.getActionListeners()[0]);
+				setPage();
+				setBtns(bgsel);
+				ploop.stop();
+				ploop.start();
+				app.stopVid();
+				//app.clearRun();
+				((CardLayout)menu.getLayout()).show(menu, bgsel+"");
+					menu.remove(canvas);
+					animator.stop();
+					menu.validate();
+					quepush.stop();
+					soundbite.close();
+					tslide.removeAll();
+					glnav.reset();
+					glnav.setVisible(false);
+					tslide.setVisible(false);
+					tslide.stopTimer();
+				roll = true;
+				Timer test = new Timer(1000,gogo);
+				test.setRepeats(false);
+				test.start();
+
+				// Change mode
+				if(hands != null){
+					hands.releaseHandOne();
+					hands.releaseHandTwo();
+				}
+				mode = 1;
+				canvas.invalidate();
+				canvas.removeAll();
+				canvas.validate();
+				canvas = null;
+				cleanapp();
+			}
+		});
 	
 		glnav = new MorphingPanel(aud,pmen);
 		glnav.setLocation(0, 105);
