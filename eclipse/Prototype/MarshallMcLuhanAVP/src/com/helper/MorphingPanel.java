@@ -123,6 +123,10 @@ public class MorphingPanel extends JLayeredPane {
     public void runStage(){
     	button.setStage();
     }
+    
+    public void reset(){
+    	button.reset();
+    }
         
     public void addBtn(JButton jb){
     	frame.add(jb,0);
@@ -162,6 +166,16 @@ public class MorphingPanel extends JLayeredPane {
         
         public void setStage(){
         	this.doClick();
+        }
+        
+        public void reset(){
+        	coming = false;
+        	if(!animator.isRunning()){
+				animator.start();
+			}
+        	aud.disable();
+			pmen.disable();
+        	
         }
         
         private void setupTriggers() {
