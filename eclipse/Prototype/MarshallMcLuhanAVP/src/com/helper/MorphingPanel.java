@@ -109,7 +109,7 @@ public class MorphingPanel extends JLayeredPane {
     
     private static boolean morphOpen = false;
     
-    public MorphingPanel(FadingButtonTF aud,FadingButtonTF pmen,FadingButtonTF movieaud) {
+    public MorphingPanel(FadingButtonTF aud,FadingButtonTF pmen, FadingButtonTF movieaud) {
         add(buildControls(aud,pmen,movieaud),1);
        // JButton test = new JButton("home");
        // test.setPreferredSize(new Dimension(100,100));
@@ -135,10 +135,14 @@ public class MorphingPanel extends JLayeredPane {
     }
     
     private JComponent buildControls(FadingButtonTF aud,FadingButtonTF pmen,FadingButtonTF movieaud) {
-        button = new DirectionButton("", frame,aud,pmen, movieaud);
+        button = new DirectionButton("", frame,aud,pmen,movieaud);
         button.setBounds(0, 0, 100, height);
         
         return button;
+    }
+    
+    public boolean isOpen() {
+    	return morphOpen;
     }
     
     public static class DirectionButton extends JButton implements MouseListener {
@@ -146,11 +150,11 @@ public class MorphingPanel extends JLayeredPane {
         private Map desktopHints;
         private float morphing = 0.0f;
         private JLayeredPane p;
-        private FadingButtonTF aud,pmen, movieaud;
+        private FadingButtonTF aud,pmen,movieaud;
         private boolean coming, runonce;
         private Animator animator;
         
-        private DirectionButton(String text, JLayeredPane p, FadingButtonTF aud,FadingButtonTF pmen, FadingButtonTF movieaud) {
+        private DirectionButton(String text, JLayeredPane p, FadingButtonTF aud,FadingButtonTF pmen,FadingButtonTF movieaud) {
             super("");
             coming = true;
             runonce = false;
@@ -168,7 +172,7 @@ public class MorphingPanel extends JLayeredPane {
         }
         
         public void setStage(){
-        	this.doClick();
+        	togglePanel();
         }
         
         public void reset(){
@@ -270,69 +274,128 @@ public class MorphingPanel extends JLayeredPane {
             g2.setColor(Color.WHITE);
             g2.drawString(getText(), x, y);
         }
-        
-        public boolean isOpen() {
-        	return morphOpen;
-        }
-
+		
+		public void togglePanel() {
+			SwingUtilities.invokeLater(new Runnable( ) {
+                public void run() {
+                	if(!animator.isRunning()){
+                		if (morphOpen == false) {
+                			if(runonce){
+                				if(coming){
+                					coming = false;
+                					aud.disable();
+                					pmen.disable();
+                					movieaud.disable();
+                				} 
+                				else{
+                					coming = true;
+                					aud.begin();
+                					pmen.begin();
+                					movieaud.begin();
+                				}
+                			}
+                			else{
+                				runonce = true;
+                				aud.begin();
+                				pmen.begin();
+                				movieaud.begin();
+                			}
+				
+                			animator.start();
+					
+                			morphOpen = true;
+                		}
+                		else if (morphOpen == true) {
+                			if(runonce){
+                				if(coming){
+                					coming = false;
+                					aud.disable();
+                					pmen.disable();
+                					movieaud.disable();
+                				} 
+                				else{
+                					coming = true;
+                					aud.begin();
+                					pmen.begin();
+                					movieaud.begin();
+                				}
+                			}
+                			else{
+                				runonce = true;
+                				aud.begin();
+                				pmen.begin();
+                				movieaud.begin();
+                			}
+				
+                			animator.start();
+					
+                			morphOpen = false;
+                		}
+                		else {
+                		}
+                	}
+                }
+			});
+		}
+		
 		@Override
 		public void mouseClicked(MouseEvent e) {
-			if(!animator.isRunning()){
-				if (e.getX() < 15 && e.getY() < 662 && e.getY() > 105 && morphOpen == false) {
-					if(runonce){
-						if(coming){
-							coming = false;
-							aud.disable();
-							pmen.disable();
-							movieaud.disable();
-						} 
-						else{
-							coming = true;
-							aud.begin();
-							pmen.begin();
-							movieaud.begin();
-						}
-					}
-					else{
-						runonce = true;
-						aud.begin();
-						pmen.begin();
-						movieaud.begin();
-					}
-				
-					animator.start();
-					
-					morphOpen = true;
-				}
-				else if (e.getX() < 75 && e.getY() < 662 && e.getY() > 105 && morphOpen == true) {
-					if(runonce){
-						if(coming){
-							coming = false;
-							aud.disable();
-							pmen.disable();
-							movieaud.disable();
-						} 
-						else{
-							coming = true;
-							aud.begin();
-							pmen.begin();
-							movieaud.begin();
-						}
-					}
-					else{
-						runonce = true;
-						aud.begin();
-						pmen.begin();
-						movieaud.begin();
-					}
-				
-					animator.start();
-					
-					morphOpen = false;
-				}
-				else {
-				}
-			}
+			/*if(!animator.isRunning()){
+        		if (morphOpen == false) {
+        			if(runonce){
+        				if(coming){
+        					coming = false;
+        					aud.disable();
+        					pmen.disable();
+        					movieaud.disable();
+        				} 
+        				else{
+        					coming = true;
+        					aud.begin();
+        					pmen.begin();
+        					movieaud.begin();
+        				}
+        			}
+        			else{
+        				runonce = true;
+        				aud.begin();
+        				pmen.begin();
+        				movieaud.begin();
+        			}
+		
+        			animator.start();
+			
+        			morphOpen = true;
+        		}
+        		else if (morphOpen == true) {
+        			if(runonce){
+        				if(coming){
+        					coming = false;
+        					aud.disable();
+        					pmen.disable();
+        					movieaud.disable();
+        				} 
+        				else{
+        					coming = true;
+        					aud.begin();
+        					pmen.begin();
+        					movieaud.begin();
+        				}
+        			}
+        			else{
+        				runonce = true;
+        				aud.begin();
+        				pmen.begin();
+        				movieaud.begin();
+        			}
+		
+        			animator.start();
+			
+        			morphOpen = false;
+        		}
+        		else {
+        		}
+        	}*/
 		}
 
 		@Override

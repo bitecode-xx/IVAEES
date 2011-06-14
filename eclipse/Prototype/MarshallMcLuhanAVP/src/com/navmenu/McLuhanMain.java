@@ -71,8 +71,6 @@ public class McLuhanMain extends JFrame{
 	private static final long serialVersionUID = 1739205605051932874L;
 	
 	private static boolean morph = true;
-	
-	private boolean morphOpen = false;
 
 	//McLuhan themes list
 	private String[] DIRS = {"City as Classroom","Extensions of Man","Global Village","The Medium is the Message"};
@@ -99,13 +97,13 @@ public class McLuhanMain extends JFrame{
 
 	private Main video;
 
-	private Timer quepush, ploop, steadyTimer, steadySecondTimer, depthTimer, gcpush;//flash, starter;
+	private Timer quepush, ploop, steadyTimer, steadySecondTimer, morphTimer, depthTimer, gcpush;//flash, starter;
 	
-	private int isSteady, isSteadySecond, isDepth;
+	private int isSteady, isSteadySecond, isMorph, isDepth;
 
 	private boolean roll, audio, player, movie;
 
-	private ActionListener gogo, repeat, one, two, three, four, loop, steadyAL, steadySecondAL, depthAL;
+	private ActionListener gogo, repeat, one, two, three, four, loop, steadyAL, steadySecondAL, morphAL, depthAL;
 
 	private TextureMap themes;
 
@@ -243,6 +241,16 @@ public class McLuhanMain extends JFrame{
 		isSteadySecond = 0;
 		
 		steadySecondTimer = new Timer(1000 * 2, steadySecondAL);
+		
+		morphAL = new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				isMorph = 0;
+			}
+		};
+		
+		isMorph = 0;
+		
+		morphTimer  = new Timer(1000 * 4, morphAL);
 		
 		depthAL = new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
@@ -1009,14 +1017,24 @@ public class McLuhanMain extends JFrame{
 					updateHandTwo(new Point(newX, newY));
 				}
 				
-				/*if (x < 15 && y < 662 && y > 105 && morphOpen == false) {
-					mouseRobot.mouseMove(handArray[select - 1].getX(), handArray[select - 1].getY());
-					mouseRobot.mousePress(MouseEvent.BUTTON1_MASK);
-					mouseRobot.mouseRelease(MouseEvent.BUTTON1_MASK);
+				if (newX < 15 && newY < 662 && newY > 105 && glnav.isOpen() == false) {
+					glnav.runStage();
 					
-					morphOpen = true;
-				}*/
+					isMorph = 1;
+					
+					morphTimer.start();
+				}
 				
+				if (newX < 75 && newY < 662 && newY > 105) {
+					if (glnav.isOpen() == true && isMorph == 0) {
+						morphTimer.start();
+					}
+				}
+				else {
+					if (glnav.isOpen() == true && isMorph == 0) {
+						glnav.runStage();
+					}
+				}
 				
 				if (action.compareTo("steady") == 0 && (newY < 100 || newX < 60)) {
 					if (isSteady == 0) {
