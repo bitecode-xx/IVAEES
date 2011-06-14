@@ -120,8 +120,8 @@ public class MorphingPanel extends JLayeredPane {
     	frame.setSize(75, height);
     }
     
-    public void setStage(boolean start){
-    	button.setStage(start);
+    public void runStage(){
+    	button.setStage();
     }
         
     public void addBtn(JButton jb){
@@ -160,8 +160,7 @@ public class MorphingPanel extends JLayeredPane {
             setFocusPainted(false);
         }
         
-        public void setStage(boolean start){
-        	coming = start;
+        public void setStage(){
         	this.doClick();
         }
         
