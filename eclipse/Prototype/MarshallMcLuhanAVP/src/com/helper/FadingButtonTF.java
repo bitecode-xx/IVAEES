@@ -60,22 +60,41 @@ import org.jdesktop.animation.timing.TimingTarget;
 public class FadingButtonTF extends JButton 
         implements ActionListener, TimingTarget {
 
-    float alpha = 0.0f;                 // current opacity of button
+    float alpha = 0.0f,beta = 0.0f;                 // current opacity of button
     Animator animator;                  // for later start/stop actions
-    int animationDuration = 4000; 	// each cycle will take 2 seconds
+    int animationDuration = 400; 	// each cycle will take 2 seconds
     BufferedImage buttonImage = null;
     private ImageIcon image;
+    private ActionListener stop, start;
     
     /** Creates a new instance of FadingButtonTF */
     public FadingButtonTF(ImageIcon im) {
-        super();
+        super(im);
         image = im;
         setOpaque(false);
         this.setContentAreaFilled(false);
+        listeners();
         animator = new Animator(animationDuration/1, this);
         animator.setStartFraction(0.0f);
         animator.setStartDirection(Direction.FORWARD);
         addActionListener(this);
+    }
+    
+    private void listeners(){
+    	start = new ActionListener(){
+			public void actionPerformed(ActionEvent arg0) {
+				animator.start();
+				alpha = 1.0f;
+				Timer t = new Timer(animationDuration,stop);
+	    		t.setRepeats(false);
+	    		t.start();
+			}
+		};
+		stop = new ActionListener(){
+			public void actionPerformed(ActionEvent arg0) {
+				animator.stop();
+			}
+		};  
     }
     
     public void paint(Graphics g) {
@@ -95,8 +114,10 @@ public class FadingButtonTF extends JButton
 	Graphics2D g2d  = (Graphics2D)g;
 	if(Float.isNaN(alpha)){
 		//System.err.println("Alpha Value: "+alpha);
-		alpha = 0.0f;
+		alpha = beta;
 	}
+	else
+		beta = alpha;
 	AlphaComposite newComposite = 
 	    AlphaComposite.getInstance(AlphaComposite.SRC_OVER, alpha);
 	g2d.setComposite(newComposite);
@@ -114,37 +135,20 @@ public class FadingButtonTF extends JButton
     // Ununsed MouseListener implementations
     public void begin() {
     	if (!animator.isRunning()) {
-    		animator.start();
-    		this.setVisible(true);
-    		this.setIcon(image);
-    		ActionListener time = new ActionListener(){
-    			public void actionPerformed(ActionEvent arg0) {
-    				animator.stop();
-    				alpha = 1.0f;
-    			}
-    		};  
-    		Timer t = new Timer(animationDuration,time);
+    		//this.setVisible(true);
+    		Timer t = new Timer(800,start);
     		t.setRepeats(false);
     		t.start();
     	}
     }
     public void end() {
-    	if (!animator.isRunning()) {
-    		animator.start();
-    		this.setVisible(false);
-    		this.setIcon(image);
-    		alpha = 1.0f;
-    		ActionListener time = new ActionListener(){
-    			public void actionPerformed(ActionEvent arg0) {
-    				animator.stop();
-    			}
-    		};  
-    		Timer t = new Timer(animationDuration,time);
-    		t.setRepeats(false);
-    		t.start();
-    	}
     }
     public void repeat() {}
+    
+    public void disable(){
+    	alpha = 0.0f;
+    	beta = 0.0f;
+    }
     
     /**
      * TimingTarget implementation: this method sets the alpha of our button

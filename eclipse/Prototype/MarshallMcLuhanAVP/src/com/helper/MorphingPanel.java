@@ -93,6 +93,7 @@ import javax.swing.JLayeredPane;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import org.jdesktop.animation.timing.Animator;
+import org.jdesktop.animation.timing.Animator.Direction;
 import org.jdesktop.animation.timing.interpolation.PropertySetter;
 import org.jdesktop.animation.timing.triggers.MouseTrigger;
 import org.jdesktop.animation.timing.triggers.MouseTriggerEvent;
@@ -103,9 +104,11 @@ import org.jdesktop.animation.timing.triggers.MouseTriggerEvent;
 
 public class MorphingPanel extends JLayeredPane {
     private JLayeredPane frame;
+    protected static int height = 662;
+    private DirectionButton button;
     
-    public MorphingPanel(JButton test) {
-        add(buildControls(test),1);
+    public MorphingPanel(FadingButtonTF aud,FadingButtonTF pmen) {
+        add(buildControls(aud,pmen),1);
        // JButton test = new JButton("home");
        // test.setPreferredSize(new Dimension(100,100));
        // test.setBounds(100,50,100,100);
@@ -114,42 +117,40 @@ public class MorphingPanel extends JLayeredPane {
     }
     
     public void setsize(int x ,int y){
-    	frame.setSize(75, 657);
+    	frame.setSize(75, height);
     }
     
+    public void setStage(boolean start){
+    	button.setStage(start);
+    }
         
     public void addBtn(JButton jb){
     	frame.add(jb,0);
     }
     
-    private JComponent buildControls(JButton test) {
-        JButton button;
-        button = new DirectionButton("",
-                DirectionButton.Direction.LEFT, frame,test);
-        button.setBounds(0, 0, 100, 657);
+    private JComponent buildControls(FadingButtonTF aud,FadingButtonTF pmen) {
+        button = new DirectionButton("", frame,aud,pmen);
+        button.setBounds(0, 0, 100, height);
         
         return button;
     }
     
     public static class DirectionButton extends JButton implements MouseListener {
-        public enum Direction {
-            LEFT,
-            RIGHT
-        };
-        private DirectionButton.Direction direction;
+        
         private Map desktopHints;
         private float morphing = 0.0f;
         private JLayeredPane p;
-        private JButton test;
-        private boolean stage,click;
+        private FadingButtonTF aud,pmen;
+        private boolean coming, runonce;
+        private Animator animator;
         
-        private DirectionButton(String text, Direction direction, JLayeredPane p, JButton test) {
+        private DirectionButton(String text, JLayeredPane p, FadingButtonTF aud,FadingButtonTF pmen) {
             super("");
-            stage = false;
-            click = false;
-            this.direction = direction;
+            coming = true;
+            runonce = false;
             this.p = p;
-            this.test = test;
+            this.aud = aud;
+            this.pmen = pmen;
             this.addMouseListener(this);
             setupTriggers();
             setFont(getFont().deriveFont(Font.BOLD));
@@ -159,32 +160,37 @@ public class MorphingPanel extends JLayeredPane {
             setFocusPainted(false);
         }
         
+        public void setStage(boolean start){
+        	coming = start;
+        	this.doClick();
+        }
+        
         private void setupTriggers() {
-            Animator animator = PropertySetter.createAnimator(
+            animator = PropertySetter.createAnimator(
                     1500, this, "morphing", 0.0f, 1.0f);
             animator.setAcceleration(0.2f);
             animator.setDeceleration(0.3f);
-            MouseTrigger.addTrigger(this, animator, MouseTriggerEvent.ENTER, true);
+            //MouseTrigger.addTrigger(this, animator, MouseTriggerEvent.ENTER, false);
         }
         
         private Morphing2D createMorph() {
             Shape sourceShape = new RoundRectangle2D.Double(0, 0,
-                    15 , 657, 0, 12.0);
+                    15 , height, 0, 12.0);
             
             Shape destinationShape = new RoundRectangle2D.Double(0, 0,
-                    100 , 657, 0, 12.0);
-            /*
-            GeneralPath.Double destinationShape = new GeneralPath.Double();
-            destinationShape.moveTo(2.0, getHeight() / 2.0);
-            destinationShape.lineTo(22.0, 0.0);
-            destinationShape.lineTo(22.0, 5.0);
-            destinationShape.lineTo(getWidth() - 2.0, 5.0);
-            destinationShape.lineTo(getWidth() - 2.0, getHeight() - 5.0);
-            destinationShape.lineTo(22.0, getHeight() - 5.0);
-            destinationShape.lineTo(22.0, getHeight());
-            destinationShape.closePath();
-            */
+                    100 , height, 0, 12.0);
+           
             return new Morphing2D(sourceShape, destinationShape);
+        }
+        
+        private Morphing2D createMorphBack() {
+            Shape sourceShape = new RoundRectangle2D.Double(0, 0,
+                    15 , height, 0, 12.0);
+            
+            Shape destinationShape = new RoundRectangle2D.Double(0, 0,
+                    100 , height, 0, 12.0);
+           
+            return new Morphing2D(destinationShape,sourceShape);
         }
         
         public float getMorphing() {
@@ -215,17 +221,9 @@ public class MorphingPanel extends JLayeredPane {
             Color[] colors;
             if (!getModel().isArmed()) {
                 colors = new Color[] {
-                   /* new Color(0x63a5f7),
-                    new Color(0x3799f4),
-                    new Color(0x2d7eeb),
-                    new Color(0x30a5f9) */
                 		Color.BLACK,Color.BLACK,Color.BLACK,Color.BLACK};
             } else {
                 colors = new Color[] {
-                    /*new Color(0x63a5f7).darker(),
-                    new Color(0x3799f4).darker(),
-                    new Color(0x2d7eeb).darker(),
-                    new Color(0x30a5f9).darker()*/
                 		Color.BLACK,Color.BLACK,Color.BLACK,Color.BLACK};
             }
             
@@ -234,18 +232,15 @@ public class MorphingPanel extends JLayeredPane {
                 colors);
             
             g2.setPaint(p);
-            
-            Morphing2D morph = createMorph();
+            Morphing2D morph;
+            if(coming){
+            	morph = createMorph();
+            }
+            else{
+            	morph = createMorphBack();
+            }
             morph.setMorphing(getMorphing());
-            if (direction == Direction.RIGHT) {
-                g2.translate(getWidth(), 0.0);
-                g2.scale(-1.0, 1.0);
-            }
             g2.fill(morph);
-            if (direction == Direction.RIGHT) {
-                g2.scale(-1.0, 1.0);
-                g2.translate(-getWidth(), 0.0);
-            }
             
             int width = g2.getFontMetrics().stringWidth(getText());
             
@@ -260,23 +255,33 @@ public class MorphingPanel extends JLayeredPane {
 
 		@Override
 		public void mouseClicked(MouseEvent e) {
-			//test.doClick();
+			if(!animator.isRunning()){
+				if(runonce){
+					if(coming){
+						coming=false;
+						aud.disable();
+						pmen.disable();
+					} else{
+						coming = true;
+						aud.begin();
+						pmen.begin();
+					}
+				}
+				else{
+					runonce = true;
+					aud.begin();
+					pmen.begin();
+				}
+				animator.start();
+			}
 		}
 
 		@Override
 		public void mouseEntered(MouseEvent e) {
-			/*if(!stage){
-				test.doClick();
-				stage = true;
-			}	*/	
 		}
 
 		@Override
 		public void mouseExited(MouseEvent e) {
-			/*if(stage){
-				test.doClick();
-				stage = false;
-			}*/
 			
 		}
 

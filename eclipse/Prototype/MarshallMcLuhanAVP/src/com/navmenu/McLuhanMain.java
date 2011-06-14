@@ -84,7 +84,8 @@ public class McLuhanMain extends JFrame{
 	
 	private BackgroundPanel p1,p2,p3,p4,load;
 
-	private JButton pmen, movietest,aud;
+	//private JButton pmen, movietest,aud;
+	private FadingButtonTF pmen, movietest,aud;
 
 	private JButton[] btns,btns1,btns2,btns3,btns4;
 
@@ -310,9 +311,9 @@ public class McLuhanMain extends JFrame{
 					menu.add("ogl",canvas);
 					soundbite = new MP3("McLuhan/"+DIRS[Integer.parseInt(((JButton)ae.getSource()).getName())]+"/mp3.mp3");
 					pmen.setEnabled(true);
-					pmen.setVisible(true);
+					//pmen.setVisible(true);
 					aud.setEnabled(true);
-					aud.setVisible(true);
+					//aud.setVisible(true);
 					audio = true;
 					aud.addActionListener(new ActionListener(){
 						public void actionPerformed(ActionEvent arg0) {
@@ -416,12 +417,12 @@ public class McLuhanMain extends JFrame{
 		dem.setLayout(new GridLayout(0,1));
 		//dem.setBackground(Color.black);
 		dem.setOpaque(false);
-		aud = new JButton(new ImageIcon("play.jpg"));
+		//aud = new JButton(new ImageIcon("play.jpg"));
 		aud.setPreferredSize(new Dimension(75,75));
 		aud.setOpaque(false);
 		aud.setContentAreaFilled(false);
 
-		pmen = new JButton(new ImageIcon("home.jpg"));
+		//pmen = new JButton(new ImageIcon("home.jpg"));
 		pmen.setPreferredSize(new Dimension(75,75));
 		pmen.setOpaque(false);
 		pmen.setContentAreaFilled(false);
@@ -491,13 +492,13 @@ public class McLuhanMain extends JFrame{
 	 */
 	private void initGLNavAlt(){
 		aud = new FadingButtonTF(new ImageIcon("play.jpg"));
-		aud.setBounds(0, 150, 75, 75);
+		aud.setBounds(0, 85, 75, 75);
 		pmen = new FadingButtonTF(new ImageIcon("home.jpg"));
-		pmen.setBounds(0, 300, 75, 75);
+		pmen.setBounds(0, 5, 75, 75);
 	
-		glnav = new MorphingPanel(aud);
-		glnav.setLocation(0, 110);
-		glnav.setSize(new Dimension(85,657));
+		glnav = new MorphingPanel(aud,pmen);
+		glnav.setLocation(0, 105);
+		glnav.setSize(new Dimension(85,662));
 		glnav.addBtn(aud);
 		glnav.addBtn(pmen);
 	}
@@ -556,10 +557,10 @@ public class McLuhanMain extends JFrame{
 	private void startGrabber() {
 		if(canvas != null){
 			pmen.setEnabled(false);
-			pmen.setVisible(false);
+		//	pmen.setVisible(false);
 			aud.setIcon(new ImageIcon("play.jpg"));
 			aud.setEnabled(false);
-			aud.setVisible(false);
+			//aud.setVisible(false);
 			aud.removeActionListener(aud.getActionListeners()[0]);
 			setPage();
 			setBtns(bgsel);
@@ -1157,9 +1158,9 @@ public class McLuhanMain extends JFrame{
 					menu.add("ogl",canvas);
 					soundbite = new MP3("McLuhan/"+DIRS[Integer.parseInt(((JButton)ae.getSource()).getName())]+"/mp3.mp3");
 					pmen.setEnabled(true);
-					pmen.setVisible(true);
+					//pmen.setVisible(true);
 					aud.setEnabled(true);
-					aud.setVisible(true);
+					//aud.setVisible(true);
 					audio = true;
 					aud.addActionListener(new ActionListener(){
 						public void actionPerformed(ActionEvent arg0) {
@@ -1229,9 +1230,9 @@ public class McLuhanMain extends JFrame{
 					menu.add("ogl",canvas);
 					soundbite = new MP3("McLuhan/"+DIRS[Integer.parseInt(((JButton)ae.getSource()).getName())]+"/mp3.mp3");
 					pmen.setEnabled(true);
-					pmen.setVisible(true);
+					//pmen.setVisible(true);
 					aud.setEnabled(true);
-					aud.setVisible(true);
+					//aud.setVisible(true);
 					audio = true;
 					aud.addActionListener(new ActionListener(){
 						public void actionPerformed(ActionEvent arg0) {
@@ -1301,9 +1302,9 @@ public class McLuhanMain extends JFrame{
 					menu.add("ogl",canvas);
 					soundbite = new MP3("McLuhan/"+DIRS[Integer.parseInt(((JButton)ae.getSource()).getName())]+"/mp3.mp3");
 					pmen.setEnabled(true);
-					pmen.setVisible(true);
+					//pmen.setVisible(true);
 					aud.setEnabled(true);
-					aud.setVisible(true);
+					//aud.setVisible(true);
 					audio = true;
 					aud.addActionListener(new ActionListener(){
 						public void actionPerformed(ActionEvent arg0) {
