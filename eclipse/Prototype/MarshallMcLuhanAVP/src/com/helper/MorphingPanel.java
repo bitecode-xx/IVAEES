@@ -298,7 +298,7 @@ public class MorphingPanel extends JLayeredPane {
 					
 					morphOpen = true;
 				}
-				if (e.getX() < 75 && e.getY() < 662 && e.getY() > 105 && morphOpen == true) {
+				else if (e.getX() < 75 && e.getY() < 662 && e.getY() > 105 && morphOpen == true) {
 					if(runonce){
 						if(coming){
 							coming = false;
@@ -320,6 +320,8 @@ public class MorphingPanel extends JLayeredPane {
 					animator.start();
 					
 					morphOpen = false;
+				}
+				else {
 				}
 			}
 		}
