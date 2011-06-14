@@ -879,13 +879,13 @@ public class PhysicsEngine implements GLEventListener, KeyListener, MouseListene
 	
 	public void handPressed(Point p, boolean handone) {
 		if(handone){
-			this.mousex = p.x-59;
-			this.mousey = p.y-134;
+			this.mousex = p.x + 21;
+			this.mousey = p.y - 134;
 			this.dragging = true;
 		}
 		else{
-			this.mousex2 = p.x-59;
-			this.mousey2 = p.y-134;
+			this.mousex2 = p.x + 21;
+			this.mousey2 = p.y - 134;
 			this.dragging2 = true;
 		}
 		convertMouseCoordinates(handone);
@@ -923,13 +923,13 @@ public class PhysicsEngine implements GLEventListener, KeyListener, MouseListene
 
 	public void handReleased(Point p, boolean handone) {
 		if(handone){
-			this.mousex = p.x-59;
-			this.mousey = p.y-134;
+			this.mousex = p.x + 21;
+			this.mousey = p.y - 134;
 			this.dragging = false;
 		}
 		else{
-			this.mousex2 = p.x-59;
-			this.mousey2 = p.y-134;
+			this.mousex2 = p.x + 21;
+			this.mousey2 = p.y - 134;
 			this.dragging2 = false;
 		}
 		convertMouseCoordinates(handone);
@@ -937,12 +937,12 @@ public class PhysicsEngine implements GLEventListener, KeyListener, MouseListene
 
 	public void handDragged(Point p, boolean handone) {
 		if(handone){
-			this.mousex = p.x-59;
-			this.mousey = p.y-134;
+			this.mousex = p.x + 21;
+			this.mousey = p.y - 134;
 		}
 		else{
-			this.mousex2 = p.x-59;
-			this.mousey2 = p.y-134;
+			this.mousex2 = p.x + 21;
+			this.mousey2 = p.y - 134;
 		}		
 		convertMouseCoordinates(handone);
 	}
