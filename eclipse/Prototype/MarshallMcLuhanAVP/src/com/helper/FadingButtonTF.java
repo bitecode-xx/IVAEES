@@ -12,6 +12,8 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
+import javax.swing.Timer;
+
 import org.jdesktop.animation.timing.Animator;
 import org.jdesktop.animation.timing.Animator.Direction;
 import org.jdesktop.animation.timing.Animator.RepeatBehavior;
@@ -91,6 +93,10 @@ public class FadingButtonTF extends JButton
         
         // Make the graphics object sent to this paint() method translucent
 	Graphics2D g2d  = (Graphics2D)g;
+	if(Float.isNaN(alpha)){
+		//System.err.println("Alpha Value: "+alpha);
+		alpha = 0.0f;
+	}
 	AlphaComposite newComposite = 
 	    AlphaComposite.getInstance(AlphaComposite.SRC_OVER, alpha);
 	g2d.setComposite(newComposite);
@@ -103,21 +109,41 @@ public class FadingButtonTF extends JButton
      * This method receives click events, which start and stop the animation
      */
     public void actionPerformed(ActionEvent ae) {
-        if (!animator.isRunning()) {
-            animator.start();
-            this.setVisible(true);
-            this.setIcon(image);
-        } else {
-            animator.stop();
-            this.setIcon(null);
-            this.setOpaque(false);
-            // reset alpha to opaque
-            alpha = 0.0f;
-        }
+   
     }
     // Ununsed MouseListener implementations
-    public void begin() {}
-    public void end() {}
+    public void begin() {
+    	if (!animator.isRunning()) {
+    		animator.start();
+    		this.setVisible(true);
+    		this.setIcon(image);
+    		ActionListener time = new ActionListener(){
+    			public void actionPerformed(ActionEvent arg0) {
+    				animator.stop();
+    				alpha = 1.0f;
+    			}
+    		};  
+    		Timer t = new Timer(animationDuration,time);
+    		t.setRepeats(false);
+    		t.start();
+    	}
+    }
+    public void end() {
+    	if (!animator.isRunning()) {
+    		animator.start();
+    		this.setVisible(false);
+    		this.setIcon(image);
+    		alpha = 1.0f;
+    		ActionListener time = new ActionListener(){
+    			public void actionPerformed(ActionEvent arg0) {
+    				animator.stop();
+    			}
+    		};  
+    		Timer t = new Timer(animationDuration,time);
+    		t.setRepeats(false);
+    		t.start();
+    	}
+    }
     public void repeat() {}
     
     /**
