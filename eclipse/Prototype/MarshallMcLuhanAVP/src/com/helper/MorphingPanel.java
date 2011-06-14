@@ -340,7 +340,7 @@ public class MorphingPanel extends JLayeredPane {
 		
 		@Override
 		public void mouseClicked(MouseEvent e) {
-			/*if(!animator.isRunning()){
+			if(!animator.isRunning()){
         		if (morphOpen == false) {
         			if(runonce){
         				if(coming){
@@ -395,7 +395,7 @@ public class MorphingPanel extends JLayeredPane {
         		}
         		else {
         		}
-        	}*/
+        	}
 		}
 
 		@Override

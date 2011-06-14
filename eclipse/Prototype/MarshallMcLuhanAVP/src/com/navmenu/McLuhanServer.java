@@ -24,7 +24,7 @@ public class McLuhanServer {
 	private static Engine_Server eserver;
 	private static boolean isConnected = true;
 	
-	private static boolean mouseTest = false;
+	private static boolean mouseTest = true;
 
 	public static void main(String[] args) {
 		Image image;

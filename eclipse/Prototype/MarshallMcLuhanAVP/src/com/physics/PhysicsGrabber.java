@@ -68,7 +68,7 @@ public class PhysicsGrabber implements GLEventListener, KeyListener, MouseListen
 
 
 	public PhysicsGrabber(){
-		source = "yellowbackground.png";
+		source = "yellowbackground.jpg";
 		source2 = "wavenow.png";
 	}
 
