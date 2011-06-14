@@ -107,6 +107,8 @@ public class MorphingPanel extends JLayeredPane {
     protected static int height = 662;
     private DirectionButton button;
     
+    private static boolean morphOpen = false;
+    
     public MorphingPanel(FadingButtonTF aud,FadingButtonTF pmen) {
         add(buildControls(aud,pmen),1);
        // JButton test = new JButton("home");
@@ -251,27 +253,60 @@ public class MorphingPanel extends JLayeredPane {
             g2.setColor(Color.WHITE);
             g2.drawString(getText(), x, y);
         }
+        
+        public boolean isOpen() {
+        	return morphOpen;
+        }
 
 		@Override
 		public void mouseClicked(MouseEvent e) {
 			if(!animator.isRunning()){
-				if(runonce){
-					if(coming){
-						coming=false;
-						aud.disable();
-						pmen.disable();
-					} else{
-						coming = true;
+				if (e.getX() < 15 && e.getY() < 662 && e.getY() > 105 && morphOpen == false) {
+					if(runonce){
+						if(coming){
+							coming = false;
+							aud.disable();
+							pmen.disable();
+						} 
+						else{
+							coming = true;
+							aud.begin();
+							pmen.begin();
+						}
+					}
+					else{
+						runonce = true;
 						aud.begin();
 						pmen.begin();
 					}
+				
+					animator.start();
+					
+					morphOpen = true;
 				}
-				else{
-					runonce = true;
-					aud.begin();
-					pmen.begin();
+				if (e.getX() < 75 && e.getY() < 662 && e.getY() > 105 && morphOpen == true) {
+					if(runonce){
+						if(coming){
+							coming = false;
+							aud.disable();
+							pmen.disable();
+						} 
+						else{
+							coming = true;
+							aud.begin();
+							pmen.begin();
+						}
+					}
+					else{
+						runonce = true;
+						aud.begin();
+						pmen.begin();
+					}
+				
+					animator.start();
+					
+					morphOpen = false;
 				}
-				animator.start();
 			}
 		}
 

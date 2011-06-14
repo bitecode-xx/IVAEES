@@ -71,6 +71,8 @@ public class McLuhanMain extends JFrame{
 	private static final long serialVersionUID = 1739205605051932874L;
 	
 	private static boolean morph = true;
+	
+	private boolean morphOpen = false;
 
 	//McLuhan themes list
 	private String[] DIRS = {"City as Classroom","Extensions of Man","Global Village","The Medium is the Message"};
@@ -945,6 +947,14 @@ public class McLuhanMain extends JFrame{
 				if (select == 2) {
 					updateHandTwo(new Point(newX, newY));
 				}
+				
+				/*if (x < 15 && y < 662 && y > 105 && morphOpen == false) {
+					mouseRobot.mouseMove(handArray[select - 1].getX(), handArray[select - 1].getY());
+					mouseRobot.mousePress(MouseEvent.BUTTON1_MASK);
+					mouseRobot.mouseRelease(MouseEvent.BUTTON1_MASK);
+					
+					morphOpen = true;
+				}*/
 				
 				
 				if (action.compareTo("steady") == 0 && (newY < 100 || newX < 60)) {
