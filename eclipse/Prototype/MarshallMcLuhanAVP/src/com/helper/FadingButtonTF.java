@@ -66,11 +66,13 @@ public class FadingButtonTF extends JButton
     BufferedImage buttonImage = null;
     private ImageIcon image;
     private ActionListener stop, start;
+    private boolean mute;
     
     /** Creates a new instance of FadingButtonTF */
     public FadingButtonTF(ImageIcon im) {
         super(im);
         image = im;
+        mute = false;
         setOpaque(false);
         this.setContentAreaFilled(false);
         listeners();
@@ -79,6 +81,15 @@ public class FadingButtonTF extends JButton
         animator.setStartDirection(Direction.FORWARD);
         addActionListener(this);
     }
+    
+    public boolean isMuted(){
+    	return mute;
+    }
+    
+    public void setmute(boolean mute){
+    	this.mute = mute;
+    }
+    
     
     private void listeners(){
     	start = new ActionListener(){
