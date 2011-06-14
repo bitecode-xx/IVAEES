@@ -97,7 +97,7 @@ public class Main implements WindowListener, GLEventListener {
 
 		// first thing is trying to open the movie
 	
-		player = new MoviePlayer (movieFilename);
+		player = new MoviePlayer (movieFilename, true);
 		
 		// we create a frame that will hold the rendering surface.
 		//frame = new Frame("Java + JOGL + JMF + Fobs4JMF + Teapot!");

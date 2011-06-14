@@ -87,7 +87,7 @@ public class McLuhanMain extends JFrame{
 	private BackgroundPanel p1,p2,p3,p4,load;
 
 	//private JButton pmen, movietest,aud;
-	private FadingButtonTF pmen, movietest,aud;
+	private FadingButtonTF pmen, movieaud,aud;
 
 	private JButton[] btns,btns1,btns2,btns3,btns4;
 
@@ -103,7 +103,7 @@ public class McLuhanMain extends JFrame{
 	
 	private int isSteady, isSteadySecond, isDepth;
 
-	private boolean roll, audio, player;
+	private boolean roll, audio, player, movie;
 
 	private ActionListener gogo, repeat, one, two, three, four, loop, steadyAL, steadySecondAL, depthAL;
 
@@ -317,6 +317,7 @@ public class McLuhanMain extends JFrame{
 					aud.setEnabled(true);
 					//aud.setVisible(true);
 					audio = true;
+					movie = true;
 					aud.addActionListener(new ActionListener(){
 						public void actionPerformed(ActionEvent arg0) {
 							if(audio){
@@ -495,6 +496,22 @@ public class McLuhanMain extends JFrame{
 	private void initGLNavAlt(){
 		aud = new FadingButtonTF(new ImageIcon("play.jpg"));
 		aud.setBounds(0, 85, 75, 75);
+		movieaud = new FadingButtonTF(new ImageIcon("video.jpg"));
+		movieaud.setBounds(0, 165, 75, 75);
+		movieaud.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent arg0) {
+				if(movie){
+					movie = false;
+					movieaud.setIcon(new ImageIcon("videomute.jpg"));
+				}
+				else{
+					movie=true;
+					movieaud.setIcon(new ImageIcon("video.jpg"));
+				}
+				movieaud.validate();
+				app.setMute();
+			}
+		});
 		pmen = new FadingButtonTF(new ImageIcon("home.jpg"));
 		pmen.setBounds(0, 5, 75, 75);
 		pmen.addActionListener(new ActionListener(){
@@ -541,11 +558,12 @@ public class McLuhanMain extends JFrame{
 			}
 		});
 	
-		glnav = new MorphingPanel(aud,pmen);
+		glnav = new MorphingPanel(aud,pmen, movieaud);
 		glnav.setLocation(0, 105);
 		glnav.setSize(new Dimension(85,662));
 		glnav.addBtn(aud);
 		glnav.addBtn(pmen);
+		glnav.addBtn(movieaud);
 	}
 	
 

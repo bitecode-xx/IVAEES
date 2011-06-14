@@ -64,7 +64,7 @@ public class PhysicsEngine implements GLEventListener, KeyListener, MouseListene
 
 	private Timer quepush = null;
 
-	private boolean image, txt, video;
+	private boolean image, txt, video, mute;
 	
 	private MoviePlayer player;
 	
@@ -100,6 +100,7 @@ public class PhysicsEngine implements GLEventListener, KeyListener, MouseListene
 		image = false;
 		txt = true;
 		video = false;
+		mute = false;
 	}	
 
 	public void setTimer(Timer q) {
@@ -136,6 +137,18 @@ public class PhysicsEngine implements GLEventListener, KeyListener, MouseListene
 		audio.setEnabled(true);
 	}
 	
+	public boolean getMute(){
+		return player.getMute();
+	}
+	
+	public void setMute(){
+		mute = !mute;
+		if(player != null)
+			if(mute)
+				player.muteAudio();
+			else
+				player.unMuteAudio();
+	}
 	
 	private void play(){
 		player.setLoop(false);
@@ -146,7 +159,7 @@ public class PhysicsEngine implements GLEventListener, KeyListener, MouseListene
 	
 	private void setMovie(String vid){
 		try {
-			player = new MoviePlayer (vid);
+			player = new MoviePlayer (vid,mute);
 			player.setRender(this);
 		} catch (Exception e) {
 			e.printStackTrace();

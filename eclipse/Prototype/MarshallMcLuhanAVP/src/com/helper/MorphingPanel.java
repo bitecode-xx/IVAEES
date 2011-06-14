@@ -109,8 +109,8 @@ public class MorphingPanel extends JLayeredPane {
     
     private static boolean morphOpen = false;
     
-    public MorphingPanel(FadingButtonTF aud,FadingButtonTF pmen) {
-        add(buildControls(aud,pmen),1);
+    public MorphingPanel(FadingButtonTF aud,FadingButtonTF pmen,FadingButtonTF movieaud) {
+        add(buildControls(aud,pmen,movieaud),1);
        // JButton test = new JButton("home");
        // test.setPreferredSize(new Dimension(100,100));
        // test.setBounds(100,50,100,100);
@@ -134,8 +134,8 @@ public class MorphingPanel extends JLayeredPane {
     	frame.add(jb,0);
     }
     
-    private JComponent buildControls(FadingButtonTF aud,FadingButtonTF pmen) {
-        button = new DirectionButton("", frame,aud,pmen);
+    private JComponent buildControls(FadingButtonTF aud,FadingButtonTF pmen,FadingButtonTF movieaud) {
+        button = new DirectionButton("", frame,aud,pmen, movieaud);
         button.setBounds(0, 0, 100, height);
         
         return button;
@@ -146,17 +146,18 @@ public class MorphingPanel extends JLayeredPane {
         private Map desktopHints;
         private float morphing = 0.0f;
         private JLayeredPane p;
-        private FadingButtonTF aud,pmen;
+        private FadingButtonTF aud,pmen, movieaud;
         private boolean coming, runonce;
         private Animator animator;
         
-        private DirectionButton(String text, JLayeredPane p, FadingButtonTF aud,FadingButtonTF pmen) {
+        private DirectionButton(String text, JLayeredPane p, FadingButtonTF aud,FadingButtonTF pmen, FadingButtonTF movieaud) {
             super("");
             coming = true;
             runonce = false;
             this.p = p;
             this.aud = aud;
             this.pmen = pmen;
+            this.movieaud = movieaud;
             this.addMouseListener(this);
             setupTriggers();
             setFont(getFont().deriveFont(Font.BOLD));
@@ -172,11 +173,13 @@ public class MorphingPanel extends JLayeredPane {
         
         public void reset(){
         	coming = false;
+        	morphOpen = false;
         	if(!animator.isRunning()){
 				animator.start();
 			}
         	aud.disable();
 			pmen.disable();
+			movieaud.disable();
         	
         }
         
@@ -281,17 +284,20 @@ public class MorphingPanel extends JLayeredPane {
 							coming = false;
 							aud.disable();
 							pmen.disable();
+							movieaud.disable();
 						} 
 						else{
 							coming = true;
 							aud.begin();
 							pmen.begin();
+							movieaud.begin();
 						}
 					}
 					else{
 						runonce = true;
 						aud.begin();
 						pmen.begin();
+						movieaud.begin();
 					}
 				
 					animator.start();
@@ -304,17 +310,20 @@ public class MorphingPanel extends JLayeredPane {
 							coming = false;
 							aud.disable();
 							pmen.disable();
+							movieaud.disable();
 						} 
 						else{
 							coming = true;
 							aud.begin();
 							pmen.begin();
+							movieaud.begin();
 						}
 					}
 					else{
 						runonce = true;
 						aud.begin();
 						pmen.begin();
+						movieaud.begin();
 					}
 				
 					animator.start();
