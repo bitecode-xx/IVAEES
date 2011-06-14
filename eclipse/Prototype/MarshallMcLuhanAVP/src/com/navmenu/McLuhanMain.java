@@ -101,7 +101,7 @@ public class McLuhanMain extends JFrame{
 	
 	private int isSteady, isSteadySecond, isDepth;
 
-	private boolean roll, audio;
+	private boolean roll, audio, player;
 
 	private ActionListener gogo, repeat, one, two, three, four, loop, steadyAL, steadySecondAL, depthAL;
 
@@ -574,8 +574,8 @@ public class McLuhanMain extends JFrame{
 		app = new PhysicsEngine(themes.getMap(opt*3), themes.getMap((opt*3)+1), themes.getMap((opt*3)+2),themes.getVids(opt), canvas);
 		canvas.addGLEventListener(app);
 		canvas.addKeyListener(app);
-		//canvas.addMouseListener(app);
-		//canvas.addMouseMotionListener(app);
+		canvas.addMouseListener(app);
+		canvas.addMouseMotionListener(app);
 		tslide.setEngine(app);
 
 		canvas.requestFocus();

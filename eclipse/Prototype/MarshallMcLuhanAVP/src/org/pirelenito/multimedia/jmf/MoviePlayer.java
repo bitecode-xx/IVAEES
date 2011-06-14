@@ -56,6 +56,14 @@ public class MoviePlayer implements ControllerListener  {
 		else 
 			return null;
 	}
+	
+	public void muteAudio(){
+		player.getGainControl().setMute(true);
+	}
+	
+	public void unMuteAudio(){
+		player.getGainControl().setMute(false);
+	}
 
 	public void setRender(PhysicsEngine linkback){
 		this.linkback = linkback;

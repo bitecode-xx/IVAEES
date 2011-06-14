@@ -18,6 +18,7 @@ import org.pirelenito.multimedia.jmf.MoviePlayer;
 import org.pirelenito.multimedia.jmf.plugin.IGLTextureRenderer;
 
 import com.communication.Engine_Server;
+import com.helper.FadingButtonTF;
 import com.helper.MP3;
 import com.jogamp.opengl.impl.x11.glx.GLX;
 import com.jogamp.opengl.util.*;
@@ -71,7 +72,7 @@ public class PhysicsEngine implements GLEventListener, KeyListener, MouseListene
 	
 	private IGLTextureRenderer renderer;
 	
-	private Component audio;
+	private FadingButtonTF audio;
 	
 	private GLJPanel parent;
 
@@ -123,7 +124,7 @@ public class PhysicsEngine implements GLEventListener, KeyListener, MouseListene
 		
 	}
 	
-	public void setAudio(Component audio){
+	public void setAudio(FadingButtonTF audio){
 		this.audio = audio;
 	}
 	
@@ -154,7 +155,8 @@ public class PhysicsEngine implements GLEventListener, KeyListener, MouseListene
 		pmhide.translate(new Vec2D(0.2,0.2));
 		pmhide.setK(1);
 		pmhide.addToSystem(physics);
-		soundbite.pause();
+		if(!audio.isMuted())
+			soundbite.pause();
 		play();
 	}
 	
