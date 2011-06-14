@@ -23,18 +23,30 @@ import com.communication.Engine_Server;
 public class McLuhanServer {
 	private static Engine_Server eserver;
 	private static boolean isConnected = true;
+	
+	private static boolean mouseTest = true;
 
 	public static void main(String[] args) {
+		Image image;
+		Point hotSpot;
+		
 		System.setProperty("sun.awt.disableMixing", "false");
 		GLProfile.initSingleton(true);
 		GraphicsDevice screen = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
 	   
 	    
 		Toolkit toolkit = Toolkit.getDefaultToolkit();
-		//Image image = toolkit.getImage("rh1.png");
-		Image image = toolkit.getImage("hide.png");
-		//Point hotSpot = new Point(14,14);
-		Point hotSpot = new Point(1,1);
+		
+		if (mouseTest) {
+			image = toolkit.getImage("rh1.png");
+			hotSpot = new Point(14,14);
+		}
+		else {
+			image = toolkit.getImage("hide.png");
+			hotSpot = new Point(1,1);
+		}
+		
+		
 		Cursor cursor = toolkit.createCustomCursor(image, hotSpot, "hand");
 		
 		McLuhanMain ml = new McLuhanMain();
