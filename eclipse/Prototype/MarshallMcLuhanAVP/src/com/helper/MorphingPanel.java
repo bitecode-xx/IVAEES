@@ -141,6 +141,10 @@ public class MorphingPanel extends JLayeredPane {
         return button;
     }
     
+    public boolean isOpen() {
+    	return morphOpen;
+    }
+    
     public static class DirectionButton extends JButton implements MouseListener {
         
         private Map desktopHints;
@@ -167,7 +171,7 @@ public class MorphingPanel extends JLayeredPane {
         }
         
         public void setStage(){
-        	this.doClick();
+        	togglePanel();
         }
         
         public void reset(){
@@ -267,63 +271,66 @@ public class MorphingPanel extends JLayeredPane {
             g2.setColor(Color.WHITE);
             g2.drawString(getText(), x, y);
         }
-        
-        public boolean isOpen() {
-        	return morphOpen;
-        }
-
+		
+		public void togglePanel() {
+			SwingUtilities.invokeLater(new Runnable( ) {
+                public void run() {
+                	if(!animator.isRunning()){
+                		if (morphOpen == false) {
+                			if(runonce){
+                				if(coming){
+                					coming = false;
+                					aud.disable();
+                					pmen.disable();
+                				} 
+                				else{
+                					coming = true;
+                					aud.begin();
+                					pmen.begin();
+                				}
+                			}
+                			else{
+                				runonce = true;
+                				aud.begin();
+                				pmen.begin();
+                			}
+				
+                			animator.start();
+					
+                			morphOpen = true;
+                		}
+                		else if (morphOpen == true) {
+                			if(runonce){
+                				if(coming){
+                					coming = false;
+                					aud.disable();
+                					pmen.disable();
+                				} 
+                				else{
+                					coming = true;
+                					aud.begin();
+                					pmen.begin();
+                				}
+                			}
+                			else{
+                				runonce = true;
+                				aud.begin();
+                				pmen.begin();
+                			}
+				
+                			animator.start();
+					
+                			morphOpen = false;
+                		}
+                		else {
+                		}
+                	}
+                }
+			});
+		}
+		
 		@Override
 		public void mouseClicked(MouseEvent e) {
-			if(!animator.isRunning()){
-				if (e.getX() < 15 && e.getY() < 662 && e.getY() > 105 && morphOpen == false) {
-					if(runonce){
-						if(coming){
-							coming = false;
-							aud.disable();
-							pmen.disable();
-						} 
-						else{
-							coming = true;
-							aud.begin();
-							pmen.begin();
-						}
-					}
-					else{
-						runonce = true;
-						aud.begin();
-						pmen.begin();
-					}
-				
-					animator.start();
-					
-					morphOpen = true;
-				}
-				else if (e.getX() < 75 && e.getY() < 662 && e.getY() > 105 && morphOpen == true) {
-					if(runonce){
-						if(coming){
-							coming = false;
-							aud.disable();
-							pmen.disable();
-						} 
-						else{
-							coming = true;
-							aud.begin();
-							pmen.begin();
-						}
-					}
-					else{
-						runonce = true;
-						aud.begin();
-						pmen.begin();
-					}
-				
-					animator.start();
-					
-					morphOpen = false;
-				}
-				else {
-				}
-			}
 		}
 
 		@Override
