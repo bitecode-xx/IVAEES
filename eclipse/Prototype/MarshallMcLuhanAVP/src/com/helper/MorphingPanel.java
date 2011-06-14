@@ -256,14 +256,11 @@ public class MorphingPanel extends JLayeredPane {
             g2.drawString(getText(), x, y + 1);
             g2.setColor(Color.WHITE);
             g2.drawString(getText(), x, y);
-            
-            
         }
 
 		@Override
 		public void mouseClicked(MouseEvent e) {
-			test.doClick();
-			
+			//test.doClick();
 		}
 
 		@Override

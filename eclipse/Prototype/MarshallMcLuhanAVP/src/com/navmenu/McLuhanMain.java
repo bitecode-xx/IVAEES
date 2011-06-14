@@ -47,6 +47,7 @@ import com.helper.FadingButtonTF;
 import com.helper.GlassPane;
 import com.helper.MP3;
 import com.helper.MenuBuilder;
+import com.helper.MorphingPanel;
 //import com.helper.MorphingPanel;
 import com.helper.TextureMap;
 import com.helper.TopSlider;
@@ -68,14 +69,18 @@ public class McLuhanMain extends JFrame{
 	 * 
 	 */
 	private static final long serialVersionUID = 1739205605051932874L;
+	
+	private static boolean morph = true;
 
 	//McLuhan themes list
 	private String[] DIRS = {"City as Classroom","Extensions of Man","Global Village","The Medium is the Message"};
 
 	private JFrame frame;
 	private GLJPanel canvas,grabc;
-	private JPanel menu,glnav;
-//	private MorphingPanel glnav;
+	private JPanel menu;
+	
+	//private JPanel glnav;
+	private MorphingPanel glnav;
 	
 	private BackgroundPanel p1,p2,p3,p4,load;
 
@@ -83,7 +88,7 @@ public class McLuhanMain extends JFrame{
 
 	private JButton[] btns,btns1,btns2,btns3,btns4;
 
-	private Dimension size = new Dimension(1280,868);
+	private Dimension size = new Dimension(1024,768);
 
 	private FPSAnimator animator, animator2;
 	private PhysicsEngine app;
@@ -140,7 +145,7 @@ public class McLuhanMain extends JFrame{
 
 		backsnbtns = new MenuBuilder();
 		
-		initGrabber();
+		//initGrabber();
 		initTSlide();
 		initTData();
 		initSelections();
@@ -148,13 +153,18 @@ public class McLuhanMain extends JFrame{
 		initSelections3();
 		initSelections4();
 		initLoading();
-		initGLNav();
-		//initGLNavAlt();
+		
+		if (morph) {
+			initGLNavAlt();
+		}
+		else {
+			initGLNav();
+		}
 		
 		//hands.setHandOne(new Point(525,525));
 		
 		btns = btns1;
-		menu.add("Grabber",grabc);
+		//menu.add("Grabber",grabc);
 		menu.add("1",p1);
 		menu.add("2",p2);
 		menu.add("3",p3);
@@ -163,7 +173,10 @@ public class McLuhanMain extends JFrame{
 		layeredPane.add(tslide,BorderLayout.NORTH,-30000);
 		layeredPane.add(menu,BorderLayout.CENTER,-30000);
 		layeredPane.add(glnav,BorderLayout.WEST,-30000);
-		//hands.add(glnav);
+		
+		if (morph) {
+			hands.add(glnav);
+		}
 		
 		frame.setGlassPane(hands);
 		frame.getGlassPane().setVisible(true);
@@ -462,7 +475,7 @@ public class McLuhanMain extends JFrame{
 		pmen.setEnabled(false);
 		pmen.setVisible(false);
 
-		glnav = new JPanel();
+		//glnav = new JPanel();
 		glnav.setBackground(Color.black);
 		glnav.setOpaque(true);
 		glnav.setLayout(new FlowLayout());
@@ -475,18 +488,18 @@ public class McLuhanMain extends JFrame{
 	/*
 	 * The left side navigation window for muting/playing the
 	 * background audio and returning to theme selection.
-	 * 
 	 */
 	private void initGLNavAlt(){
-		
 		aud = new FadingButtonTF(new ImageIcon("play.jpg"));
 		aud.setBounds(0, 150, 75, 75);
 		pmen = new FadingButtonTF(new ImageIcon("home.jpg"));
+		pmen.setBounds(0, 300, 75, 75);
 	
-		//glnav = new MorphingPanel(aud);
+		glnav = new MorphingPanel(aud);
 		glnav.setLocation(0, 110);
 		glnav.setSize(new Dimension(85,657));
-	//	glnav.addBtn(aud);
+		glnav.addBtn(aud);
+		glnav.addBtn(pmen);
 	}
 	
 
