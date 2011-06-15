@@ -276,8 +276,8 @@ public class MorphingPanel extends JLayeredPane {
         }
 		
 		public void togglePanel() {
-			SwingUtilities.invokeLater(new Runnable( ) {
-                public void run() {
+			//SwingUtilities.invokeLater(new Runnable( ) {
+              //  public void run() {
                 	if(!animator.isRunning()){
                 		if (morphOpen == false) {
                 			if(runonce){
@@ -334,9 +334,11 @@ public class MorphingPanel extends JLayeredPane {
                 		else {
                 		}
                 	}
-                }
-			});
+                //}
+    		
+			//});
 		}
+	
 		
 		@Override
 		public void mouseClicked(MouseEvent e) {

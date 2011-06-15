@@ -19,6 +19,7 @@ import org.pirelenito.multimedia.jmf.plugin.IGLTextureRenderer;
 
 import com.communication.Engine_Server;
 import com.helper.FadingButtonTF;
+import com.helper.GlassPane;
 import com.helper.MP3;
 import com.jogamp.opengl.impl.x11.glx.GLX;
 import com.jogamp.opengl.util.*;
@@ -29,6 +30,9 @@ import com.jogamp.opengl.util.texture.*;
 public class PhysicsEngine implements GLEventListener, KeyListener, MouseListener, MouseMotionListener {
 
 	private double moving = 0;
+	
+	private HandObject[] handArray;
+	private GlassPane hands;
 
 	private Texture textureactive, textvid;	
 	private Texture[] imageque, textque, qteque;
@@ -512,6 +516,8 @@ public class PhysicsEngine implements GLEventListener, KeyListener, MouseListene
 	public void callTimer(){
 		physics = new ParticleSystem(new Vec2D(0, -0.4), 0.3333/60.0, new Vec2D(-1.6, -1.0), new Vec2D(1.6, 1.0));
 
+		resetHands();
+		
 		if(!video){
 			if(vidcount < vidFiles.length){
 				setMovie(vidFiles[vidcount]);
@@ -842,13 +848,9 @@ public class PhysicsEngine implements GLEventListener, KeyListener, MouseListene
 
 	public void pushTimerImg(int iloc){
 		physics = new ParticleSystem(new Vec2D(0, -0.4), 0.3333/60.0, new Vec2D(-1.6, -1.0), new Vec2D(1.6, 1.0));
-		if(constraint1 != null)
-			physics.addConstraint(constraint1);
-		if(constraint2 != null)
-			physics.addConstraint(constraint2);
-		if(constraint3 != null)
-			physics.addConstraint(constraint3);
-
+		
+		resetHands();
+		
 		if(!video){
 			if(vidcount < vidFiles.length){
 				setMovie(vidFiles[vidcount]);
@@ -921,6 +923,8 @@ public class PhysicsEngine implements GLEventListener, KeyListener, MouseListene
 	public void pushTimerTxt(int tloc){
 		physics = new ParticleSystem(new Vec2D(0, -0.4), 0.3333/60.0, new Vec2D(-1.6, -1.0), new Vec2D(1.6, 1.0));
 
+		resetHands();
+		
 		if(!video){
 			if(vidcount < vidFiles.length){
 				setMovie(vidFiles[vidcount]);
@@ -1042,5 +1046,22 @@ public class PhysicsEngine implements GLEventListener, KeyListener, MouseListene
 		}		
 		convertMouseCoordinates(handone);
 	}
+	
+	public void setHands(HandObject[] t, GlassPane hand) {
+		handArray = t;
+		hands = hand;
+	}
 
+	private void resetHands() {
+		if (handArray[0].getPressed()) {
+			handReleased(new Point(handArray[0].getX(), handArray[0].getY()), true);
+			hands.releaseHandOne();
+			handArray[0].setPressed(false);
+		}
+		if (handArray[1].getPressed()) {
+			handReleased(new Point(handArray[1].getX(), handArray[1].getY()), false);
+			hands.releaseHandTwo();
+			handArray[1].setPressed(false);
+		}
+	}
 }

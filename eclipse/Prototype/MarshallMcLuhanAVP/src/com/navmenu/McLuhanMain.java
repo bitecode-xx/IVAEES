@@ -99,7 +99,7 @@ public class McLuhanMain extends JFrame{
 
 	private Timer quepush, ploop, steadyTimer, steadySecondTimer, morphTimer, depthTimer, gcpush;//flash, starter;
 	
-	private int isSteady, isSteadySecond, isMorph, isDepth;
+	private int isSteady, isSteadySecond, isMorph, isDepth, morphHand;
 
 	private boolean roll, audio, player, movie;
 
@@ -621,6 +621,8 @@ public class McLuhanMain extends JFrame{
 		quepush.start();
 		
 		app.setTimer(quepush);
+		
+		app.setHands(handArray, hands);
 	}
 	
 	/*
@@ -1027,16 +1029,26 @@ public class McLuhanMain extends JFrame{
 					
 					isMorph = 1;
 					
+					morphHand = select;
+					
+					System.out.println("Open");
+					
 					morphTimer.start();
 				}
 				
-				if (newX < 75 && newY < 662 && newY > 105) {
+				if (newX < 75 && newY < 662 && newY > 105 && select == morphHand) {
 					if (glnav.isOpen() == true && isMorph == 0) {
+						isMorph = 1;
+						
+						System.out.println("Stay Open");
+						
 						morphTimer.start();
 					}
 				}
 				else {
 					if (glnav.isOpen() == true && isMorph == 0) {
+						System.out.println("Close");
+						
 						glnav.runStage();
 					}
 				}
