@@ -329,20 +329,19 @@ public class McLuhanMain extends JFrame{
 					aud.addActionListener(new ActionListener(){
 						public void actionPerformed(ActionEvent arg0) {
 							if(audio){
-								soundbite.pause();
+								//soundbite.pause();
 								audio = false;
 								aud.setIcon(new ImageIcon("mute.jpg"));
 							}
 							else{
 								audio=true;
-								soundbite.resume();
+								//soundbite.resume();
 								aud.setIcon(new ImageIcon("play.jpg"));
 							}
-							aud.validate();	
+							aud.validate();
+							app.setMute();
 						}
-
 					});
-
 					menu.validate();
 					activateAnimation();
 					((CardLayout)menu.getLayout()).show(menu, "Loader");
@@ -517,7 +516,7 @@ public class McLuhanMain extends JFrame{
 					movieaud.setIcon(new ImageIcon("video.jpg"));
 				}
 				movieaud.validate();
-				app.setMute();
+				app.setMuteMovie();
 			}
 		});
 		pmen = new FadingButtonTF(new ImageIcon("home.jpg"));
@@ -527,6 +526,8 @@ public class McLuhanMain extends JFrame{
 				pmen.setEnabled(false);
 				//pmen.setVisible(false);
 				aud.setIcon(new ImageIcon("play.jpg"));
+				movieaud.setIcon(new ImageIcon("video.jpg"));
+				movie = true;
 				aud.setEnabled(false);
 				//aud.setVisible(false);
 				aud.removeActionListener(aud.getActionListeners()[0]);
@@ -619,7 +620,6 @@ public class McLuhanMain extends JFrame{
 		quepush.start();
 		
 		app.setTimer(quepush);
-		app.setAudio(aud);
 	}
 	
 	/*

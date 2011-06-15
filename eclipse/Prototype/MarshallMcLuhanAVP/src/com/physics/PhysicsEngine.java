@@ -64,7 +64,7 @@ public class PhysicsEngine implements GLEventListener, KeyListener, MouseListene
 
 	private Timer quepush = null;
 
-	private boolean image, txt, video, mute;
+	private boolean image, txt, video, mute, pmute,audio;
 	
 	private MoviePlayer player;
 	
@@ -72,7 +72,6 @@ public class PhysicsEngine implements GLEventListener, KeyListener, MouseListene
 	
 	private IGLTextureRenderer renderer;
 	
-	private FadingButtonTF audio;
 	
 	private GLJPanel parent;
 
@@ -101,6 +100,7 @@ public class PhysicsEngine implements GLEventListener, KeyListener, MouseListene
 		txt = true;
 		video = false;
 		mute = false;
+		audio = false;
 	}	
 
 	public void setTimer(Timer q) {
@@ -115,33 +115,23 @@ public class PhysicsEngine implements GLEventListener, KeyListener, MouseListene
 	public void end(){
 		player.stop();
 		renderer = null;
-		soundbite.resume();
-		onAud();
+		if(!audio && !mute)
+			soundbite.resume();
 	}
 	
 	public void stopVid(){
 		if(player != null)
-			player.stop();
+			if(!player.isStopped())
+				player.stop();
 		
 	}
 	
-	public void setAudio(FadingButtonTF audio){
-		this.audio = audio;
-	}
-	
-	private void disAud(){
-		audio.setEnabled(false);
-	}
-	
-	private void onAud(){
-		audio.setEnabled(true);
-	}
 	
 	public boolean getMute(){
 		return player.getMute();
 	}
 	
-	public void setMute(){
+	public void setMuteMovie(){
 		mute = !mute;
 		if(player != null)
 			if(mute)
@@ -150,11 +140,16 @@ public class PhysicsEngine implements GLEventListener, KeyListener, MouseListene
 				player.unMuteAudio();
 	}
 	
+	public void setMute(){
+		audio = !audio;
+		if(soundbite != null)
+			soundbite.togglemute();
+	}
+	
 	private void play(){
 		player.setLoop(false);
 		player.play();
 		renderer = player.getRenderer();
-		disAud();
 	}
 	
 	private void setMovie(String vid){
@@ -168,7 +163,7 @@ public class PhysicsEngine implements GLEventListener, KeyListener, MouseListene
 		pmhide.translate(new Vec2D(0.2,0.2));
 		pmhide.setK(1);
 		pmhide.addToSystem(physics);
-		if(!audio.isMuted())
+		if(!audio && !mute)
 			soundbite.pause();
 		play();
 	}
@@ -188,7 +183,6 @@ public class PhysicsEngine implements GLEventListener, KeyListener, MouseListene
 		}
 		
 		double maxMovement = 0.05;
-		
 		if(mouse == 1) {
 			newpos1 = new Vec2D(mx, my);
 			Vec2D delta = newpos1.sub(constraint1.getPos());
@@ -221,7 +215,6 @@ public class PhysicsEngine implements GLEventListener, KeyListener, MouseListene
 				newpos2 = constraint2.getPos().add(delta);
 			}
 		}
-
 		for(int i=0; i<3; i++) {
 			double scale1 = 0, scale2 = 0;
 			switch(i) {
@@ -274,7 +267,6 @@ public class PhysicsEngine implements GLEventListener, KeyListener, MouseListene
 			mesh.render(gl);
 
 			if(video){
-				//System.err.println(renderer);
 				if(renderer != null){
 					if (renderer.render(gl))
 						try {
@@ -284,6 +276,7 @@ public class PhysicsEngine implements GLEventListener, KeyListener, MouseListene
 						}
 						pmhide.updateTexture(textvid);
 						pmhide.renderMesh(gl);
+						//pmhide.render(gl);
 				}
 			}
 			else if(qts.length>0){
@@ -292,6 +285,7 @@ public class PhysicsEngine implements GLEventListener, KeyListener, MouseListene
 				pm.renderMesh(gl);
 			}
 			pmeshactive.renderMesh(gl);
+			//pmeshactive.render(gl);
 
 
 			if(constraint1 != null) {
@@ -303,20 +297,7 @@ public class PhysicsEngine implements GLEventListener, KeyListener, MouseListene
 			if(constraint3 != null) {
 				constraint3.render(gl);
 			}
-
-			if(frameInterval != 0 ) {
-				int fps = 1000000000/(int)frameInterval;
-				int frametime = (int)(finished-start);
-				double phystime = ((double)(updated-start))/frameInterval;
-				double rendertime = ((double)(finished-updated))/frameInterval;
-				double freetime = 1.0-(double)frametime/frameInterval;
-
-				afps = 0.1*fps + 0.9*afps;
-				aphysics = 0.1*phystime + 0.9*aphysics;
-				arendering = 0.1*rendertime + 0.9*arendering;
-				afree = 0.1*freetime + 0.9*afree;
-
-			}
+			
 
 			if(dragging) {
 				gl.glBegin(GL.GL_POINTS);
@@ -371,17 +352,17 @@ public class PhysicsEngine implements GLEventListener, KeyListener, MouseListene
 	}
 
 	public void display(GLAutoDrawable drawable) {
-			long start = System.nanoTime();
-			long frameInterval = start - this.start;
+			//long start = System.nanoTime();
+			//long frameInterval = start - this.start;
 			update();
-			long updated = System.nanoTime();
+			//long updated = System.nanoTime();
 			render(drawable);
-			long finished = System.nanoTime();
-			this.start = start;
-			this.frameInterval = frameInterval;
-			this.updated = updated;
-			this.finished = finished;
-		
+			//long finished = System.nanoTime();
+		//	this.start = start;
+		//	this.frameInterval = frameInterval;
+		//	this.updated = updated;
+		//	this.finished = finished;
+	
 
 	}
 
@@ -432,7 +413,7 @@ public class PhysicsEngine implements GLEventListener, KeyListener, MouseListene
 
 			textureactive.setTexParameteri(GL.GL_TEXTURE_WRAP_S, GL.GL_REPEAT);
 			textureactive.setTexParameteri(GL.GL_TEXTURE_WRAP_T, GL.GL_REPEAT);
-			textureactive.setTexParameteri(GL.GL_TEXTURE_MAG_FILTER, GL.GL_LINEAR);
+		    textureactive.setTexParameteri(GL.GL_TEXTURE_MAG_FILTER, GL.GL_LINEAR);
 			textureactive.setTexParameteri(GL.GL_TEXTURE_MIN_FILTER, GL.GL_LINEAR);
 
 			textque[i] = textureactive;
@@ -459,11 +440,11 @@ public class PhysicsEngine implements GLEventListener, KeyListener, MouseListene
 		textureactive = imageque[quecount];
 
 		if(textque.length>0)
-			mesh = new DistortableMesh(2.6,2.0, 18,18, textque[0]);
+			mesh = new DistortableMesh(2.6,2.0, 1,1, textque[0]);
 		else if (imageque.length>1)
-			mesh = new DistortableMesh(2.6,2.0, 18,18, imageque[1]);
+			mesh = new DistortableMesh(2.6,2.0, 1,1, imageque[1]);
 		else
-			mesh = new DistortableMesh(2.6,2.0,18,18, textureactive);
+			mesh = new DistortableMesh(2.6,2.0,1,1, textureactive);
 
 
 		physics = new ParticleSystem(new Vec2D(0, -0.4), 0.3333/60.0, new Vec2D(-1.6, -1.0), new Vec2D(1.6, 1.0));
@@ -479,7 +460,7 @@ public class PhysicsEngine implements GLEventListener, KeyListener, MouseListene
 		}
 
 		pmeshactive = new PhysicsMesh(2.0, 20, textureactive, PhysicsMesh.defaultBreakage);
-		pmeshactive.setK(10);
+		pmeshactive.setK(5);
 		pmeshactive.addToSystem(physics);
 
 		
@@ -762,7 +743,6 @@ public class PhysicsEngine implements GLEventListener, KeyListener, MouseListene
 	
 	renderer = null;
 	
-	audio = null;
 	
 	
 	}

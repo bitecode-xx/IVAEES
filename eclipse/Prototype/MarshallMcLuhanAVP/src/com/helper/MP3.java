@@ -17,6 +17,8 @@ public class MP3 {
 	private String filename;
 	private AudioInputStream din;
 	private SourceDataLine line;
+	private boolean mute;
+	private BooleanControl volume;
 	
 	// some lock somewhere...
 	Object lock = new Object();
@@ -29,7 +31,20 @@ public class MP3 {
 	// constructor that takes the name of an MP3 file
     public MP3(String filename) {
         this.filename = filename;
+        mute = false;
     }
+    
+    public void togglemute(){
+    	mute = !mute;
+    	if(volume!=null)
+    		volume.setValue(mute);
+    }
+    
+    public boolean getMute(){
+    	return mute;
+    }
+    
+    
     
     public void pause() {
     	paused = true;
@@ -62,6 +77,11 @@ public class MP3 {
 			line = (SourceDataLine) AudioSystem.getLine(info);
 			if(line != null) {
 				line.open(decodedFormat);
+				if (line.isControlSupported(BooleanControl.Type.MUTE)) {
+		            volume = (BooleanControl) line.getControl(BooleanControl.Type.MUTE);
+		            volume.setValue(mute);
+		         }
+
 				byte[] data = new byte[4096];
 				// Start
 				line.start();
@@ -88,7 +108,6 @@ public class MP3 {
 						line.write(data, 0, nBytesRead);
 					}
 				}
-
 				// Stop
 				line.drain();
 				line.stop();

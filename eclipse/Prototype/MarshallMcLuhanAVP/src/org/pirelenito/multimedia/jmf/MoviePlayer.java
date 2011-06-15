@@ -30,7 +30,7 @@ public class MoviePlayer implements ControllerListener  {
 	/**
 	 * Loop flag
 	 */
-	private boolean loop, rendered, audio;
+	private boolean loop, rendered, audio,state;
 	private PhysicsEngine linkback;
 
 	public MoviePlayer (String filename, boolean audio) throws Exception {
@@ -44,6 +44,7 @@ public class MoviePlayer implements ControllerListener  {
 		player.prefetch();
 		player.addControllerListener(this);
 		rendered = false;
+		state = false;
 		// wait for it to be done.
 		while(player.getTargetState() != Player.Prefetched );
 		//player.getGainControl().setMute(audio);
@@ -63,7 +64,7 @@ public class MoviePlayer implements ControllerListener  {
 		player.getGainControl().setMute(true);
 	}
 	public boolean getMute(){
-		return player.getGainControl().getMute();
+		return audio;
 	}
 	
 	public void unMuteAudio(){
@@ -83,13 +84,21 @@ public class MoviePlayer implements ControllerListener  {
 		return player.getDuration();
 	}
 	
+	public boolean isStopped(){
+		return state;
+	}
+	
 	public void pause() {
 		player.stop();
+		player.deallocate();
+		state = true;
 	}
 	
 	public void stop() {
 		pause();
-		rewind();
+		//rewind();
+		player.close();
+		
 	}
 	
 	public void rewind() {
