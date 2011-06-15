@@ -146,7 +146,7 @@ public class McLuhanMain extends JFrame{
 
 		backsnbtns = new MenuBuilder();
 		
-		//initGrabber();
+		initGrabber();
 		initTSlide();
 		initTData();
 		initSelections();
@@ -165,7 +165,7 @@ public class McLuhanMain extends JFrame{
 		//hands.setHandOne(new Point(525,525));
 		
 		btns = btns1;
-		//menu.add("Grabber",grabc);
+		menu.add("Grabber",grabc);
 		menu.add("1",p1);
 		menu.add("2",p2);
 		menu.add("3",p3);
@@ -320,9 +320,9 @@ public class McLuhanMain extends JFrame{
 					initCanvas(opt);
 					menu.add("ogl",canvas);
 					soundbite = new MP3("McLuhan/"+DIRS[Integer.parseInt(((JButton)ae.getSource()).getName())]+"/mp3.mp3");
-					pmen.setEnabled(true);
+					//pmen.setEnabled(true);
 					//pmen.setVisible(true);
-					aud.setEnabled(true);
+					//aud.setEnabled(true);
 					//aud.setVisible(true);
 					audio = true;
 					movie = true;
@@ -339,7 +339,7 @@ public class McLuhanMain extends JFrame{
 								aud.setIcon(new ImageIcon("play.jpg"));
 							}
 							aud.validate();
-							app.setMute();
+							app.toggleMute();
 						}
 					});
 					menu.validate();
@@ -523,12 +523,13 @@ public class McLuhanMain extends JFrame{
 		pmen.setBounds(0, 5, 75, 75);
 		pmen.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent arg0) {
-				pmen.setEnabled(false);
+				//pmen.setEnabled(false);
 				//pmen.setVisible(false);
 				aud.setIcon(new ImageIcon("play.jpg"));
 				movieaud.setIcon(new ImageIcon("video.jpg"));
 				movie = true;
-				aud.setEnabled(false);
+				audio = true;
+				//aud.setEnabled(false);
 				//aud.setVisible(false);
 				aud.removeActionListener(aud.getActionListeners()[0]);
 				setPage();
@@ -603,8 +604,8 @@ public class McLuhanMain extends JFrame{
 		app = new PhysicsEngine(themes.getMap(opt*3), themes.getMap((opt*3)+1), themes.getMap((opt*3)+2),themes.getVids(opt), canvas);
 		canvas.addGLEventListener(app);
 		canvas.addKeyListener(app);
-		canvas.addMouseListener(app);
-		canvas.addMouseMotionListener(app);
+		//canvas.addMouseListener(app);
+		//canvas.addMouseMotionListener(app);
 		tslide.setEngine(app);
 
 		canvas.requestFocus();
@@ -627,10 +628,13 @@ public class McLuhanMain extends JFrame{
 	*/
 	private void startGrabber() {
 		if(canvas != null){
-			pmen.setEnabled(false);
+			//pmen.setEnabled(false);
 		//	pmen.setVisible(false);
 			aud.setIcon(new ImageIcon("play.jpg"));
-			aud.setEnabled(false);
+			movieaud.setIcon(new ImageIcon("video.jpg"));
+			audio = true;
+			movie = true;
+			//aud.setEnabled(false);
 			//aud.setVisible(false);
 			aud.removeActionListener(aud.getActionListeners()[0]);
 			setPage();
@@ -672,7 +676,8 @@ public class McLuhanMain extends JFrame{
 		quepush = null;
 		tslide.desetEngine();
 		animator = null;
-
+		Runtime r = Runtime.getRuntime();
+		r.gc();
 		ActionListener timeout = new ActionListener(){
 			public void actionPerformed(ActionEvent arg0) {
 				if(mode != 2){
@@ -1246,26 +1251,27 @@ public class McLuhanMain extends JFrame{
 					initCanvas(opt);
 					menu.add("ogl",canvas);
 					soundbite = new MP3("McLuhan/"+DIRS[Integer.parseInt(((JButton)ae.getSource()).getName())]+"/mp3.mp3");
-					pmen.setEnabled(true);
+					//pmen.setEnabled(true);
 					//pmen.setVisible(true);
-					aud.setEnabled(true);
+					//aud.setEnabled(true);
 					//aud.setVisible(true);
 					audio = true;
+					movie = true;
 					aud.addActionListener(new ActionListener(){
 						public void actionPerformed(ActionEvent arg0) {
 							if(audio){
-								soundbite.close();
+								//soundbite.pause();
 								audio = false;
 								aud.setIcon(new ImageIcon("mute.jpg"));
 							}
 							else{
 								audio=true;
-								soundbite.play();
+								//soundbite.resume();
 								aud.setIcon(new ImageIcon("play.jpg"));
 							}
-							aud.validate();	
+							aud.validate();
+							app.toggleMute();
 						}
-
 					});
 
 					menu.validate();
@@ -1318,24 +1324,26 @@ public class McLuhanMain extends JFrame{
 					initCanvas(opt);
 					menu.add("ogl",canvas);
 					soundbite = new MP3("McLuhan/"+DIRS[Integer.parseInt(((JButton)ae.getSource()).getName())]+"/mp3.mp3");
-					pmen.setEnabled(true);
+					//pmen.setEnabled(true);
 					//pmen.setVisible(true);
-					aud.setEnabled(true);
+					//aud.setEnabled(true);
 					//aud.setVisible(true);
 					audio = true;
+					movie = true;
 					aud.addActionListener(new ActionListener(){
 						public void actionPerformed(ActionEvent arg0) {
 							if(audio){
-								soundbite.close();
+								//soundbite.pause();
 								audio = false;
 								aud.setIcon(new ImageIcon("mute.jpg"));
 							}
 							else{
 								audio=true;
-								soundbite.play();
+								//soundbite.resume();
 								aud.setIcon(new ImageIcon("play.jpg"));
 							}
-							aud.validate();	
+							aud.validate();
+							app.toggleMute();
 						}
 
 					});
@@ -1390,26 +1398,27 @@ public class McLuhanMain extends JFrame{
 					initCanvas(opt);
 					menu.add("ogl",canvas);
 					soundbite = new MP3("McLuhan/"+DIRS[Integer.parseInt(((JButton)ae.getSource()).getName())]+"/mp3.mp3");
-					pmen.setEnabled(true);
+					//pmen.setEnabled(true);
 					//pmen.setVisible(true);
-					aud.setEnabled(true);
+					//aud.setEnabled(true);
 					//aud.setVisible(true);
 					audio = true;
+					movie = true;
 					aud.addActionListener(new ActionListener(){
 						public void actionPerformed(ActionEvent arg0) {
 							if(audio){
-								soundbite.close();
+								//soundbite.pause();
 								audio = false;
 								aud.setIcon(new ImageIcon("mute.jpg"));
 							}
 							else{
 								audio=true;
-								soundbite.play();
+								//soundbite.resume();
 								aud.setIcon(new ImageIcon("play.jpg"));
 							}
-							aud.validate();	
+							aud.validate();
+							app.toggleMute();
 						}
-
 					});
 
 					menu.validate();

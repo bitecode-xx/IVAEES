@@ -35,8 +35,8 @@ public class PhysicsEngine implements GLEventListener, KeyListener, MouseListene
 	private TextureData[] imagequeTD, textqueTD, qtequeTD;
 
 	private DistortableMesh mesh;
-	private PhysicsMesh pmeshactive, pmhide;
-	private PhysicsMesh[] qts;
+	private PhysicsMesh pmeshactive, pmhide,qte1,qte2;
+	//private PhysicsMesh[] qts;
 
 	private ParticleSystem physics;
 
@@ -75,6 +75,7 @@ public class PhysicsEngine implements GLEventListener, KeyListener, MouseListene
 	
 	private GLJPanel parent;
 
+	private boolean change;
 
 	public PhysicsEngine(TextureData[] source, TextureData[] texts, TextureData[] Quotes, String[] videos, GLJPanel parent){
 		quecount = 0;
@@ -86,7 +87,7 @@ public class PhysicsEngine implements GLEventListener, KeyListener, MouseListene
 		qtequeTD = Quotes;
 		qteque = new Texture[qtequeTD.length];
 		vidFiles = videos;
-		qts = new PhysicsMesh[qtequeTD.length];
+		//qts = new PhysicsMesh[qtequeTD.length];
 		if(texts != null){			
 			textqueTD = texts;
 			textque = new Texture[textqueTD.length];
@@ -95,7 +96,7 @@ public class PhysicsEngine implements GLEventListener, KeyListener, MouseListene
 			textqueTD = new TextureData[0];
 			textque = new Texture[0];
 		}
-		
+		change = true;
 		image = false;
 		txt = true;
 		video = false;
@@ -115,8 +116,13 @@ public class PhysicsEngine implements GLEventListener, KeyListener, MouseListene
 	public void end(){
 		player.stop();
 		renderer = null;
-		if(!audio && !mute)
+		if(!audio && !mute){
+			if(soundbite.isPaused())
+				soundbite.resume();
+		}
+		else if(!audio && soundbite.isPaused()){
 			soundbite.resume();
+		}
 	}
 	
 	public void stopVid(){
@@ -134,13 +140,15 @@ public class PhysicsEngine implements GLEventListener, KeyListener, MouseListene
 	public void setMuteMovie(){
 		mute = !mute;
 		if(player != null)
-			if(mute)
+			if(mute){
 				player.muteAudio();
-			else
+			}
+			else{
 				player.unMuteAudio();
+			}
 	}
 	
-	public void setMute(){
+	public void toggleMute(){
 		audio = !audio;
 		if(soundbite != null)
 			soundbite.togglemute();
@@ -159,9 +167,9 @@ public class PhysicsEngine implements GLEventListener, KeyListener, MouseListene
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		pmhide = new PhysicsMesh(1.5, 20, textvid, 0);
+		pmhide = new PhysicsMesh(1.5, 40, textvid, 0);
 		pmhide.translate(new Vec2D(0.2,0.2));
-		pmhide.setK(1);
+		pmhide.setK(15);
 		pmhide.addToSystem(physics);
 		if(!audio && !mute)
 			soundbite.pause();
@@ -279,11 +287,21 @@ public class PhysicsEngine implements GLEventListener, KeyListener, MouseListene
 						//pmhide.render(gl);
 				}
 			}
+			else{
+				if(change){
+					qte1.renderMesh(gl);
+				}
+				else{
+					qte2.renderMesh(gl);
+				}
+			}
+			/*
 			else if(qts.length>0){
 				PhysicsMesh pm;
 				pm = qts[qtecount];
 				pm.renderMesh(gl);
-			}
+				pm.render(gl);
+			}*/
 			pmeshactive.renderMesh(gl);
 			//pmeshactive.render(gl);
 
@@ -449,18 +467,27 @@ public class PhysicsEngine implements GLEventListener, KeyListener, MouseListene
 
 		physics = new ParticleSystem(new Vec2D(0, -0.4), 0.3333/60.0, new Vec2D(-1.6, -1.0), new Vec2D(1.6, 1.0));
 
+		qte1 = new PhysicsMesh(1.4,20, qteque[0], 0);
+		qte1.setK(10);
+		qte1.addToSystem(physics);
+		//qte1.translate(new Vec2D(Math.random()-0.8, Math.random()-0.4));
+		qte2 = new PhysicsMesh(1.4, 20, qteque[1], 0);
+		//qte2.translate(new Vec2D(Math.random()-0.8, Math.random()-0.4));
+		/*
 		PhysicsMesh pm;
 		for(int i = 0;i<qteque.length;i++){
-			pm = new PhysicsMesh(1.4, 16, qteque[i], 0);
+			pm = new PhysicsMesh(1.4, 20, qteque[i], 0);
 			pm.translate(new Vec2D(Math.random()-0.5, Math.random()-0.5));
 			pm.setK(10);
 			pm.addToSystem(physics);
 			qts[i]=pm;
 
 		}
+		*/
+		
 
-		pmeshactive = new PhysicsMesh(2.0, 20, textureactive, PhysicsMesh.defaultBreakage);
-		pmeshactive.setK(5);
+		pmeshactive = new PhysicsMesh(2.4, 20, textureactive, PhysicsMesh.defaultBreakage);
+		pmeshactive.setK(10);
 		pmeshactive.addToSystem(physics);
 
 		
@@ -483,6 +510,8 @@ public class PhysicsEngine implements GLEventListener, KeyListener, MouseListene
 	 * 
 	 */
 	public void callTimer(){
+		physics = new ParticleSystem(new Vec2D(0, -0.4), 0.3333/60.0, new Vec2D(-1.6, -1.0), new Vec2D(1.6, 1.0));
+
 		if(!video){
 			if(vidcount < vidFiles.length){
 				setMovie(vidFiles[vidcount]);
@@ -495,10 +524,24 @@ public class PhysicsEngine implements GLEventListener, KeyListener, MouseListene
 			video = true;
 		}
 		else{
-			end();
+			end();/*
 			qtecount++;
 			if(qtecount >= qts.length)
 				qtecount = 0;
+				*/
+			change = !change;
+			qte1.delete();
+			qte2.delete();
+			if(change){
+				qte1 = new PhysicsMesh(1.4, 20, qteque[0],0);
+				qte1.setK(10);
+				qte1.addToSystem(physics);
+			}
+			else{
+				qte2 = new PhysicsMesh(1.4, 20, qteque[1],0);
+				qte2.setK(10);
+				qte2.addToSystem(physics);
+			}
 			video = false;
 		}
 		if(imageque.length>0 && textque.length > 0){
@@ -612,6 +655,35 @@ public class PhysicsEngine implements GLEventListener, KeyListener, MouseListene
 		if(result.size() > 0) {
 			return result;
 		}
+		if(qte1 != null) {
+			for(PhysPoint[] pa : qte1.getPoints()) {
+				for(PhysPoint p : pa) {
+					Vec2D delta = pos.sub(p.pos);
+					double sqdist = delta.dot(delta);
+					if(sqdist <= sqradius) {
+						result.add(p);
+					}
+				}
+			}
+		}
+		if(result.size() > 0) {
+			return result;
+		}
+		if(qte2 != null) {
+			for(PhysPoint[] pa : qte2.getPoints()) {
+				for(PhysPoint p : pa) {
+					Vec2D delta = pos.sub(p.pos);
+					double sqdist = delta.dot(delta);
+					if(sqdist <= sqradius) {
+						result.add(p);
+					}
+				}
+			}
+		}
+		if(result.size() > 0) {
+			return result;
+		}
+		/*
 		for(PhysicsMesh pm : qts) {
 			if(pm != null) {
 				for(PhysPoint[] pa : pm.getPoints()) {
@@ -627,7 +699,8 @@ public class PhysicsEngine implements GLEventListener, KeyListener, MouseListene
 			if(result.size() > 0) {
 				return result;
 			}
-		}
+		}*/
+		
 		return result;
 	}
 
@@ -724,10 +797,14 @@ public class PhysicsEngine implements GLEventListener, KeyListener, MouseListene
 	
 	textureactive = null;
 	textvid = null;	
-	for(int i=0;i<qts.length;i++){
+	/*for(int i=0;i<qts.length;i++){
 		qts[i].delete();
 		qts[i] = null;
-	}
+	}*/
+	qte1.delete();
+	qte2.delete();
+	qte1 = null;
+	qte2 = null;
 	mesh = null;
 	pmeshactive.delete();
 	pmeshactive = null;
@@ -764,6 +841,14 @@ public class PhysicsEngine implements GLEventListener, KeyListener, MouseListene
 	}
 
 	public void pushTimerImg(int iloc){
+		physics = new ParticleSystem(new Vec2D(0, -0.4), 0.3333/60.0, new Vec2D(-1.6, -1.0), new Vec2D(1.6, 1.0));
+		if(constraint1 != null)
+			physics.addConstraint(constraint1);
+		if(constraint2 != null)
+			physics.addConstraint(constraint2);
+		if(constraint3 != null)
+			physics.addConstraint(constraint3);
+
 		if(!video){
 			if(vidcount < vidFiles.length){
 				setMovie(vidFiles[vidcount]);
@@ -777,9 +862,24 @@ public class PhysicsEngine implements GLEventListener, KeyListener, MouseListene
 		}
 		else{
 			end();
+			/*
 			qtecount++;
 			if(qtecount >= qts.length)
 				qtecount = 0;
+				*/
+			change = !change;
+			qte1.delete();
+			qte2.delete();
+			if(change){
+				qte1 = new PhysicsMesh(1.4, 20, qteque[0],0);
+				qte1.setK(10);
+				qte1.addToSystem(physics);
+			}
+			else{
+				qte2 = new PhysicsMesh(1.4, 20, qteque[1],0);
+				qte2.setK(10);
+				qte2.addToSystem(physics);
+			}
 			video = false;
 		}
 		quecount = iloc;
@@ -819,6 +919,8 @@ public class PhysicsEngine implements GLEventListener, KeyListener, MouseListene
 	}
 
 	public void pushTimerTxt(int tloc){
+		physics = new ParticleSystem(new Vec2D(0, -0.4), 0.3333/60.0, new Vec2D(-1.6, -1.0), new Vec2D(1.6, 1.0));
+
 		if(!video){
 			if(vidcount < vidFiles.length){
 				setMovie(vidFiles[vidcount]);
@@ -831,10 +933,24 @@ public class PhysicsEngine implements GLEventListener, KeyListener, MouseListene
 			video = true;
 		}
 		else{
-			end();
+			end();/*
 			qtecount++;
 			if(qtecount >= qts.length)
 				qtecount = 0;
+				*/
+			change = !change;
+			qte1.delete();
+			qte2.delete();
+			if(change){
+				qte1 = new PhysicsMesh(1.4, 20, qteque[0],0);
+				qte1.setK(10);
+				qte1.addToSystem(physics);
+			}
+			else{
+				qte2 = new PhysicsMesh(1.4, 20, qteque[1],0);
+				qte2.setK(10);
+				qte2.addToSystem(physics);
+			}
 			video = false;
 		}
 		tquecount = tloc;

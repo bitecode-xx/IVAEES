@@ -44,6 +44,9 @@ public class MP3 {
     	return mute;
     }
     
+    public boolean isPaused(){
+    	return paused;
+    }
     
     
     public void pause() {
