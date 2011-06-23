@@ -214,6 +214,8 @@ public class McLuhanMain extends JFrame{
 		// Init mode
 		mode = 0;
 		
+		morphHand = 0;
+		
 		HandObject handOne = new HandObject(0,0,1,0, false);
 		HandObject handTwo = new HandObject(0,0,2,0, false);
 		
@@ -328,6 +330,9 @@ public class McLuhanMain extends JFrame{
 					movie = true;
 					aud.addActionListener(new ActionListener(){
 						public void actionPerformed(ActionEvent arg0) {
+							if (glnav.isOpen() == false) {
+								return;
+							}
 							if(audio){
 								//soundbite.pause();
 								audio = false;
@@ -507,6 +512,9 @@ public class McLuhanMain extends JFrame{
 		movieaud.setBounds(0, 165, 75, 75);
 		movieaud.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent arg0) {
+				if (glnav.isOpen() == false) {
+					return;
+				}
 				if(movie){
 					movie = false;
 					movieaud.setIcon(new ImageIcon("videomute.jpg"));
@@ -523,6 +531,9 @@ public class McLuhanMain extends JFrame{
 		pmen.setBounds(0, 5, 75, 75);
 		pmen.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent arg0) {
+				if (glnav.isOpen() == false) {
+					return;
+				}
 				//pmen.setEnabled(false);
 				//pmen.setVisible(false);
 				aud.setIcon(new ImageIcon("play.jpg"));
@@ -1024,33 +1035,31 @@ public class McLuhanMain extends JFrame{
 					updateHandTwo(new Point(newX, newY));
 				}
 				
-				if (newX < 15 && newY < 662 && newY > 105 && glnav.isOpen() == false) {
+				if (newX < 15 && newY < 768 && newY > 105 && glnav.isOpen() == false) {
 					glnav.runStage();
 					
 					isMorph = 1;
 					
 					morphHand = select;
 					
-					System.out.println("Open");
-					
 					morphTimer.start();
 				}
 				
-				if (newX < 75 && newY < 662 && newY > 105 && select == morphHand) {
+				if (newX < 75 && newY < 768 && newY > 105 && select == morphHand) {
 					if (glnav.isOpen() == true && isMorph == 0) {
 						isMorph = 1;
-						
-						System.out.println("Stay Open");
 						
 						morphTimer.start();
 					}
 				}
-				else {
+				else if ((newX > 75 || newY > 768 || newY < 105) && select == morphHand) {
 					if (glnav.isOpen() == true && isMorph == 0) {
-						System.out.println("Close");
+						morphHand = 0;
 						
 						glnav.runStage();
 					}
+				}
+				else {
 				}
 				
 				if (action.compareTo("steady") == 0 && (newY < 100 || newX < 60)) {

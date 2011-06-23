@@ -122,16 +122,16 @@ public class FadingButtonTF extends JButton
         super.paint(gButton);
         
         // Make the graphics object sent to this paint() method translucent
-	Graphics2D g2d  = (Graphics2D)g;
-	if(Float.isNaN(alpha)){
-		//System.err.println("Alpha Value: "+alpha);
-		alpha = beta;
-	}
-	else
-		beta = alpha;
-	AlphaComposite newComposite = 
-	    AlphaComposite.getInstance(AlphaComposite.SRC_OVER, alpha);
-	g2d.setComposite(newComposite);
+        Graphics2D g2d  = (Graphics2D)g;
+        if(Float.isNaN(alpha)){
+        	//System.err.println("Alpha Value: "+alpha);
+        	alpha = beta;
+        }
+        else
+        	beta = alpha;
+        AlphaComposite newComposite = 
+        	AlphaComposite.getInstance(AlphaComposite.SRC_OVER, alpha);
+        g2d.setComposite(newComposite);
         
         // Copy the button's image to the destination graphics, translucently
         g2d.drawImage(buttonImage, 0, 0, null);
